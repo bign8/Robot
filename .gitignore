@@ -1,1 +1,6 @@
 /bin
+.settings
+.metadata
+archive
+.classpath
+.project
