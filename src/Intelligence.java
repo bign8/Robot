@@ -4,12 +4,15 @@ public class Intelligence implements Runnable{
 	private SteeringWheel steer;
 	private Sonar eyes;
 	
+	//								SL	L	C	R	SR
+	private double[][] weights = { {-1, -2, -5, -2, -1},  // motor
+								   { 1,  1,  5, -1, -1},  // front steer
+								   { 0, -1, -5,  1,  0} };// back steer
+	
 	public Intelligence(Engine e, SteeringWheel w, Sonar s) {
 		motor = e;
 		steer = w;
 		eyes = s;
-		int x = 5;
-		int this_is_fun = 0;
 	}
 
 	public void run() {
