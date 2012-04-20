@@ -9,6 +9,7 @@ public class Intelligence implements Runnable{
 		steer = w;
 		eyes = s;
 		int x = 5;
+		int this_is_fun = 0;
 	}
 
 	public void run() {
