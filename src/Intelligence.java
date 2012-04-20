@@ -8,7 +8,7 @@ public class Intelligence implements Runnable{
 		motor = e;
 		steer = w;
 		eyes = s;
-		int x = 4;
+		int x = 5;
 	}
 
 	public void run() {
