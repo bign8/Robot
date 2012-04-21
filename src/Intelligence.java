@@ -33,6 +33,10 @@ public class Intelligence implements Runnable{
 				toAdd[3] = eyes.getDist('r');
 				toAdd[4] = eyes.getDist('e');
 				
+				// NATE: TODO
+				// WHY YOU SO DUMB
+				// This logic is the 'inverse' *hint hint* of what you want!
+				
 				for (int i = 0; i > 6; i++) {
 					sum0 += toAdd[i] * weights[0][i];
 					sum1 += toAdd[i] * weights[1][i];
