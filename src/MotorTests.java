@@ -4,8 +4,8 @@ import com.ridgesoft.io.Display;
 
 public class MotorTests implements Runnable {
 	public static int ServoOutputPort =  3;
-	public static int AnologueInput1  = 10;
-	public static int AnologueInput2  = 11;
+	public static int AnologueInput1  = 11;
+	public static int AnologueInput2  = 10;
 	
 	public Display display;
 	public AnalogInput thumbwheel;
@@ -15,32 +15,19 @@ public class MotorTests implements Runnable {
 	public MotorTests() {
 		display = IntelliBrain.getLcdDisplay();
 		thumbwheel = IntelliBrain.getThumbWheel();
-		motor = new ContinuousRotationServo(IntelliBrain.getServo(ServoOutputPort), true);
+		motor = new ContinuousRotationServo(IntelliBrain.getServo(ServoOutputPort), false);
 		
 		// Get a shaft encoder object and initialize it with the two digital inputs it uses.
 		encoder = IntelliBrain.getShaftEncoder(1);
 		encoder.initialize(IntelliBrain.getDigitalIO(AnologueInput1),
 				IntelliBrain.getDigitalIO(AnologueInput2));
 		
-		try {
-			ease(16, 0);
-			ease(-16, 16);
-			ease(0, -16);
-		} catch (Throwable t) { t.printStackTrace(); }
+		motor.setPower(1);
+		motor.setPower(0);
+		motor.setPower(-1);
+		
+		try { Thread.sleep(2000); } catch (Throwable t) { t.printStackTrace(); }
 	}
-	
-	
-	public void ease(int to, int from) {
-		int add = (to > from) ? 1 : -1;
-		try {
-			for (int i = from; i != to; i += add) {
-				motor.setPower(i);
-				display.print(0, "power:" + Integer.toString(i));
-				Thread.sleep(50);
-			}
-		} catch (Throwable t) { t.printStackTrace(); }
-	}
-	
 	
 	public void run() {
 		int previousCounts = 0, counts = 0, power = 0;
