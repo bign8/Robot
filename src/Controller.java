@@ -15,30 +15,18 @@ public class Controller {
 	
 	public static void main(String args[]) {
 		
-		/*
-		MotorTests x = new MotorTests();
-		Thread xThr = new Thread(x);
-		xThr.setPriority(Thread.MAX_PRIORITY);
-		xThr.start();
-		//*/
-		
-		//*
-		
 		//Ignition
-		Engine engine = new Engine(true); // need to run as thread once spedometer is in place
+		Engine engine = new Engine(false); // need to run as thread once spedometer is in place
 		Thread engineThr = new Thread(engine);
 		engineThr.setPriority(Thread.MAX_PRIORITY-2);
 		engineThr.start();
 		
-		starter(new Thread( new Tester(engine) ), 
-				Thread.MAX_PRIORITY);
-		
-		/*
+		//starter(new Thread( new Tester(engine) ), Thread.MAX_PRIORITY); // uncomment engine tester
 		
 		// Steering wheel
 		SteeringWheel wheel = new SteeringWheel();
 		
-		
+		starter(new Thread( new Tester(wheel) ), Thread.MAX_PRIORITY);
 		
 		// Start Calibration if needed
 		//new Calibration(engine, wheel);

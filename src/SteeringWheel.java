@@ -3,26 +3,52 @@ import com.ridgesoft.robotics.Servo;
 
 public class SteeringWheel implements Runnable { // combine with engine to create 'driveTrain'
 
-	private Servo frontWheels;
-	private Servo backWheels;
-	private int fDirection = 0, bDirection = 0;
-	
 	public final int FULL_LEFT = 0;
 	public final int HALF_LEFT = 25;
 	public final int FULL_RIGHT = 100;
 	public final int HALF_RIGHT = 75;
 	public final int CENTERED = 50;
 	
+	private Servo frontWheels;
+	private Servo backWheels;
+	private int fDirection = CENTERED, bDirection = CENTERED;
+	
 	public SteeringWheel() {
 		frontWheels = IntelliBrain.getServo(1);
 		backWheels = IntelliBrain.getServo(2);
-		frontWheels.setPosition(CENTERED);
-		backWheels.setPosition(CENTERED);
+		try {
+			
+			frontWheels.setPosition(FULL_RIGHT);
+			backWheels.setPosition(FULL_RIGHT);
+			
+			Thread.sleep(500);
+			
+			frontWheels.setPosition(FULL_LEFT);
+			backWheels.setPosition(FULL_LEFT);
+			
+			Thread.sleep(500);
+			
+			frontWheels.setPosition(CENTERED);
+			backWheels.setPosition(CENTERED);
+			
+			Thread.sleep(500);
+			
+		} catch (Throwable t) { t.printStackTrace(); }
 	}
 
-
 	public void run() {
-		// will be implemented once steering sensors are in place
+		long time = System.currentTimeMillis();
+		while (true) {
+			try {
+				frontWheels.setPosition(fDirection);
+				backWheels.setPosition(bDirection);
+				
+				// TODO auto correct rear steering straight based on back sensor
+			
+				time += 500;
+				Thread.sleep(time - System.currentTimeMillis());
+			} catch (Throwable e) { e.printStackTrace(); }
+		}
 	}
 	
 	public void setDirection(int direction){
@@ -38,12 +64,11 @@ public class SteeringWheel implements Runnable { // combine with engine to creat
 	}
 	
 	public void setBackWheels(int direction) {
+		direction = 100 - direction;
 		backWheels.setPosition(direction);
 		bDirection = direction;
 	}
 	
 	public int getFrontDirection() { return fDirection; }
 	public int getBackDirection() { return bDirection; }
-	public Servo getFrontWheels(){ return frontWheels; } // nothing should have controll of servos besides this class
-	public Servo getBackWheels(){ return backWheels; }
 }
