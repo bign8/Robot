@@ -13,10 +13,6 @@ public class Sonar implements Runnable {
 
 	private boolean testing = false;
 	
-	public Sonar() {
-		new Sonar(false);
-	}
-	
 	public Sonar(boolean test) {
 		testing = test;
 		
@@ -33,46 +29,51 @@ public class Sonar implements Runnable {
 	}
 
 	public void run(){ 
-		try{
-			int counter = 0;
-			while(true){
+		int counter = 0;
+		long time = System.currentTimeMillis();
+		
+		while(true){
+			try{
+				
 				// Execute the ping
 				leftSensor.ping();
 				frontSensor.ping();
 				rightSensor.ping();
 				sideSensor.ping();
 				
-				Thread.sleep(100);
+				// delay execution of thread
+				time += 200;
+				Thread.sleep(time - System.currentTimeMillis());
 				
 				// What is the distance
 				distL = (int) leftSensor.getDistanceInches();
 				distF = (int) frontSensor.getDistanceInches();
 				distR = (int) rightSensor.getDistanceInches();
 				
-				// main logic for relay and distance sensors
+				// main logic for relay and side distance sensors
 				switch (counter) {
 					case 0: distW = (int) sideSensor.getDistanceInches(); relay.set(); break;
 					case 1: distE = (int) sideSensor.getDistanceInches(); break;
 					case 2: distE = (int) sideSensor.getDistanceInches(); relay.clear(); break;
 					case 3: distW = (int) sideSensor.getDistanceInches(); break;
 				}
-				
-				if (testing) { 
-					display.print(0, "F:" + Integer.toString(distF) + " L:" + Integer.toString(distL) + " R:" + Integer.toString(distR));
-					//display.print(1, "W:" + Integer.toString(distW) + " E:" + Integer.toString(distE));
-				}
-				
 				counter = ( counter + 1 ) % 4 ; // count to four
 				
-			}//end while
-		} catch( Throwable t ) {
-			t.printStackTrace();
+				// display testing output
+				if (testing) { 
+					display.print(0, "F:" + Integer.toString(distF) + " L:" + Integer.toString(distL) + " R:" + Integer.toString(distR));
+					display.print(1, "W:" + Integer.toString(distW) + " E:" + Integer.toString(distE));
+				}
+				
+				
+			} catch( Throwable t ) { t.printStackTrace(); }
 		}
+		
 	}
 	
 	public int getDist(char x) {
 		switch(x) {
-			case 'c': return distF;
+			case 'c': return distF; // center - front
 			case 'l': return distL;
 			case 'r': return distR;
 			case 'w': return distW;

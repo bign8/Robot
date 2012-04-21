@@ -20,24 +20,23 @@ public class Controller {
 		Thread engineThr = new Thread(engine);
 		engineThr.setPriority(Thread.MAX_PRIORITY-2);
 		engineThr.start();
-		
 		//starter(new Thread( new Tester(engine) ), Thread.MAX_PRIORITY); // uncomment engine tester
 		
 		// Steering wheel
 		SteeringWheel wheel = new SteeringWheel();
-		
-		starter(new Thread( new Tester(wheel) ), Thread.MAX_PRIORITY);
-		
-		// Start Calibration if needed
-		//new Calibration(engine, wheel);
-		
-		/*
+		Thread wheelThr = new Thread(wheel);
+		wheelThr.setPriority(Thread.MAX_PRIORITY-3);
+		wheelThr.start();
+		//starter(new Thread( new Tester(wheel) ), Thread.MAX_PRIORITY); // uncomment wheel tester
 		
 		// Headlights
 		Sonar headlight = new Sonar(true);
 		Thread headlightThr = new Thread(headlight);
 		headlightThr.setPriority(Thread.MAX_PRIORITY);
 		headlightThr.start();
+		
+		//*/
+		/*
 		
 		// Brain
 		Intelligence brain = new Intelligence(engine, wheel, headlight);

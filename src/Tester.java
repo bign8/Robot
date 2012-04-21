@@ -3,6 +3,12 @@ import com.ridgesoft.robotics.AnalogInput;
 
 
 public class Tester implements Runnable {
+
+	public void run() {
+		// TODO Auto-generated method stub
+		
+	}
+	
 	/* ENGINE TESTER
 	public Engine eng;
 	
@@ -33,7 +39,7 @@ AnalogInput thumbwheel = IntelliBrain.getThumbWheel();
 	}
 	//*/
 	
-	//* STEERING TESTER
+	/* STEERING TESTER
 	public SteeringWheel whe;
 	
 	public Tester(SteeringWheel w) {
