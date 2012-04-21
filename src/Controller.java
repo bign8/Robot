@@ -25,10 +25,12 @@ public class Controller {
 		//*
 		
 		//Ignition
-		Engine engine = new Engine(); // need to run as thread once spedometer is in place
-		//Thread engineThr = new Thread(engine);
-		//engineThr.setPriority(Thread.MAX_PRIORITY-2);
-		//engineThr.start();
+		Engine engine = new Engine(true); // need to run as thread once spedometer is in place
+		Thread engineThr = new Thread(engine);
+		engineThr.setPriority(Thread.MAX_PRIORITY-2);
+		engineThr.start();
+		
+		/*
 		
 		// Steering wheel
 		SteeringWheel wheel = new SteeringWheel();
