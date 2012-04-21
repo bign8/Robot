@@ -7,8 +7,9 @@ import com.ridgesoft.intellibrain.IntelliBrainDigitalIO;
 public class Sonar implements Runnable {
 
 	private Display display;
-	protected static SonarRangeFinder frontSensor, leftSensor, rightSensor, westSensor, eastSensor;
+	private SonarRangeFinder frontSensor, leftSensor, rightSensor, sideSensor;
 	private int distF = 1, distL = 1, distR = 1, distW = 1, distE = 1;
+	private IntelliBrainDigitalIO relay;
 
 	private boolean testing = false;
 	
@@ -24,32 +25,22 @@ public class Sonar implements Runnable {
 		leftSensor = new ParallaxPing(IntelliBrain.getDigitalIO(5));
 		frontSensor = new ParallaxPing(IntelliBrain.getDigitalIO(3));
 		rightSensor = new ParallaxPing(IntelliBrain.getDigitalIO(4));
-		//westSensor = new ParallaxPing(IntelliBrain.getDigitalIO(7)); // what port should this go on?
-		eastSensor = new ParallaxPing(IntelliBrain.getDigitalIO(6));
+		sideSensor = new ParallaxPing(IntelliBrain.getDigitalIO(6));
 		
-		IntelliBrainDigitalIO data = IntelliBrain.getDigitalIO(10);
-		data.setDirection(true); // configure as output
-		//data.set();
-		//data.clear();
-		//data.toggle();
-		//data.isSet();
-		
-		// see second to last paragraph on page 78 - http://www.ridgesoft.com/articles/education/ExploringRoboticsEdition2.pdf
-		
-		// we can only have 4 sonar sensors on the robot at the time -- 2 brains?
-		
-		 // have to connect to pins 6 and 7 - hopefully
-		// looks like the metal washer on the east west mount is shorting out the sensor - need to re-mount with insiluator
+		relay = IntelliBrain.getDigitalIO(7);
+		relay.setDirection(true); // configure as output
+		relay.clear();
 	}
 
 	public void run(){ 
 		try{
-
+			int counter = 0;
 			while(true){
 				// Execute the ping
 				leftSensor.ping();
 				frontSensor.ping();
 				rightSensor.ping();
+				sideSensor.ping();
 				
 				Thread.sleep(100);
 				
@@ -57,13 +48,21 @@ public class Sonar implements Runnable {
 				distL = (int) leftSensor.getDistanceInches();
 				distF = (int) frontSensor.getDistanceInches();
 				distR = (int) rightSensor.getDistanceInches();
-				//distW = (int) westSensor.getDistanceInches();
-				//distE = (int) eastSensor.getDistanceInches();
+				
+				// main logic for relay and distance sensors
+				switch (counter) {
+					case 0: distW = (int) sideSensor.getDistanceInches(); relay.set(); break;
+					case 1: distE = (int) sideSensor.getDistanceInches(); break;
+					case 2: distE = (int) sideSensor.getDistanceInches(); relay.clear(); break;
+					case 3: distW = (int) sideSensor.getDistanceInches(); break;
+				}
 				
 				if (testing) { 
 					display.print(0, "F:" + Integer.toString(distF) + " L:" + Integer.toString(distL) + " R:" + Integer.toString(distR));
-					display.print(1, "W:" + Integer.toString(distW) + " E:" + Integer.toString(distE));
+					//display.print(1, "W:" + Integer.toString(distW) + " E:" + Integer.toString(distE));
 				}
+				
+				counter = ( counter + 1 ) % 4 ; // count to four
 				
 			}//end while
 		} catch( Throwable t ) {
