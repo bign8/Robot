@@ -15,13 +15,14 @@ public class Controller {
 	
 	public static void main(String args[]) {
 		
-		
+		/*
 		MotorTests x = new MotorTests();
 		Thread xThr = new Thread(x);
 		xThr.setPriority(Thread.MAX_PRIORITY);
 		xThr.start();
+		//*/
 		
-		/*
+		//*
 		
 		//Ignition
 		Engine engine = new Engine(); // need to run as thread once spedometer is in place
@@ -35,9 +36,9 @@ public class Controller {
 		
 		
 		// Start Calibration if needed
-		new Calibration(engine, wheel);
+		//new Calibration(engine, wheel);
 		
-		
+		/*
 		
 		// Headlights
 		Sonar headlight = new Sonar(true);

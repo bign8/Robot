@@ -43,7 +43,7 @@ public class Intelligence implements Runnable{
 					sum2 += toAdd[i] * weights[2][i];
 				}
 				
-				motor.setPower((int)sum0);
+				//motor.setPower((int)sum0);
 				steer.setFrontWheels((int)sum1);
 				steer.setBackWheels((int)sum2);
 				
