@@ -51,17 +51,15 @@ public class Engine implements Runnable{
 				rpm = ((counts - previousCounts) * 120) / 128;
 				previousCounts = counts;
 				
-				//Governer Logic
-				power =  velocity;
+				// TODO: Governer Logic
+				//power +=  (velocity - rpm) / 6;
 				
-				int approx_power = rpm / 6;
+				power = velocity;
+			    motor.setPower(velocity);
 				
+				if (testing) display.print(1, "Pow:" + Integer.toString(power) + " RPM:" + Integer.toString(rpm));
 				
-			    motor.setPower(power);
-				
-				if (testing) display.print(1, "RPM:" + Integer.toString(rpm) + " Power:" + Integer.toString(power));
-				
-				time += 500;
+				time += 100;
 				Thread.sleep(time - System.currentTimeMillis());
 			} catch (Throwable t) { t.printStackTrace(); }
 		}
@@ -71,5 +69,5 @@ public class Engine implements Runnable{
 	public void setSpeed(int velocity) { this.velocity = velocity; }
 	public void appendSpeed(int velocity) { this.velocity += velocity; }
 	public int getRPM() { return rpm; }
-	public void brake() { motor.brake(); } // something else should probably happen here
+	public void brake() { motor.brake(); this.velocity = 0; } // something else should probably happen here
 }
