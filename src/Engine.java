@@ -17,9 +17,9 @@ public class Engine implements Runnable{
 	private IntelliBrainShaftEncoder encoder;
 	
 	// Public variables
-	private double rpm = 0.0f;
-	private double velocity = 0;
-	private double power = 0;
+	private int rpm = 0;
+	private int velocity = 0;
+	private int power = 0;
 	private boolean testing = false;
 	
 	public Engine(boolean test){
@@ -47,26 +47,29 @@ public class Engine implements Runnable{
 		
 		while (true) {
 			try {
-				encoder.getCounts();
 				counts = encoder.getCounts();
 				rpm = ((counts - previousCounts) * 120) / 128;
 				previousCounts = counts;
 				
 				//Governer Logic
-				power =  power - ((rpm - velocity) / 31);
-			    motor.setPower((int)power);
+				power =  velocity;
 				
-				if (testing) display.print(1, "RPM:" + Double.toString(rpm) + " Set:" + Double.toString(velocity));
+				int approx_power = rpm / 6;
 				
-				time += 100;
+				
+			    motor.setPower(power);
+				
+				if (testing) display.print(1, "RPM:" + Integer.toString(rpm) + " Power:" + Integer.toString(power));
+				
+				time += 500;
 				Thread.sleep(time - System.currentTimeMillis());
 			} catch (Throwable t) { t.printStackTrace(); }
 		}
 		
 	}
 	
-	public void setSpeed(double velocity) { this.velocity = velocity; }
-	public void appendSpeed(double velocity) { this.velocity += velocity; }
-	public double getRPM() { return rpm; }
+	public void setSpeed(int velocity) { this.velocity = velocity; }
+	public void appendSpeed(int velocity) { this.velocity += velocity; }
+	public int getRPM() { return rpm; }
 	public void brake() { motor.brake(); } // something else should probably happen here
 }

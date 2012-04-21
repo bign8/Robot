@@ -30,7 +30,8 @@ public class Controller {
 		engineThr.setPriority(Thread.MAX_PRIORITY-2);
 		engineThr.start();
 		
-		new Tester(engine);
+		starter(new Thread( new Tester(engine) ), 
+				Thread.MAX_PRIORITY);
 		
 		/*
 		
@@ -56,5 +57,10 @@ public class Controller {
 		brainThr.setPriority(Thread.MAX_PRIORITY-1);
 		brainThr.start();
 		//*/
+	}
+	
+	public static void starter(Thread x, int priority) {
+		x.setPriority(priority);
+		x.start();
 	}
 }

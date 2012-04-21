@@ -2,11 +2,19 @@ import com.ridgesoft.intellibrain.IntelliBrain;
 import com.ridgesoft.robotics.AnalogInput;
 
 
-public class Tester {
-	public Tester(Engine eng) {
-		AnalogInput thumbwheel = IntelliBrain.getThumbWheel();
+public class Tester implements Runnable {
+	public Engine eng;
+	
+	public Tester(Engine e) {
+		eng = e;
+	}
+
+	public void run() {
+AnalogInput thumbwheel = IntelliBrain.getThumbWheel();
 		
-		double power = 0;
+		
+		
+		int power = 0;
 		
 		long time = System.currentTimeMillis();
 		while (true) {
@@ -14,7 +22,7 @@ public class Tester {
 				
 				power = (thumbwheel.sample() - 512) / 31;
 			    eng.setSpeed(power);
-			    IntelliBrain.getLcdDisplay().print(0, "Power: " + power);
+			    IntelliBrain.getLcdDisplay().print(0, "Velocity: " + power);
 				
 			
 				time += 500;
