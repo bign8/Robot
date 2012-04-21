@@ -14,15 +14,14 @@
 public class Controller {
 	
 	public static void main(String args[]) {
-
-		// The data class will hold all global vars.
-		// Data data = new Data();
-
-		//new BigBotTest().go();
-		//new Thready().go();
-		//*
 		
 		
+		MotorTests x = new MotorTests();
+		Thread xThr = new Thread(x);
+		xThr.setPriority(Thread.MAX_PRIORITY);
+		xThr.start();
+		
+		/*
 		
 		//Ignition
 		Engine engine = new Engine(); // need to run as thread once spedometer is in place
