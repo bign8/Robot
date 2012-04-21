@@ -30,6 +30,8 @@ public class Controller {
 		engineThr.setPriority(Thread.MAX_PRIORITY-2);
 		engineThr.start();
 		
+		new Tester(engine);
+		
 		/*
 		
 		// Steering wheel
