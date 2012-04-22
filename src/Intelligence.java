@@ -5,9 +5,9 @@ public class Intelligence implements Runnable{
 	private Sonar eyes;
 	
 	//								SL	L	C	R	SR  bias
-	private double[][] weights = { {-1, -2, -5, -2, -1, 9},  // motor
-								   { 1,  1,  5, -1, -1, 0},  // front steer
-								   { 0,  1, -5, -1,  0, 0} };// back steer
+	private double[][] weights = { { 0,  0, .2,  0,  0,  0},  // motor
+								   { 1,  1,  5, -1, -1, 50},  // front steer
+								   { 0,  1, -5, -1,  0, 50} };// back steer
 	
 	public Intelligence(Engine e, SteeringWheel w, Sonar s) {
 		motor = e;
