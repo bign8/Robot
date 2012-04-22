@@ -7,12 +7,14 @@ public class Debugger implements Runnable {
 	private SteeringWheel wheel;
 	private Sonar son;
 	private Intelligence intel;
+	private GPS gps;
 	
-	public Debugger(Engine e, SteeringWheel w, Sonar s, Intelligence i) {
+	public Debugger(Engine e, SteeringWheel w, Sonar s, Intelligence i, GPS g) {
 		eng = e;
 		wheel = w;
 		son = s;
 		intel = i;
+		gps = g;
 	}
 
 	public void run() {
@@ -30,6 +32,7 @@ public class Debugger implements Runnable {
 					case 1:  data = wheel.toDebugString(new String[2]); showingNothing = false; break;
 					case 2:  data = son  .toDebugString(new String[2]); showingNothing = false; break;
 					case 3:  data = intel.toDebugString(new String[2]); showingNothing = false; break;
+					case 4:  data = gps  .toDebugString(new String[2]); showingNothing = false; break;
 					default: data = nope;
 				}
 				if (!showingNothing) { // only update screen when debugging

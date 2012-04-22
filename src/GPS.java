@@ -1,0 +1,156 @@
+import com.ridgesoft.intellibrain.IntelliBrain;
+import com.ridgesoft.io.Display;
+import java.io.InputStream;
+import java.io.IOException;
+import javax.comm.SerialPort;
+import javax.comm.UnsupportedCommOperationException;
+
+// special thanks to
+// http://tech.groups.yahoo.com/group/intellibrain/message/25
+
+public class GPS implements Runnable {
+	
+	private class LatLon {
+		public int curLat;
+		public int curLon;
+		public int curHdg;
+		public int curSpd;
+	}
+	
+	private LatLon latLon;
+	private InputStream com1;
+	private Display display;
+	
+	private boolean testing = false;
+	
+	public GPS() { new GPS(false); }
+	
+	public GPS(boolean test) {
+		testing = test;
+		latLon = new LatLon();
+		
+		try {
+			SerialPort coms = IntelliBrain.getCom2();
+			
+			coms.setSerialPortParams(4800, // baud
+					SerialPort.DATABITS_8, 
+					SerialPort.STOPBITS_1, 
+					SerialPort.PARITY_NONE);
+			
+			com1 = coms.getInputStream();
+			
+		} catch (IOException e) { } catch (UnsupportedCommOperationException e) { }
+		
+		if (testing) display = IntelliBrain.getLcdDisplay();
+	}
+	
+	public void run() {
+		
+		byte[] inputBuffer = new byte[128];
+		byte[] parseBuffer = new byte[128]; // should be smaller
+		
+		int jdx = 0; // pointing to end of parseBuffer
+		boolean stillReading = false;
+		
+		while(true) {
+			try {
+				
+				//display.print(1, new String(buffer));
+				
+				int inputCount = com1.read(inputBuffer, 0, inputBuffer.length);
+				if (com1.available() > 1024) {
+					com1.skip(com1.available()-128); // nobody wants old data - have not seen executed
+					System.out.println("Data Skipped!");
+				}
+				
+				// find start of desired sentance
+				for (int idx = 0; idx < inputCount - 5; idx++) {
+					if (!stillReading) {
+						jdx = 0;
+						if ((char) inputBuffer[idx    ] != 'G') continue;
+						if ((char) inputBuffer[idx + 1] != 'P') continue;
+						if ((char) inputBuffer[idx + 2] != 'R') continue;
+						if ((char) inputBuffer[idx + 3] != 'M') continue;
+						if ((char) inputBuffer[idx + 4] != 'C') continue;
+						// idx += 5; // clean identifiers?
+					}
+					stillReading = true;
+					
+					while (idx < inputCount && jdx < parseBuffer.length) { // copy into read buffer
+						parseBuffer[jdx] = inputBuffer[idx];
+						
+						if ((char)parseBuffer[jdx] == '\r' || (char)parseBuffer[jdx] == '$') { // finished reading the junk
+							stillReading = false;
+							break;
+						}
+						
+						idx++; jdx++;
+					}
+
+					// Begin Parsing
+					if (!stillReading) { // parse buffer for da magic
+						System.out.println("Entry: " + new String(parseBuffer, 0, jdx));
+						
+						System.out.println((firstChar(parseBuffer, 2) == 'V')?"yep":"nop <- lol");
+						
+						display.print(0, "Lon " + cvtFld(parseBuffer, 3, true));
+						display.print(1, "Lat " + cvtFld(parseBuffer, 5, true));
+
+						synchronized (latLon) {
+							latLon.curLat = cvtFld(parseBuffer, 5, true);
+							latLon.curLon = cvtFld(parseBuffer, 3, true);
+							latLon.curHdg = cvtFld(parseBuffer, 8, false);
+							latLon.curSpd = cvtFld(parseBuffer, 7, false);
+						}
+					}
+					
+					break; // no more looping this round
+				}
+				
+				
+				//Thread.sleep(100);
+			} catch( Throwable t ) { System.out.println("Error"); t.printStackTrace(); }
+		} // end while true
+			
+		
+	}
+	
+	private static char firstChar(byte[] buf, int fieldNumber) {
+		int cdx = 0;
+		for (cdx = 0; cdx < buf.length; cdx++) {
+			if (buf[cdx] == ',') fieldNumber--;
+			if (fieldNumber == 0) break;
+		}
+		return (char) buf[++cdx];
+		
+	}
+	
+	// converts degree - minutes (dddmm.mmmm) to integer minutes
+	private static int cvtFld(byte[] buf, int fieldNum, boolean degFlg) {
+		int cdx = 0;
+		for (cdx = 0; cdx < buf.length; cdx++) {
+			if (buf[cdx] == ',')
+				fieldNum--;
+			if (fieldNum == 0)
+				break;
+		}
+		int rtnVal = 0;
+		for (cdx++; buf[cdx] != '.'; cdx++) {
+			rtnVal *= 10;
+			rtnVal += buf[cdx] - '0';
+		}
+		if (degFlg)
+			rtnVal = ((rtnVal - rtnVal % 100) * 60) / 100 + (rtnVal % 100);
+		for (cdx++; buf[cdx] != ','; cdx++) {
+			rtnVal *= 10;
+			rtnVal += buf[cdx] - '0';
+		}
+		return rtnVal;
+	}
+	
+	public String[] toDebugString(String in[]) {
+		in[0] = "Lat:" + latLon.curLat + " Lon:" + latLon.curLon;
+		in[1] = "Hdg:" + latLon.curHdg + " Spd:" + latLon.curSpd;
+		return in;
+	}
+}

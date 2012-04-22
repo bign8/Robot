@@ -29,7 +29,11 @@ public class Controller {
 		headlightThr.setPriority(Thread.MAX_PRIORITY);
 		headlightThr.start();
 		
-		// TODO: GPS?
+		// GPS
+		GPS garmin = new GPS(true);
+		Thread garminThr = new Thread(garmin);
+		garminThr.setPriority(Thread.MAX_PRIORITY-4);
+		garminThr.start();
 		
 		// Brain
 		Intelligence brain = new Intelligence(engine, wheel, headlight);
@@ -38,7 +42,7 @@ public class Controller {
 		brainThr.start();
 		
 		// Debugging - can comment out for production
-		Debugger debug = new Debugger(engine, wheel, headlight, brain);
+		Debugger debug = new Debugger(engine, wheel, headlight, brain, garmin);
 		Thread debugThr = new Thread(debug);
 		debugThr.setPriority(Thread.MIN_PRIORITY);
 		debugThr.start();
