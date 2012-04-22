@@ -1,23 +1,15 @@
 import com.ridgesoft.intellibrain.IntelliBrain;
-import com.ridgesoft.io.Display;
 import com.ridgesoft.robotics.SonarRangeFinder;
 import com.ridgesoft.robotics.sensors.ParallaxPing;
 import com.ridgesoft.intellibrain.IntelliBrainDigitalIO;
 
 public class Sonar implements Runnable {
 
-	private Display display;
 	private SonarRangeFinder frontSensor, leftSensor, rightSensor, sideSensor;
 	private int distF = 1, distL = 1, distR = 1, distW = 1, distE = 1;
 	private IntelliBrainDigitalIO relay;
-
-	private boolean testing = false;
 	
-	public Sonar(boolean test) {
-		testing = test;
-		
-		if (testing) display = IntelliBrain.getLcdDisplay();
-		
+	public Sonar() {
 		leftSensor = new ParallaxPing(IntelliBrain.getDigitalIO(5));
 		frontSensor = new ParallaxPing(IntelliBrain.getDigitalIO(3));
 		rightSensor = new ParallaxPing(IntelliBrain.getDigitalIO(4));
@@ -25,7 +17,7 @@ public class Sonar implements Runnable {
 		
 		relay = IntelliBrain.getDigitalIO(7);
 		relay.setDirection(true); // configure as output
-		relay.clear();
+		relay.set();
 	}
 
 	public void run(){ 
@@ -44,7 +36,6 @@ public class Sonar implements Runnable {
 				// delay execution of thread
 				time += 200;
 				Thread.sleep(time - System.currentTimeMillis());
-				//Thread.sleep(200);
 				
 				// What is the distance
 				distL = (int) leftSensor.getDistanceInches();
@@ -52,20 +43,13 @@ public class Sonar implements Runnable {
 				distR = (int) rightSensor.getDistanceInches();
 				
 				// main logic for relay and side distance sensors
+				counter = ( counter + 1 ) % 4 ; // count to four
 				switch (counter) {
 					case 0: distW = (int) sideSensor.getDistanceInches(); relay.set(); break;
 					case 1: distE = (int) sideSensor.getDistanceInches(); break;
 					case 2: distE = (int) sideSensor.getDistanceInches(); relay.clear(); break;
 					case 3: distW = (int) sideSensor.getDistanceInches(); break;
 				}
-				counter = ( counter + 1 ) % 4 ; // count to four
-				
-				// display testing output
-				if (testing) { 
-					display.print(0, "F:" + Integer.toString(distF) + " L:" + Integer.toString(distL) + " R:" + Integer.toString(distR));
-					display.print(1, "W:" + Integer.toString(distW) + " E:" + Integer.toString(distE));
-				}
-				
 				
 			} catch( Throwable t ) { t.printStackTrace(); }
 		}
@@ -81,5 +65,11 @@ public class Sonar implements Runnable {
 			case 'e': return distE;
 			default: return 0;
 		}
+	}
+	
+	public String[] toDebugString(String in[]) {
+		in[0] = "F:" + Integer.toString(distF) + " L:" + Integer.toString(distL) + " R:" + Integer.toString(distR);
+		in[1] = "W:" + Integer.toString(distW) + " E:" + Integer.toString(distE);
+		return in;
 	}
 }

@@ -1,7 +1,7 @@
 import com.ridgesoft.intellibrain.IntelliBrain;
 import com.ridgesoft.robotics.Servo;
 
-public class SteeringWheel implements Runnable { // combine with engine to create 'driveTrain'
+public class SteeringWheel implements Runnable {
 
 	public final int FULL_LEFT = 0;
 	public final int HALF_LEFT = 25;
@@ -71,4 +71,10 @@ public class SteeringWheel implements Runnable { // combine with engine to creat
 	
 	public int getFrontDirection() { return fDirection; }
 	public int getBackDirection() { return bDirection; }
+	
+	public String[] toDebugString(String in[]) {
+		in[0] = "Steering Debug";
+		in[1] = "Fro:" + Integer.toString(fDirection) + " Bak:" + Integer.toString(bDirection);
+		return in;
+	}
 }

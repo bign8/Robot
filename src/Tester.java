@@ -5,8 +5,7 @@
 public class Tester implements Runnable {
 
 	public void run() {
-		// TODO Auto-generated method stub
-		
+		// nope
 	}
 	
 	/* ENGINE TESTER

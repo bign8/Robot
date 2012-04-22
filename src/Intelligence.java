@@ -4,6 +4,8 @@ public class Intelligence implements Runnable{
 	private SteeringWheel steer;
 	private Sonar eyes;
 	
+	private int fsum0 = 0, fsum1 = 0, fsum2 = 0;
+	
 	private static double[][] weights = {
 		//   W     L     C     R     E     B
 		{  -50, -100,   .2, -100,  -50,    0},  // motor
@@ -55,23 +57,36 @@ public class Intelligence implements Runnable{
 					}
 				}
 				
-				//System.out.println("W:" + Double.toString(toAdd[0]) + " L:" + Double.toString(toAdd[1]) + " C:" + Double.toString(toAdd[2]) + " R:" + Double.toString(toAdd[3]) + " E:" + Double.toString(toAdd[4]));
-				//System.out.println("Normal: | " + sum0 + " | " + sum1 + " | " + sum2 + " |");
-				//System.out.println("Capped: | " + capper(sum0, 16., -16.) + " | " + capper(sum1, 100., 0.) + " | " + capper(sum2, 100, 0) + " |\n");
+				fsum0 = (int) negativeMultiply(capper(sum0, 4., -2.), 2);
+				fsum1 = (int) capper(sum1, 100., 0.);
+				fsum2 = (int) capper(sum2, 100, 0);
 				
 				// set down the smarts
-				motor.setSpeed( (int) capper(sum0, 4., -4.) );
-				steer.setFrontWheels( (int) capper(sum1, 100., 0.) );
-				steer.setBackWheels( (int) capper(sum2, 100, 0) );
+				motor.setSpeed( fsum0 );
+				steer.setFrontWheels( fsum1 );
+				steer.setBackWheels( fsum2 );
 				
 				time += 100;
 				Thread.sleep(time - System.currentTimeMillis());
-				//Thread.sleep(100);
 			}
 		} catch (Throwable e) { e.printStackTrace(); }
+		
+		// if driver dies we want to stop dead!
+		motor.setSpeed( 0 );
+		steer.setFrontWheels( 50 );
+		steer.setBackWheels( 50 );
 	}
 	
 	public static double capper(double value, double max, double min) {
 		return (value > max) ? max : (value < min) ? min : value ;
+	}
+	public static double negativeMultiply(double value, double mult) {
+		return (value < 0) ? value * mult : value;
+	}
+	
+	public String[] toDebugString(String in[]) {
+		in[0] = "Intel Debug";
+		in[1] = "Nor: " + fsum0 + " " + fsum1 + " " + fsum2;
+		return in;
 	}
 }

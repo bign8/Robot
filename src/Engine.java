@@ -2,7 +2,6 @@ import com.ridgesoft.intellibrain.IntelliBrain;
 import com.ridgesoft.intellibrain.IntelliBrainShaftEncoder;
 import com.ridgesoft.robotics.ContinuousRotationServo;
 import com.ridgesoft.robotics.Motor;
-import com.ridgesoft.io.Display;
 
 public class Engine implements Runnable{
 	
@@ -13,20 +12,14 @@ public class Engine implements Runnable{
 	
 	// Stored devices
 	private Motor motor;
-	private Display display;
 	private IntelliBrainShaftEncoder encoder;
 	
 	// Public variables
 	private int rpm = 0;
 	private int velocity = 0;
 	private int power = 0;
-	private boolean testing = false;
 	
-	public Engine(boolean test){
-		
-		// debug stuff
-		testing = test;
-		if (testing) display = IntelliBrain.getLcdDisplay();
+	public Engine(){
 		
 		// get what I need (or want)
 		motor = new ContinuousRotationServo(IntelliBrain.getServo(ServoOutputPort), false);
@@ -53,12 +46,11 @@ public class Engine implements Runnable{
 				previousCounts = counts;
 				
 				// TODO: Governer Logic
+				// Hint: choose acceptable speed range for each power-level
 				//power +=  (velocity - rpm) / 6;
 				
 				power = velocity;
 			    motor.setPower(velocity);
-				
-				if (testing) display.print(1, "Pow:" + Integer.toString(power) + " RPM:" + Integer.toString(rpm));
 				
 				time += 100;
 				Thread.sleep(time - System.currentTimeMillis());
@@ -71,4 +63,10 @@ public class Engine implements Runnable{
 	public void appendSpeed(int velocity) { this.velocity += velocity; }
 	public int getRPM() { return rpm; }
 	public void brake() { motor.brake(); this.velocity = 0; } // something else should probably happen here
+	
+	public String[] toDebugString(String in[]) {
+		in[0] = "Engine Debug";
+		in[1] = "Pow:" + Integer.toString(power) + " RPM:" + Integer.toString(rpm);
+		return in;
+	}
 }
