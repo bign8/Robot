@@ -17,6 +17,11 @@ public class Intelligence implements Runnable{
 
 	public void run() {
 		
+		// TODO : Another thing to do is remember the last 200 commands or so
+		// This would help  if the robot is stuck with no-motion for more than
+		// a set number of iterations - the robot could then reverse the past 
+		// operations - see white board
+		
 		double sum0 = 0, sum1 = 0, sum2 = 0;
 		double[] toAdd = new double[6];
 		toAdd[5] = 1;
