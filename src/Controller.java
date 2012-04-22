@@ -29,6 +29,8 @@ public class Controller {
 		headlightThr.setPriority(Thread.MAX_PRIORITY);
 		headlightThr.start();
 		
+		// TODO: GPS?
+		
 		// Brain
 		Intelligence brain = new Intelligence(engine, wheel, headlight);
 		Thread brainThr = new Thread(brain);
