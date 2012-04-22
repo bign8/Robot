@@ -60,7 +60,7 @@ public class Intelligence implements Runnable{
 				//System.out.println("Capped: | " + capper(sum0, 16., -16.) + " | " + capper(sum1, 100., 0.) + " | " + capper(sum2, 100, 0) + " |\n");
 				
 				// set down the smarts
-				motor.setSpeed( (int) capper(sum0, 6., -6.) );
+				motor.setSpeed( (int) capper(sum0, 4., -4.) );
 				steer.setFrontWheels( (int) capper(sum1, 100., 0.) );
 				steer.setBackWheels( (int) capper(sum2, 100, 0) );
 				

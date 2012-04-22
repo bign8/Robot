@@ -1,5 +1,5 @@
-import com.ridgesoft.intellibrain.IntelliBrain;
-import com.ridgesoft.robotics.AnalogInput;
+//import com.ridgesoft.intellibrain.IntelliBrain;
+//import com.ridgesoft.robotics.AnalogInput;
 
 
 public class Tester implements Runnable {
