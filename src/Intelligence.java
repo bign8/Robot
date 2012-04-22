@@ -20,11 +20,11 @@ public class Intelligence implements Runnable{
 		double sum0 = 0, sum1 = 0, sum2 = 0;
 		double[] toAdd = new double[6];
 		toAdd[5] = 1;
+		long time = System.currentTimeMillis();
 		
 		try {
 			while (true) {
 				
-				//motor.display.print(0, "C Dist: " + Integer.toString(eyes.getDist('c')) );
 				sum0 = 0; sum1 = 0; sum2 = 0;
 				
 				toAdd[0] = eyes.getDist('w');
@@ -43,44 +43,13 @@ public class Intelligence implements Runnable{
 					sum2 += toAdd[i] * weights[2][i];
 				}
 				
-				//motor.setPower((int)sum0);
+				// set down the smarts
+				motor.setSpeed((int)sum0);
 				steer.setFrontWheels((int)sum1);
 				steer.setBackWheels((int)sum2);
 				
-				/*
-				if ( (cen < 10 && cen != -1) || (right < 10 && right != -1) || (left < 10 && left != -1) ) {
-					motor.setPower(motor.STOP);
-					steer.setDirection(steer.CENTERED);
-				} else if (cen > 50 || cen == -1) { // smooth sailing
-					motor.setPower(motor.MED_FORWARD);
-					
-					if (left < 20 && left != -1) {// headding correction
-						steer.setDirection(steer.HALF_RIGHT);
-					} else if (right < 20 && right != -1) {
-						steer.setDirection(steer.HALF_LEFT);
-					} else {
-						steer.setDirection(steer.CENTERED);
-					}
-					
-					
-				} else if (cen > 20 && ( left > cen || right > cen ) ) { // possible better route
-					motor.setPower(motor.MIN_FORWARD);
-					//if (left > cen && right > cen) { // center
-						// randomly choose
-					//} else 
-					
-					if (left > cen) { // left
-						steer.setDirection(steer.FULL_LEFT);
-					} else { // right
-						steer.setDirection(steer.FULL_RIGHT);
-					}
-				} else {
-					motor.setPower(motor.STOP);
-					steer.setDirection(steer.CENTERED);
-				}
-				//*/
-				
-				Thread.sleep(100);
+				time += 100;
+				Thread.sleep(time - System.currentTimeMillis());
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();

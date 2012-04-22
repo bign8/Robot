@@ -35,6 +35,7 @@ public class Engine implements Runnable{
 				IntelliBrain.getDigitalIO(AnologueInput2));
 		
 		// Initialization routine for the axial ae-l esc with reverse
+		// Thanks : http://axialracing.com/wordpress/2011/08/18/axial-ae-2-esc-set-up-and-programming/
 		motor.setPower(1);
 		motor.setPower(0);
 		motor.setPower(-1);

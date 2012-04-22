@@ -35,18 +35,14 @@ public class Controller {
 		headlightThr.setPriority(Thread.MAX_PRIORITY);
 		headlightThr.start();
 		
-		//*/
-		/*
-		
 		// Brain
 		Intelligence brain = new Intelligence(engine, wheel, headlight);
 		Thread brainThr = new Thread(brain);
 		brainThr.setPriority(Thread.MAX_PRIORITY-1);
 		brainThr.start();
-		//*/
 	}
 	
-	public static void starter(Thread x, int priority) {
+	public static void starter(Thread x, int priority) { // do not use for anything but the tester
 		x.setPriority(priority);
 		x.start();
 	}
