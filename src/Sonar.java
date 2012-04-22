@@ -44,6 +44,7 @@ public class Sonar implements Runnable {
 				// delay execution of thread
 				time += 200;
 				Thread.sleep(time - System.currentTimeMillis());
+				//Thread.sleep(200);
 				
 				// What is the distance
 				distL = (int) leftSensor.getDistanceInches();

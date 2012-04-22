@@ -30,7 +30,7 @@ public class Controller {
 		//starter(new Thread( new Tester(wheel) ), Thread.MAX_PRIORITY); // uncomment wheel tester
 		
 		// Headlights
-		Sonar headlight = new Sonar(true);
+		Sonar headlight = new Sonar(false);
 		Thread headlightThr = new Thread(headlight);
 		headlightThr.setPriority(Thread.MAX_PRIORITY);
 		headlightThr.start();
