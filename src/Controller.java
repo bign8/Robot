@@ -37,9 +37,9 @@ public class Controller {
 		
 		// Brain
 		Intelligence brain = new Intelligence(engine, wheel, headlight);
-		Thread brainThr = new Thread(brain);
-		brainThr.setPriority(Thread.MAX_PRIORITY-1);
-		brainThr.start();
+		//Thread brainThr = new Thread(brain);
+		//brainThr.setPriority(Thread.MAX_PRIORITY-1);
+		//brainThr.start();
 		
 		// Debugging - can comment out for production
 		Debugger debug = new Debugger(engine, wheel, headlight, brain, garmin);
