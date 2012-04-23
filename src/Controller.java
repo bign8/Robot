@@ -8,7 +8,9 @@
 public class Controller {
 	
 	public static void main(String args[]) {
+		Speedometer.run(null);
 		
+		/*
 		//Ignition
 		Engine engine = new Engine();
 		Thread engineThr = new Thread(engine);
@@ -46,6 +48,7 @@ public class Controller {
 		Thread debugThr = new Thread(debug);
 		debugThr.setPriority(Thread.MIN_PRIORITY);
 		debugThr.start();
+		//*/
 	}
 	
 	public static void starter(Thread x, int priority) { // do not use for anything but the tester
