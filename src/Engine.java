@@ -43,13 +43,14 @@ public class Engine implements Runnable{
 		while (true) {
 			try {
 				counts = encoder.getCounts();				
+				
 				//600 count intervals are taken per minute.
 				//128 counts per revolution.
-				
 				rpm = ((counts - previousCounts) * 600) / 128;
 				previousCounts = counts;
-								
+				
 				power = velocity;
+				
 				//Self adjusting power, covers a quantized 10rpm per 1 power map.
 				//Currently functions under the assumption that rpm goes from -160 to 160.
 				power += power - (rpm/10);
