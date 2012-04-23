@@ -43,6 +43,8 @@ public class Engine implements Runnable{
 		while (true) {
 			try {
 				counts = encoder.getCounts();
+				//modified from rpm = ((counts - previousCounts) * 120) / 128;
+				//now counts revolutions per 100 milliseconds
 				rpm = ((counts - previousCounts) * 60) / 128;
 				previousCounts = counts;
 				
@@ -54,7 +56,7 @@ public class Engine implements Runnable{
 				
 				//Self adjusting power, covers a quantized 10rpm per 1 power map.
 				power += power - rpm;
-			    	motor.setPower(velocity);
+			    	motor.setPower(power);
 				
 				time += 100;
 				Thread.sleep(time - System.currentTimeMillis());
