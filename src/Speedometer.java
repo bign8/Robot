@@ -70,7 +70,7 @@ public class Speedometer {
 				display.print(0, "RPM: " + rpm);
 				
 				//governer logic
-				power += (velocity - (rpm/16.25));
+				power += (velocity + (rpm/16.25));
 
 				//limiter
 				if (power > 16) 
