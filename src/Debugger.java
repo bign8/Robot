@@ -74,7 +74,7 @@ public class Debugger implements Runnable {
 						case 0: debugEngine(); break;
 					}
 					
-					
+					// Starting regular execution
 					disp.print(0, "Debug Complete");
 					disp.print(1, "Resuming Operation");
 					IntelliBrain.setTerminateOnStop(true);
