@@ -48,10 +48,13 @@ public class Engine implements Runnable{
 				
 				// TODO: Governer Logic
 				// Hint: choose acceptable speed range for each power-level
-				//power +=  (velocity - rpm) / 6;
+				//power +=  (velocity - rpm) / 16;
 				
 				power = velocity;
-			    motor.setPower(velocity);
+				
+				//Self adjusting power, covers a quantized 10rpm per 1 power map.
+				power = power + (power - (rpm / 10));
+			    	motor.setPower(velocity);
 				
 				time += 100;
 				Thread.sleep(time - System.currentTimeMillis());
