@@ -43,7 +43,7 @@ public class Controller {
 		brainThr.start();
 		
 		// Debugging - can comment out for production
-		Debugger debug = new Debugger(engine, wheel, headlight, brain, garmin, brainThr);
+		Debugger debug = new Debugger(engine, wheel, headlight, brain, garmin);
 		Thread debugThr = new Thread(debug);
 		debugThr.setPriority(Thread.MIN_PRIORITY);
 		debugThr.start();

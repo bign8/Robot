@@ -11,23 +11,18 @@ public class Debugger implements Runnable {
 	private Intelligence intel;
 	private GPS gps;
 	
-	// Threads that need to stop
-	private Thread brainThr;
-	
 	// locally used for things
 	private Display disp;
 	private AnalogInput thumbwheel;
 	private PushButton startButton;
 	private PushButton stopButton;
 	
-	public Debugger(Engine e, SteeringWheel w, Sonar s, Intelligence i, GPS g, Thread bThr) {
+	public Debugger(Engine e, SteeringWheel w, Sonar s, Intelligence i, GPS g) {
 		eng = e;
 		wheel = w;
 		son = s;
 		intel = i;
 		gps = g;
-		
-		brainThr = bThr;
 		
 		disp = IntelliBrain.getLcdDisplay();
 		thumbwheel = IntelliBrain.getThumbWheel();
@@ -64,9 +59,10 @@ public class Debugger implements Runnable {
 					IntelliBrain.setTerminateOnStop(false);
 					
 					// stop executing threads
-					intel.stop();
+					intel.setRunning(false);
 					disp.print(0, "Begin Debug");
 					disp.print(1, "Waiting Death");
+					
 					Thread.sleep(2000);
 					
 					// Chose one of the debugging options
@@ -77,9 +73,9 @@ public class Debugger implements Runnable {
 					// Starting regular execution
 					disp.print(0, "Debug Complete");
 					disp.print(1, "Resuming Operation");
+					Thread.sleep(2000);
 					IntelliBrain.setTerminateOnStop(true);
-					Thread.sleep(5000);
-					brainThr.start();
+					intel.setRunning(true);
 				}
 				
 				// Pause thread execution
@@ -92,8 +88,19 @@ public class Debugger implements Runnable {
 	public void debugEngine() {
 		boolean debug = true;
 		long time = System.currentTimeMillis();
+		int power;
+		String[] data;
+		
 		while (debug) {
 			try {
+				
+				power = (thumbwheel.sample() - 512) / 31;
+				data = eng.toDebugString(new String[2]);
+				
+				data[0] = "Pos:" + power;
+				disp.print(0, data[0]);
+				disp.print(1, data[1]);
+				eng.setSpeed(power);
 				
 				if (stopButton.isPressed()) debug = false;
 				time += 500;

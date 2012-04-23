@@ -21,7 +21,7 @@ public class Intelligence implements Runnable{
 		eyes = s;
 	}
 	
-	public void stop() { running = false; }
+	public void setRunning( boolean run ) { running = run; }
 	
 	public void run() {
 		running = true;
@@ -37,42 +37,47 @@ public class Intelligence implements Runnable{
 		long time = System.currentTimeMillis();
 		
 		try {
-			while (running) {
+			while (true) {
 				
-				sum0 = 0; sum1 = 0; sum2 = 0;
+				if (!running) {
+					Thread.sleep(2000);
+				} else {
 				
-				toAdd[0] = eyes.getDist('w');
-				toAdd[1] = eyes.getDist('l');
-				toAdd[2] = eyes.getDist('c');
-				toAdd[3] = eyes.getDist('r');
-				toAdd[4] = eyes.getDist('e');
-				
-				// NATE: WHY YOU SO DUMB
-				
-				for (int i = 0; i < 6; i++) {
-					if ( toAdd[i] > 0 ) { // exclude poor input
-						
-						if ( i == 2 )
-							sum0 += toAdd[i] * weights[0][i];
-						else
-							sum0 += 1./toAdd[i] * weights[0][i];
-						
-						sum1 += 1./toAdd[i] * weights[1][i];
-						sum2 += 1./toAdd[i] * weights[2][i];
+					sum0 = 0; sum1 = 0; sum2 = 0;
+					
+					toAdd[0] = eyes.getDist('w');
+					toAdd[1] = eyes.getDist('l');
+					toAdd[2] = eyes.getDist('c');
+					toAdd[3] = eyes.getDist('r');
+					toAdd[4] = eyes.getDist('e');
+					
+					// NATE: WHY YOU SO DUMB
+					
+					for (int i = 0; i < 6; i++) {
+						if ( toAdd[i] > 0 ) { // exclude poor input
+							
+							if ( i == 2 )
+								sum0 += toAdd[i] * weights[0][i];
+							else
+								sum0 += 1./toAdd[i] * weights[0][i];
+							
+							sum1 += 1./toAdd[i] * weights[1][i];
+							sum2 += 1./toAdd[i] * weights[2][i];
+						}
 					}
+					
+					fsum0 = (int) negativeMultiply(capper(sum0, 4., -2.), 2);
+					fsum1 = (int) capper(sum1, 100., 0.);
+					fsum2 = (int) capper(sum2, 100, 0);
+					
+					// set down the smarts
+					motor.setSpeed( fsum0 );
+					steer.setFrontWheels( fsum1 );
+					steer.setBackWheels( fsum2 );
+					
+					time += 100;
+					Thread.sleep(time - System.currentTimeMillis());
 				}
-				
-				fsum0 = (int) negativeMultiply(capper(sum0, 4., -2.), 2);
-				fsum1 = (int) capper(sum1, 100., 0.);
-				fsum2 = (int) capper(sum2, 100, 0);
-				
-				// set down the smarts
-				motor.setSpeed( fsum0 );
-				steer.setFrontWheels( fsum1 );
-				steer.setBackWheels( fsum2 );
-				
-				time += 100;
-				Thread.sleep(time - System.currentTimeMillis());
 			}
 		} catch (Throwable e) { e.printStackTrace(); }
 		
