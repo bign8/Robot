@@ -30,16 +30,16 @@ public class Controller {
 		headlightThr.start();
 		
 		// GPS
-		GPS garmin = new GPS(true);
+		GPS garmin = new GPS();
 		Thread garminThr = new Thread(garmin);
 		garminThr.setPriority(Thread.MAX_PRIORITY-4);
 		garminThr.start();
 		
 		// Brain
 		Intelligence brain = new Intelligence(engine, wheel, headlight);
-		//Thread brainThr = new Thread(brain);
-		//brainThr.setPriority(Thread.MAX_PRIORITY-1);
-		//brainThr.start();
+		Thread brainThr = new Thread(brain);
+		brainThr.setPriority(Thread.MAX_PRIORITY-1);
+		brainThr.start();
 		
 		// Debugging - can comment out for production
 		Debugger debug = new Debugger(engine, wheel, headlight, brain, garmin);

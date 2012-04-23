@@ -1,5 +1,4 @@
 import com.ridgesoft.intellibrain.IntelliBrain;
-import com.ridgesoft.io.Display;
 import java.io.InputStream;
 import java.io.IOException;
 import javax.comm.SerialPort;
@@ -11,22 +10,14 @@ import javax.comm.UnsupportedCommOperationException;
 public class GPS implements Runnable {
 	
 	private class LatLon {
-		public int curLat;
-		public int curLon;
-		public int curHdg;
-		public int curSpd;
+		public int curLat, curLon, curHdg, curSpd;
+		public boolean valid;
 	}
 	
 	private LatLon latLon;
 	private InputStream com1;
-	private Display display;
 	
-	private boolean testing = false;
-	
-	public GPS() { new GPS(false); }
-	
-	public GPS(boolean test) {
-		testing = test;
+	public GPS() {
 		latLon = new LatLon();
 		
 		try {
@@ -41,7 +32,6 @@ public class GPS implements Runnable {
 			
 		} catch (IOException e) { } catch (UnsupportedCommOperationException e) { }
 		
-		if (testing) display = IntelliBrain.getLcdDisplay();
 	}
 	
 	public void run() {
@@ -89,14 +79,15 @@ public class GPS implements Runnable {
 
 					// Begin Parsing
 					if (!stillReading) { // parse buffer for da magic
-						System.out.println("Entry: " + new String(parseBuffer, 0, jdx));
+						//System.out.println("Entry: " + new String(parseBuffer, 0, jdx));
 						
-						System.out.println((firstChar(parseBuffer, 2) == 'V')?"yep":"nop <- lol");
+						//System.out.println((firstChar(parseBuffer, 2) == 'V')?"yep":"nop <- lol");
 						
-						display.print(0, "Lon " + cvtFld(parseBuffer, 3, true));
-						display.print(1, "Lat " + cvtFld(parseBuffer, 5, true));
+						//display.print(0, "Lon " + cvtFld(parseBuffer, 3, true));
+						//display.print(1, "Lat " + cvtFld(parseBuffer, 5, true));
 
 						synchronized (latLon) {
+							latLon.valid  = (firstChar(parseBuffer, 2) == 'V');
 							latLon.curLat = cvtFld(parseBuffer, 5, true);
 							latLon.curLon = cvtFld(parseBuffer, 3, true);
 							latLon.curHdg = cvtFld(parseBuffer, 8, false);
@@ -107,8 +98,6 @@ public class GPS implements Runnable {
 					break; // no more looping this round
 				}
 				
-				
-				//Thread.sleep(100);
 			} catch( Throwable t ) { System.out.println("Error"); t.printStackTrace(); }
 		} // end while true
 			
@@ -149,8 +138,11 @@ public class GPS implements Runnable {
 	}
 	
 	public String[] toDebugString(String in[]) {
-		in[0] = "Lat:" + latLon.curLat + " Lon:" + latLon.curLon;
-		in[1] = "Hdg:" + latLon.curHdg + " Spd:" + latLon.curSpd;
-		return in;
+		synchronized (latLon) {
+			in[0] = "V:" + (latLon.valid ? "V " : "I ") + 
+					"Lat:" + latLon.curLat + " Lon:" + latLon.curLon;
+			in[1] = "Hdg:" + latLon.curHdg + " Spd:" + latLon.curSpd;
+			return in;
+		}
 	}
 }
