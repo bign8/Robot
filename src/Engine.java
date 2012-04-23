@@ -49,6 +49,7 @@ public class Engine implements Runnable{
 				//power +=  (velocity - rpm) / 6;
 				
 				power = velocity;
+				power += power - rpm/10.;
 			    motor.setPower(velocity);
 				
 				time += 100;

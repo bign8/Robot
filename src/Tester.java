@@ -3,10 +3,10 @@
 
 
 public class Tester implements Runnable {
-
+	//*
 	public void run() {
 		// nope
-	}
+	}//*/
 	
 	/* ENGINE TESTER
 	public Engine eng;
@@ -16,7 +16,7 @@ public class Tester implements Runnable {
 	}
 
 	public void run() {
-AnalogInput thumbwheel = IntelliBrain.getThumbWheel();
+		AnalogInput thumbwheel = IntelliBrain.getThumbWheel();
 		
 		
 		
