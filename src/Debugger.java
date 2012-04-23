@@ -65,6 +65,8 @@ public class Debugger implements Runnable {
 					switch ( chosenOne ) {
 						case 0: debugEngine();   break;
 						case 1: debugSteering(); break;
+						// ... 
+						case 4: debugGPS();      break;
 					}
 					
 					// Starting regular execution
@@ -129,6 +131,25 @@ public class Debugger implements Runnable {
 			    
 			    data = wheel.toDebugString(new String[2]);
 			    data[0] = "Set:" + dir;
+				disp.print(0, data[0]);
+				disp.print(1, data[1]);
+			    
+			    if (stopButton.isPressed()) debug = false;
+				time += 500;
+				Thread.sleep(time - System.currentTimeMillis());
+			} catch (Throwable e) { e.printStackTrace(); }
+		}
+	}
+	
+	private void debugGPS() {
+		boolean debug = true;
+		String[] data;
+		
+		long time = System.currentTimeMillis();
+		while (debug) {
+			try {
+			    
+			    data = wheel.toDebugString(new String[2]);
 				disp.print(0, data[0]);
 				disp.print(1, data[1]);
 			    

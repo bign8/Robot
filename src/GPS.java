@@ -78,9 +78,9 @@ public class GPS implements Runnable {
 
 					// Begin Parsing
 					if (!stillReading) { // parse buffer for da magic
-						System.out.println("Entry: " + new String(parseBuffer, 0, jdx));
+						//System.out.println("Entry: " + new String(parseBuffer, 0, jdx));
 						
-						System.out.println((firstChar(parseBuffer, 2) == 'V')?"yep":"nop <- lol");
+						//System.out.println((firstChar(parseBuffer, 2) == 'V')?"yep":"nop <- lol");
 						
 						//display.print(0, "Lon " + cvtFld(parseBuffer, 3, true));
 						//display.print(1, "Lat " + cvtFld(parseBuffer, 5, true));
@@ -96,7 +96,7 @@ public class GPS implements Runnable {
 									latLon.curSpd = cvtFld(parseBuffer, 7, false);
 								//}
 							}
-						} catch (Error e) {e.printStackTrace();/* silent kill on the errors I produce */}
+						} catch (Error e) {/* silent kill on the errors I produce */} // data has no dot and thus errors out stuff
 					}
 					
 					break; // no more looping this round
