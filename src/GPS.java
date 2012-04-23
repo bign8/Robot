@@ -1,8 +1,6 @@
 import com.ridgesoft.intellibrain.IntelliBrain;
 import java.io.InputStream;
-import java.io.IOException;
 import javax.comm.SerialPort;
-import javax.comm.UnsupportedCommOperationException;
 
 // special thanks to
 // http://tech.groups.yahoo.com/group/intellibrain/message/25
@@ -10,7 +8,7 @@ import javax.comm.UnsupportedCommOperationException;
 public class GPS implements Runnable {
 	
 	private class LatLon {
-		public int curLat, curLon, curHdg, curSpd;
+		public int curLat = 0, curLon = 0, curHdg = 0, curSpd = 0;
 		public boolean valid;
 	}
 	
@@ -30,7 +28,7 @@ public class GPS implements Runnable {
 			
 			com1 = coms.getInputStream();
 			
-		} catch (IOException e) { } catch (UnsupportedCommOperationException e) { }
+		} catch (Throwable e) { }
 		
 	}
 	
@@ -41,6 +39,7 @@ public class GPS implements Runnable {
 		
 		int jdx = 0; // pointing to end of parseBuffer
 		boolean stillReading = false;
+		long time = System.currentTimeMillis();
 		
 		while(true) {
 			try {
@@ -79,25 +78,33 @@ public class GPS implements Runnable {
 
 					// Begin Parsing
 					if (!stillReading) { // parse buffer for da magic
-						//System.out.println("Entry: " + new String(parseBuffer, 0, jdx));
+						System.out.println("Entry: " + new String(parseBuffer, 0, jdx));
 						
-						//System.out.println((firstChar(parseBuffer, 2) == 'V')?"yep":"nop <- lol");
+						System.out.println((firstChar(parseBuffer, 2) == 'V')?"yep":"nop <- lol");
 						
 						//display.print(0, "Lon " + cvtFld(parseBuffer, 3, true));
 						//display.print(1, "Lat " + cvtFld(parseBuffer, 5, true));
-
-						synchronized (latLon) {
-							latLon.valid  = (firstChar(parseBuffer, 2) == 'V');
-							latLon.curLat = cvtFld(parseBuffer, 5, true);
-							latLon.curLon = cvtFld(parseBuffer, 3, true);
-							latLon.curHdg = cvtFld(parseBuffer, 8, false);
-							latLon.curSpd = cvtFld(parseBuffer, 7, false);
-						}
+						
+						
+						try {
+							synchronized (latLon) {
+								latLon.valid  = (firstChar(parseBuffer, 2) == 'A');
+								//if (latLon.valid) {
+									latLon.curLat = cvtFld(parseBuffer, 5, true);
+									latLon.curLon = cvtFld(parseBuffer, 3, true);
+									latLon.curHdg = cvtFld(parseBuffer, 8, false);
+									latLon.curSpd = cvtFld(parseBuffer, 7, false);
+								//}
+							}
+						} catch (Error e) {e.printStackTrace();/* silent kill on the errors I produce */}
 					}
 					
 					break; // no more looping this round
 				}
 				
+				// pause thread execution
+				time += 100;
+				Thread.sleep(time - System.currentTimeMillis());
 			} catch( Throwable t ) { System.out.println("Error"); t.printStackTrace(); }
 		} // end while true
 			
@@ -106,7 +113,7 @@ public class GPS implements Runnable {
 	
 	private static char firstChar(byte[] buf, int fieldNumber) {
 		int cdx = 0;
-		for (cdx = 0; cdx < buf.length; cdx++) {
+		for (cdx = 0; cdx < buf.length-1; cdx++) {
 			if (buf[cdx] == ',') fieldNumber--;
 			if (fieldNumber == 0) break;
 		}
@@ -115,25 +122,33 @@ public class GPS implements Runnable {
 	}
 	
 	// converts degree - minutes (dddmm.mmmm) to integer minutes
-	private static int cvtFld(byte[] buf, int fieldNum, boolean degFlg) {
+	private static int cvtFld(byte[] buf, int fieldNum, boolean degFlg) throws Error {
 		int cdx = 0;
-		for (cdx = 0; cdx < buf.length; cdx++) {
+		for (cdx = 0; cdx < buf.length-1; cdx++) {
 			if (buf[cdx] == ',')
 				fieldNum--;
 			if (fieldNum == 0)
 				break;
 		}
+		
+		if (cdx >= buf.length-1) throw new Error("First Loop");
+		
 		int rtnVal = 0;
+		
 		for (cdx++; buf[cdx] != '.'; cdx++) {
+			if (cdx >= buf.length-1) throw new Error("Second Loop");
 			rtnVal *= 10;
 			rtnVal += buf[cdx] - '0';
 		}
+		
 		if (degFlg)
 			rtnVal = ((rtnVal - rtnVal % 100) * 60) / 100 + (rtnVal % 100);
 		for (cdx++; buf[cdx] != ','; cdx++) {
+			if (cdx >= buf.length-1) throw new Error("Last Loop");
 			rtnVal *= 10;
 			rtnVal += buf[cdx] - '0';
 		}
+		
 		return rtnVal;
 	}
 	

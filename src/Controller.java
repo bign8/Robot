@@ -13,21 +13,21 @@ public class Controller {
 		Engine engine = new Engine();
 		Thread engineThr = new Thread(engine);
 		engineThr.setPriority(Thread.MAX_PRIORITY-2);
-		engineThr.start();
+		//engineThr.start();
 		//starter(new Thread( new Tester(engine) ), Thread.MAX_PRIORITY); // uncomment engine tester
 		
 		// Steering wheel
 		SteeringWheel wheel = new SteeringWheel();
 		Thread wheelThr = new Thread(wheel);
 		wheelThr.setPriority(Thread.MAX_PRIORITY-3);
-		wheelThr.start();
+		//wheelThr.start();
 		//starter(new Thread( new Tester(wheel) ), Thread.MAX_PRIORITY); // uncomment wheel tester
 		
 		// Headlights
 		Sonar headlight = new Sonar();
 		Thread headlightThr = new Thread(headlight);
 		headlightThr.setPriority(Thread.MAX_PRIORITY);
-		headlightThr.start();
+		//headlightThr.start();
 		
 		// GPS
 		GPS garmin = new GPS();
@@ -39,7 +39,7 @@ public class Controller {
 		Intelligence brain = new Intelligence(engine, wheel, headlight);
 		Thread brainThr = new Thread(brain);
 		brainThr.setPriority(Thread.MAX_PRIORITY-1);
-		brainThr.start();
+		//brainThr.start();
 		
 		// Debugging - can comment out for production
 		Debugger debug = new Debugger(engine, wheel, headlight, brain, garmin);
