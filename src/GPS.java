@@ -131,12 +131,10 @@ public class GPS implements Runnable {
 				break;
 		}
 		
-		if (cdx >= buf.length-1) throw new Error("First Loop");
-		
 		int rtnVal = 0;
 		
 		for (cdx++; buf[cdx] != '.'; cdx++) {
-			if (cdx >= buf.length-1) throw new Error("Second Loop");
+			if (cdx >= buf.length-1) throw new Error("No Dot!");
 			rtnVal *= 10;
 			rtnVal += buf[cdx] - '0';
 		}
@@ -144,7 +142,7 @@ public class GPS implements Runnable {
 		if (degFlg)
 			rtnVal = ((rtnVal - rtnVal % 100) * 60) / 100 + (rtnVal % 100);
 		for (cdx++; buf[cdx] != ','; cdx++) {
-			if (cdx >= buf.length-1) throw new Error("Last Loop");
+			if (cdx >= buf.length-1) throw new Error("No Last Comma");
 			rtnVal *= 10;
 			rtnVal += buf[cdx] - '0';
 		}
