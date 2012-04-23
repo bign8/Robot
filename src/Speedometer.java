@@ -49,6 +49,8 @@ public class Speedometer {
 			int previousCounts = 0;
 			int power = 0;
 			int rpm = 0;
+			int velocity;
+			int counts;
 			long time = System.currentTimeMillis();
 			while (true) {
 				// Calculate RPM (Revolutions Per Minute)
@@ -75,7 +77,7 @@ public class Speedometer {
 					power = 16;
 				if (power < -16)
 					power = -16;
-				display.print(0, "Power: " + power);
+				display.print(1, "Power: " + power);
 
 				//set power
 		    		motor.setPower(power);
