@@ -61,12 +61,20 @@ public class Speedometer {
 
 				// Read the thumbwheel and scale the value to set the motor power.
 				int velocity = (thumbwheel.sample() - 512) / 31;
-				while (velocity = 5) {
+				while (velocity = 4) {
 					
-					int counts = encoder.getCounts();
+					velocity = (thumbwheel.sample() - 512) / 31;
+					
+					//counts and rpm logic
+					counts = encoder.getCounts();
 					previousCounts = counts;
+					rpm = ((counts - previousCounts) * 600) / 128;
+					display.print(1, "RPM: " + rpm);
 					
+					//governer logic
 					power += velocity - (rpm/16.25);
+					display.print(0, "Power: " + power);
+					
 
 					//limiter
 					if (power > 16) 
@@ -76,9 +84,13 @@ public class Speedometer {
 
 					//set power
 			    		motor.setPower(power);
+			    		
+			    		time += 100;
+					Thread.sleep(time - System.currentTimeMillis());
+					
 				}
-				motor.setPower(power);
-				display.print(0, "Power: " + power);
+				motor.setPower(velocity);
+				display.print(0, "Power: " + velocity);
 
 				// Calculate sleep time so the next iteration starts 1/2 second after the
 				// the previous one.
