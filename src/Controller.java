@@ -9,7 +9,7 @@ public class Controller {
 	
 	public static void main(String args[]) {
 		Speedometer.run(null);
-		
+		/*
 		//Ignition
 		Engine engine = new Engine();
 		Thread engineThr = new Thread(engine);
