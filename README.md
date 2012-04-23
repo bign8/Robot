@@ -6,7 +6,7 @@ This Semester long project was finaly placed on git during the last two weeks fo
 * Jennings
 * Forrest
 * Shae
-* Nates
+* Nate
 
 ##Educational Goals##
 * Embeded systems
