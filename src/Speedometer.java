@@ -64,9 +64,9 @@ public class Speedometer {
 				int velocity = (thumbwheel.sample() - 512) / 31;
 				while (velocity == 3 || velocity == 4) {
 					if (velocity == 3)
-					velocity = (thumbwheel.sample() - 512) / 31;
+						velocity = (thumbwheel.sample() - 512) / 31;
 					else 
-					velocity = -(thumbwheel.sample() - 512) / 31;
+						velocity = -(thumbwheel.sample() - 512) / 31;
 					
 					//counts and rpm logic
 					counts = encoder.getCounts();
