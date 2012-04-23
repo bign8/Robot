@@ -1,4 +1,4 @@
-#CS-4XX : Senior Project#
+#CS-430 : Senior Project#
 
 This Semester long project was finaly placed on git during the last two weeks for better version control and hopefully* more colaboration among the team members
 
