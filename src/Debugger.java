@@ -56,26 +56,20 @@ public class Debugger implements Runnable {
 				
 				// User chooses to debug the class
 				if (startButton.isPressed()){
-					IntelliBrain.setTerminateOnStop(false);
 					
 					// stop executing threads
-					intel.setRunning(false);
-					disp.print(0, "Begin Debug");
-					disp.print(1, "Waiting Death");
-					
-					Thread.sleep(2000);
+					IntelliBrain.setTerminateOnStop(false);
+					setAll(false, "Begin Debug", "Waiting Death");
 					
 					// Chose one of the debugging options
 					switch ( chosenOne ) {
-						case 0: debugEngine(); break;
+						case 0: debugEngine();   break;
+						case 1: debugSteering(); break;
 					}
 					
 					// Starting regular execution
-					disp.print(0, "Debug Complete");
-					disp.print(1, "Resuming Operation");
-					Thread.sleep(2000);
+					setAll(true, "Debug Complete", "Resuming Operation");
 					IntelliBrain.setTerminateOnStop(true);
-					intel.setRunning(true);
 				}
 				
 				// Pause thread execution
@@ -85,7 +79,19 @@ public class Debugger implements Runnable {
 		}
 	}
 	
-	public void debugEngine() {
+	private void setAll(boolean run, String msg1, String msg2) throws Throwable {
+		disp.print(0, msg1);
+		disp.print(1, msg2);
+		
+		intel.setRunning(run);
+		son.setRunning(run);
+		eng.setRunning(run);
+		wheel.setRunning(run);
+		
+		Thread.sleep(2000);
+	}
+	
+	private void debugEngine() {
 		boolean debug = true;
 		long time = System.currentTimeMillis();
 		int power;
@@ -95,17 +101,41 @@ public class Debugger implements Runnable {
 			try {
 				
 				power = (thumbwheel.sample() - 512) / 31;
-				data = eng.toDebugString(new String[2]);
+				eng.setSpeed(power);
 				
+				data = eng.toDebugString(new String[2]);
 				data[0] = "Pos:" + power;
 				disp.print(0, data[0]);
 				disp.print(1, data[1]);
-				eng.setSpeed(power);
 				
 				if (stopButton.isPressed()) debug = false;
 				time += 500;
 				Thread.sleep(time - System.currentTimeMillis());
-			} catch (Throwable t) {t.printStackTrace();}
+			} catch (Throwable t) { t.printStackTrace(); }
+		}
+	}
+	
+	private void debugSteering() {
+		boolean debug = true;
+		int dir = 0;
+		String[] data;
+		
+		long time = System.currentTimeMillis();
+		while (debug) {
+			try {
+				
+				dir = thumbwheel.sample() / 10;
+			    wheel.setDirection(dir);
+			    
+			    data = wheel.toDebugString(new String[2]);
+			    data[0] = "Set:" + dir;
+				disp.print(0, data[0]);
+				disp.print(1, data[1]);
+			    
+			    if (stopButton.isPressed()) debug = false;
+				time += 500;
+				Thread.sleep(time - System.currentTimeMillis());
+			} catch (Throwable e) { e.printStackTrace(); }
 		}
 	}
 }

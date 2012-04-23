@@ -1,8 +1,9 @@
 import com.ridgesoft.intellibrain.IntelliBrain;
 import com.ridgesoft.robotics.Servo;
 
-public class SteeringWheel implements Runnable {
-
+public class SteeringWheel implements Runnable, Debuggable {
+	private boolean running;
+	
 	public final int FULL_LEFT = 0;
 	public final int HALF_LEFT = 25;
 	public final int FULL_RIGHT = 100;
@@ -35,11 +36,21 @@ public class SteeringWheel implements Runnable {
 			
 		} catch (Throwable t) { t.printStackTrace(); }
 	}
-
+	
+	public void setRunning(boolean run) {
+		running = run;
+		setDirection(50);
+	}
+	
 	public void run() {
 		long time = System.currentTimeMillis();
 		while (true) {
 			try {
+				if (!running) {
+					Thread.sleep(2000);
+					continue;
+				}
+				
 				frontWheels.setPosition(fDirection);
 				backWheels.setPosition(bDirection);
 				

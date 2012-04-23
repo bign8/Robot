@@ -3,8 +3,10 @@ import com.ridgesoft.robotics.SonarRangeFinder;
 import com.ridgesoft.robotics.sensors.ParallaxPing;
 import com.ridgesoft.intellibrain.IntelliBrainDigitalIO;
 
-public class Sonar implements Runnable {
+public class Sonar implements Runnable, Debuggable {
 
+	private boolean running;
+	
 	private SonarRangeFinder frontSensor, leftSensor, rightSensor, sideSensor;
 	private int distF = 1, distL = 1, distR = 1, distW = 1, distE = 1;
 	private IntelliBrainDigitalIO relay;
@@ -20,13 +22,20 @@ public class Sonar implements Runnable {
 		relay.set();
 	}
 
+
+	public void setRunning(boolean run) { running = run; }
+	
 	public void run(){ 
+		running = true;
 		int counter = 0;
 		long time = System.currentTimeMillis();
 		
 		while(true){
 			try{
-				
+				if (!running) {
+					Thread.sleep(2000);
+					continue;
+				}
 				// Execute the ping
 				leftSensor.ping();
 				frontSensor.ping();
@@ -72,4 +81,5 @@ public class Sonar implements Runnable {
 		in[1] = "W:" + Integer.toString(distW) + " E:" + Integer.toString(distE);
 		return in;
 	}
+
 }
