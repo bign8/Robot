@@ -48,6 +48,7 @@ public class Speedometer {
 			
 			int previousCounts = 0;
 			int power = 0;
+			int rpm = 0;
 			long time = System.currentTimeMillis();
 			while (true) {
 				// Calculate RPM (Revolutions Per Minute)
@@ -61,7 +62,7 @@ public class Speedometer {
 
 				// Read the thumbwheel and scale the value to set the motor power.
 				int velocity = (thumbwheel.sample() - 512) / 31;
-				while (velocity = 4) {
+				while (velocity == 4) {
 					
 					velocity = (thumbwheel.sample() - 512) / 31;
 					
@@ -78,9 +79,9 @@ public class Speedometer {
 
 					//limiter
 					if (power > 16) 
-					power = 16;
+						power = 16;
 					if (power < -16)
-					power = -16;
+						power = -16;
 
 					//set power
 			    		motor.setPower(power);
