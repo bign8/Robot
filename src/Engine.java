@@ -3,7 +3,7 @@ import com.ridgesoft.intellibrain.IntelliBrainShaftEncoder;
 import com.ridgesoft.robotics.ContinuousRotationServo;
 import com.ridgesoft.robotics.Motor;
 
-public class Engine implements Runnable{
+public class Engine implements Runnable, Debuggable {
 	// Port Reservations
 	private static int ServoOutputPort =  3;
 	private static int AnologueInput1  = 11;
