@@ -48,8 +48,16 @@ public class Engine implements Runnable{
 				power = velocity;
 
 				//Self adjusting power, covers a quantized 10rpm per 1 power map.
-				//Currently functions under the assumption that rpm goes from -160 to 160.
-				power += power - (rpm/10);
+				//Currently functions under the assumption that rpm goes from -260 to 260.
+				power += power - (rpm/16.25);
+				
+				//limiter
+				if (power > 16) 
+				power = 16;
+				if (power < -16)
+				power = -16;
+				
+				//set power
 			    	motor.setPower(power);
 
 				time += 100;
