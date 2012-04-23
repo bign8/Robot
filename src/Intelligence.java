@@ -1,4 +1,4 @@
-public class Intelligence implements Runnable{
+public class Intelligence implements Runnable, Debuggable {
 	
 	private boolean running;
 	
