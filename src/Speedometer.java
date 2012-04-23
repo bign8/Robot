@@ -37,6 +37,11 @@ public class Speedometer {
 			// in a ContinuousRotationServo object.
 			Motor motor = new ContinuousRotationServo(IntelliBrain.getServo(3), true);
 
+			motor.setPower(1);
+			motor.setPower(0);
+			motor.setPower(-1);
+			Thread.sleep(2000);
+			
 			// Get a shaft encoder object and initialize it with the two digital inputs it uses.
 			IntelliBrainShaftEncoder encoder = IntelliBrain.getShaftEncoder(1);
 			encoder.initialize(IntelliBrain.getDigitalIO(11), IntelliBrain.getDigitalIO(10));
