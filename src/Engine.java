@@ -43,7 +43,7 @@ public class Engine implements Runnable{
 		while (true) {
 			try {
 				counts = encoder.getCounts();
-				rpm = ((counts - previousCounts) * 120) / 128;
+				rpm = ((counts - previousCounts) * 60) / 128;
 				previousCounts = counts;
 				
 				// TODO: Governer Logic
@@ -53,7 +53,7 @@ public class Engine implements Runnable{
 				power = velocity;
 				
 				//Self adjusting power, covers a quantized 10rpm per 1 power map.
-				power = power + (power - (rpm / 10));
+				power += power - rpm;
 			    	motor.setPower(velocity);
 				
 				time += 100;
