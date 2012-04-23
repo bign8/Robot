@@ -83,7 +83,7 @@ public class Speedometer {
 		    		time += 100;
 				Thread.sleep(time - System.currentTimeMillis());
 					
-				}
+			
 			}
 		}
 		catch (Throwable t) {
