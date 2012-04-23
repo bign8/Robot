@@ -90,6 +90,15 @@ public class Debugger implements Runnable {
 	}
 	
 	public void debugEngine() {
-		
+		boolean debug = true;
+		long time = System.currentTimeMillis();
+		while (debug) {
+			try {
+				
+				if (stopButton.isPressed()) debug = false;
+				time += 500;
+				Thread.sleep(time - System.currentTimeMillis());
+			} catch (Throwable t) {t.printStackTrace();}
+		}
 	}
 }
