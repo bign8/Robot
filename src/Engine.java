@@ -40,20 +40,21 @@ public class Engine implements Runnable{
 		
 		while (true) {
 			try {
-				counts = encoder.getCounts();
-				rpm = ((counts - previousCounts) * 120) / 128;
+				//600 count intervals are taken per minute.
+				//128 counts per revolution.
+				rpm = ((counts - previousCounts) * 600) / 128;
 				previousCounts = counts;
-				
-				// TODO: Governer Logic
-				// Hint: choose acceptable speed range for each power-level
-				//power +=  (velocity - rpm) / 6;
-				
+
 				power = velocity;
-				power += power - rpm/10.;
-			    motor.setPower(velocity);
-				
+
+				//Self adjusting power, covers a quantized 10rpm per 1 power map.
+				//Currently functions under the assumption that rpm goes from -160 to 160.
+				power += power - (rpm/10);
+			    	motor.setPower(power);
+
 				time += 100;
 				Thread.sleep(time - System.currentTimeMillis());
+				
 			} catch (Throwable t) { t.printStackTrace(); }
 		}
 		
