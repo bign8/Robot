@@ -47,6 +47,7 @@ public class Speedometer {
 			encoder.initialize(IntelliBrain.getDigitalIO(11), IntelliBrain.getDigitalIO(10));
 			
 			int previousCounts = 0;
+			int power = 0;
 			long time = System.currentTimeMillis();
 			while (true) {
 				// Calculate RPM (Revolutions Per Minute)
@@ -59,7 +60,23 @@ public class Speedometer {
 				previousCounts = counts;
 
 				// Read the thumbwheel and scale the value to set the motor power.
-				int power = (thumbwheel.sample() - 512) / 31;
+				int velocity = (thumbwheel.sample() - 512) / 31;
+				while (velocity = 5) {
+					
+					int counts = encoder.getCounts();
+					previousCounts = counts;
+					
+					power += velocity - (rpm/16.25);
+
+					//limiter
+					if (power > 16) 
+					power = 16;
+					if (power < -16)
+					power = -16;
+
+					//set power
+			    		motor.setPower(power);
+				}
 				motor.setPower(power);
 				display.print(0, "Power: " + power);
 
