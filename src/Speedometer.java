@@ -25,7 +25,7 @@ import com.ridgesoft.io.Display;
  *			- 1 injection molded wheel
  */
 public class Speedometer {
-    public static void main(String args[]) {
+    public static void run(String args[]) {
 		try {
 			System.out.println("WheelWatcher WW-01");
 
@@ -35,7 +35,7 @@ public class Speedometer {
 
 			// Get the servo object and give it a Motor interface by encapsulating it
 			// in a ContinuousRotationServo object.
-			Motor motor = new ContinuousRotationServo(IntelliBrain.getServo(2), true);
+			Motor motor = new ContinuousRotationServo(IntelliBrain.getServo(3), true);
 
 			// Get a shaft encoder object and initialize it with the two digital inputs it uses.
 			IntelliBrainShaftEncoder encoder = IntelliBrain.getShaftEncoder(1);
@@ -50,7 +50,7 @@ public class Speedometer {
 				// iterationsPerMinute = 120 - two loops per second
 				// countsPerRevolution = 128 - fixed by design of sensor/codewheel
 				int counts = encoder.getCounts();
-				display.print(1, "RPM: " + ((counts - previousCounts) * 600) / 128);
+				display.print(1, "RPM: " + ((counts - previousCounts) * 120) / 128);
 				previousCounts = counts;
 
 				// Read the thumbwheel and scale the value to set the motor power.
@@ -60,7 +60,7 @@ public class Speedometer {
 
 				// Calculate sleep time so the next iteration starts 1/2 second after the
 				// the previous one.
-				time += 100;
+				time += 500;
 				Thread.sleep(time - System.currentTimeMillis());
 			}
 		}
