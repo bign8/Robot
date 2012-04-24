@@ -40,7 +40,8 @@ public class Intelligence implements Runnable, Debuggable {
 			while (true) {
 				
 				if (!running) {
-					Thread.sleep(2000);
+					time += 2000;
+					Thread.sleep(time - System.currentTimeMillis());
 					continue;
 				}
 				
