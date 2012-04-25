@@ -43,7 +43,7 @@ public class Engine implements Runnable, Debuggable {
 	
 	public void run(){
 		running = true;
-		int previousCounts = 0, counts = 0;
+		int previousCounts = 0, counts = 0, counter = 0;
 		long time = System.currentTimeMillis();
 		
 		while (true) {
@@ -55,24 +55,20 @@ public class Engine implements Runnable, Debuggable {
 					continue;
 				}
 				
+				if(counter > 10)
+					counter = 0;
+				
 				//600 count intervals are taken per minute.
 				//128 counts per revolution.
 				counts = encoder.getCounts();
-
 				rpm = ((counts - previousCounts) * 600) / 128;
 				previousCounts = counts;
-				power = velocity;
 
 				
 				//Self adjusting power, covers a quantized 10rpm per 1 power map.
 				//Currently functions under the assumption that rpm goes from -160 to 160.
-				power += power - (rpm/10);
-			    	motor.setPower(power);
-
-
-				//Self adjusting power, covers a quantized 10rpm per 1 power map.
-				//Currently functions under the assumption that rpm goes from -260 to 260.
-				power += power - (rpm/16.25);
+				if (counter == 10)
+					power += velocity+ (rpm/32);
 
 				
 				//limiter
@@ -81,14 +77,14 @@ public class Engine implements Runnable, Debuggable {
 				if (power < -16)
 				power = -16;
 				
+				motor.setPower(power);
 				// FOREST MAGIC GOES HERE
 				
-				//set power
-			    motor.setPower(velocity);
 			    
 			    // Pause thread execution
 				time += 100;
 				Thread.sleep(time - System.currentTimeMillis());
+				counter++;
 				
 			} catch (Throwable t) { t.printStackTrace(); }
 		}
