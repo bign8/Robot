@@ -6,7 +6,7 @@ This Semester long project was finaly placed on git during the last two weeks fo
 * Jennings
 * Forrest
 * Shae
-* Nate[1]
+* [Nate] [1]
 
 ##Educational Goals##
 * Embeded systems
@@ -26,4 +26,13 @@ This micro controler was mounted on a modified [Axial](http://www.axialracing.co
 * 1 Sensor for rear straight driving (yet to be implemented)
 
 
-[1]: Can be awesome
+###Regular Execution (_coding samples_)
+```java
+public static void main(String[] args) {
+  // Everything ends here!
+  Machine.destroy(everything, now);
+}
+```
+
+
+[1]: http://nathanjkwoods.com "Nathan's Personal Website"
