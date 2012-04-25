@@ -65,7 +65,7 @@ public class Debugger implements Runnable {
 					
 					// stop executing threads
 					IntelliBrain.setTerminateOnStop(false);
-					setAll(false, "Begin Debug", "Waiting Death");
+					setAll(false, "Begin Debug", "Waiting Death", chosenOne);
 					
 					// Chose one of the debugging options
 					switch ( chosenOne ) {
@@ -76,7 +76,7 @@ public class Debugger implements Runnable {
 					}
 					
 					// Starting regular execution
-					setAll(true, "Debug Complete", "Resuming Operation");
+					setAll(true, "Debug Complete", "Resuming Operation", chosenOne);
 					IntelliBrain.setTerminateOnStop(true);
 				}
 				
@@ -89,14 +89,14 @@ public class Debugger implements Runnable {
 		}
 	}
 	
-	private void setAll(boolean run, String msg1, String msg2) throws Throwable {
+	private void setAll(boolean run, String msg1, String msg2, int item) throws Throwable {
 		disp.print(0, msg1);
 		disp.print(1, msg2);
 		
-		intel.setRunning(run);
-		son.setRunning(run);
-		eng.setRunning(run);
-		wheel.setRunning(run);
+		if (item != 0) eng.setRunning(run); else eng.setSpeed(0);
+		if (item != 1) wheel.setRunning(run); else wheel.setDirection(wheel.CENTERED);
+		if (item != 2) son.setRunning(run);
+		if (item != 3) intel.setRunning(run);
 		
 		Thread.sleep(2000);
 	}
