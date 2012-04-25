@@ -32,15 +32,19 @@
 \setlength{\headheight}{15pt} \pagestyle{fancyplain}\lhead{\small{\textit{SENIOR PROJECT 2012}}}
 \rhead{\fancyplain{}{\small{\textit{\leftmark}}}}\cfoot{\small{\thepage}}
 \section{Introduction}
-After procuring robots from MSU's robotic department, we familiarized ourselves with the IntelliBrain2 Micro Controller from Ridgesoft:
+\subsection{Overview}
+After procuring robots from MSU's robotic department, we familiarized ourselves with the IntelliBrain2 Micro Controller from Ridgesoft mounted atop the Ridgesoft Deluxe Educational Robot:\\
 \begin{figure}[h]
 \centerline{\includegraphics[scale=.5]{img/smallBot}}
 \caption{IntelliBrain2 Micro Controller on the standard Ridgesoft base}
+\end{figure}\\
+This small robot allowed us to learn the basics before moving onto a larger frame.  This robot ran off two independent continuous rotation servos (ran each wheel independently), a range finding sensor, and two light sensors pointed downwards to follow a line.  Next, we moved onto a larger, faster robot mounted on an Axial Remote Control Rock Crawling car base:
+\begin{figure}[h]
+\centerline{\includegraphics{img/bigBot1}}
+\caption{Axial RC car mounted with IntelliBrain2 Controller}
 \end{figure}
 
-
-This micro controler was mounted on a modified Axial RC-car base (Unsure which specific model). This base was modified to have separate front and rear wheel steering.
-
+We modified the base to include 4 wheel steering.  We mounted 5 
 \clearpage
 \section{Development Environment}
 The IntelliBrain2 can be programmed in Java.  A specific RoboJDE library is required at compile to interface with the board.  There are numerous options to turn Java code into running code on the robot that we will explain here.
