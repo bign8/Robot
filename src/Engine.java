@@ -58,23 +58,26 @@ public class Engine implements Runnable, Debuggable {
 					continue;
 				}
 				
-				if(counter > 10)
+				if(counter > 3)
 					counter = 0;
 				
 				//600 count intervals are taken per minute.
 				//128 counts per revolution.
 				counts = encoder.getCounts();
 				rpm = ((counts - previousCounts) * 600) / 128;
-				previousCounts = counts;
-
-
-				//if (rpm > )
+				previousCounts = counts;					
 
 				if (!newMove) {
 					//Self adjusting power, covers a quantized 10rpm per 1 power map.
 					//Currently functions under the assumption that rpm goes from -160 to 160.
-					if (counter == 10)
-						power += velocity + (rpm/32);
+					if (counter == 3) {
+						if (velcocity == 0) 
+							power = velocity;
+						else if (rpm > (arrayOfSpeeds[velocity + 3] + 40)
+							power++;
+						else if (rpm < arrayOfSpeeds[velocity + 3])
+							power--;
+					}
 				} else {
 					moveCounter++;
 					if (moveCounter > 9) newMove = false; // one second at new speed
