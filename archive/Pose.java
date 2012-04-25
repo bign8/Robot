@@ -1,4 +1,4 @@
-/*public class Pose { // should this be a singleton?
+public class Pose { // should this be a singleton?
 	public float x, y, t;
 	public Pose() {
 		this.setPose(0f, 0f, 0f);
@@ -16,4 +16,4 @@
 		this.y += y
 		this.t += t
 	}
-}//*/
+}

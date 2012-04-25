@@ -8,7 +8,7 @@
  * This class forms the link between the data class and many of the operation
  * classes that rely on that data.
  */
-/*
+//*
 public class ShaftEncoderTestDriver {
 
 	public static void main(String args[]) {
@@ -27,4 +27,4 @@ public class ShaftEncoderTestDriver {
 		}
 	}
 }
-*/
+//*/

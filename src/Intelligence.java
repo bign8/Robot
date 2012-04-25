@@ -1,4 +1,6 @@
-public class Intelligence implements Runnable{
+public class Intelligence implements Runnable, Debuggable {
+	
+	private boolean running;
 	
 	private Engine motor;
 	private SteeringWheel steer;
@@ -18,8 +20,11 @@ public class Intelligence implements Runnable{
 		steer = w;
 		eyes = s;
 	}
-
+	
+	public void setRunning( boolean run ) { running = run; }
+	
 	public void run() {
+		running = true;
 		
 		// TODO : Another thing to do is remember the last 200 commands or so
 		// This would help  if the robot is stuck with no-motion for more than
@@ -33,6 +38,12 @@ public class Intelligence implements Runnable{
 		
 		try {
 			while (true) {
+				
+				if (!running) {
+					time += 2000;
+					Thread.sleep(time - System.currentTimeMillis());
+					continue;
+				}
 				
 				sum0 = 0; sum1 = 0; sum2 = 0;
 				

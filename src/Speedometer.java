@@ -49,6 +49,8 @@ public class Speedometer {
 			int previousCounts = 0;
 			int power = 0;
 			int rpm = 0;
+			int velocity;
+			int counts;
 			long time = System.currentTimeMillis();
 			while (true) {
 				// Calculate RPM (Revolutions Per Minute)
@@ -56,48 +58,34 @@ public class Speedometer {
 				// countsThisIteration - current encoder counts minus previous count
 				// iterationsPerMinute = 600 - ten loops per second
 				// countsPerRevolution = 128 - fixed by design of sensor/codewheel
-				int counts = encoder.getCounts();
-				display.print(1, "RPM: " + ((counts - previousCounts) * 600) / 128);
+			
+				
+				//velocity = (thumbwheel.sample() - 512) / 31;
+				velocity = 4;
+				
+				//counts and rpm logic
+				counts = encoder.getCounts();
 				previousCounts = counts;
+				rpm = ((counts - previousCounts) * 600) / 128;
+				display.print(0, "RPM: " + rpm);
+				
+				//governer logic
+				power += (velocity + (rpm/16.25));
 
-				// Read the thumbwheel and scale the value to set the motor power.
-				int velocity = (thumbwheel.sample() - 512) / 31;
-				while (velocity == 3 || velocity == 4) {
-					if (velocity == 3)
-						velocity = (thumbwheel.sample() - 512) / 31;
-					else 
-						velocity = -(thumbwheel.sample() - 512) / 31;
-					
-					//counts and rpm logic
-					counts = encoder.getCounts();
-					previousCounts = counts;
-					rpm = ((counts - previousCounts) * 600) / 128;
-					display.print(0, "RPM: " + rpm);
-					
-					//governer logic
-					power += (velocity - (rpm/16.25));
+				//limiter
+				if (power > 16) 
+					power = 16;
+				if (power < -16)
+					power = -16;
+				display.print(1, "Power: " + power);
 
-					//limiter
-					if (power > 16) 
-						power = 16;
-					if (power < -16)
-						power = -16;
-					display.print(0, "Power: " + power);
-
-					//set power
-			    		motor.setPower(power);
-			    		
-			    		time += 100;
-					Thread.sleep(time - System.currentTimeMillis());
-					
-				}
-				motor.setPower(velocity);
-				display.print(0, "Power: " + velocity);
-
-				// Calculate sleep time so the next iteration starts 1/2 second after the
-				// the previous one.
-				time += 100;
+				//set power
+		    		motor.setPower(power);
+		    		
+		    		time += 100;
 				Thread.sleep(time - System.currentTimeMillis());
+					
+			
 			}
 		}
 		catch (Throwable t) {
