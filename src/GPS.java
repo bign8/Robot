@@ -78,9 +78,9 @@ public class GPS implements Runnable {
 
 					// Begin Parsing
 					if (!stillReading) { // parse buffer for da magic
-						System.out.println(new String(parseBuffer));
-						String[] data = toDebugString( new String[2] );
-						System.out.println(data[0] + "\n" + data[1]);
+						//System.out.println(new String(parseBuffer));
+						//String[] data = toDebugString( new String[2] );
+						//System.out.println(data[0] + "\n" + data[1]);
 						
 						try {
 							synchronized (latLon) {
