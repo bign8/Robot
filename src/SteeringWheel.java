@@ -1,91 +1,101 @@
-import com.ridgesoft.intellibrain.IntelliBrain;
-import com.ridgesoft.robotics.Servo;
+/*
+ * IntelliBrainWW01
+ *
+ * Copyright 2004, 2005 by RidgeSoft, LLC., PO Box 482, Pleasanton, CA  94566, U.S.A.
+ * www.ridgesoft.com
+ *
+ * RidgeSoft grants you the right to use, modify, make derivative works and
+ * redistribute this source file provided you do not remove this copyright notice.
+ */
 
-public class SteeringWheel implements Runnable, Debuggable {
-	private boolean running;
-	
-	public final int FULL_LEFT = 0;
-	public final int HALF_LEFT = 25;
-	public final int FULL_RIGHT = 100;
-	public final int HALF_RIGHT = 75;
-	public final int CENTERED = 50;
-	
-	private Servo frontWheels;
-	private Servo backWheels;
-	private int fDirection = CENTERED, bDirection = CENTERED;
-	
-	public SteeringWheel() {
-		frontWheels = IntelliBrain.getServo(1);
-		backWheels = IntelliBrain.getServo(2);
+import com.ridgesoft.intellibrain.*;
+import com.ridgesoft.robotics.*;
+import com.ridgesoft.io.Display;
+
+/**
+ * This class provides an example of using the Nubotics WheelWatcher WW-01 sensor
+ * with the IntelliBrain robotics controller.  The example allows the user to set the
+ * servo power using the IntelliBrain's thumbwheel input.  The current power level and
+ * the wheel speed, in RPM, are displayed on the LCD display.
+ *
+ * This example requires:
+ *			- IntelliBrain controller main board
+ *			- 1 WheelWatcher WW-01 sensor (attached to digital I/O ports 9 (yellow) and 10 (blue))
+ *			- 1 Servo motor modified for continuous rotation (attached to servo port 2)
+ *			- 1 injection molded wheel
+ */
+public class Speedometer {
+    public static void run(String args[]) {
 		try {
-			
-			frontWheels.setPosition(FULL_RIGHT);
-			backWheels.setPosition(FULL_RIGHT);
-			
-			Thread.sleep(500);
-			
-			frontWheels.setPosition(FULL_LEFT);
-			backWheels.setPosition(FULL_LEFT);
-			
-			Thread.sleep(500);
-			
-			frontWheels.setPosition(CENTERED);
-			backWheels.setPosition(CENTERED);
-			
-			Thread.sleep(500);
-			
-		} catch (Throwable t) { t.printStackTrace(); }
-	}
-	
-	public void setRunning(boolean run) {
-		running = run;
-		setDirection(50);
-	}
-	
-	public void run() {
-		long time = System.currentTimeMillis();
-		while (true) {
-			try {
-				if (!running) {
-					Thread.sleep(2000);
-					continue;
-				}
-				
-				frontWheels.setPosition(fDirection);
-				backWheels.setPosition(bDirection);
-				
-				// TODO auto correct rear steering straight based on back sensor
-			
-				time += 500;
+			System.out.println("WheelWatcher WW-01");
+
+			// Get the user interface objects
+			Display display = IntelliBrain.getLcdDisplay();
+			AnalogInput thumbwheel = IntelliBrain.getThumbWheel();
+
+			// Get the servo object and give it a Motor interface by encapsulating it
+			// in a ContinuousRotationServo object.
+			Motor motor = new ContinuousRotationServo(IntelliBrain.getServo(3), true);
+
+			motor.setPower(1);
+			motor.setPower(0);
+			motor.setPower(-1);
+			Thread.sleep(2000);
+
+			// Get a shaft encoder object and initialize it with the two digital inputs it uses.
+			IntelliBrainShaftEncoder encoder = IntelliBrain.getShaftEncoder(1);
+			encoder.initialize(IntelliBrain.getDigitalIO(11), IntelliBrain.getDigitalIO(10));
+
+			int previousCounts = 0;
+			int power = 0;
+			int rpm = 0;
+			int velocity;
+			int counts;
+			int counter = 0;
+			long time = System.currentTimeMillis();
+			while (true) {
+				// Calculate RPM (Revolutions Per Minute)
+				// RPM = countsThisIteration * iterationsPerMinute / countsPerRevolution
+				// countsThisIteration - current encoder counts minus previous count
+				// iterationsPerMinute = 600 - ten loops per second
+				// countsPerRevolution = 128 - fixed by design of sensor/codewheel
+
+				//basic counter logic 
+				if (counter > 10)
+					counter = 0;
+				//velocity = (thumbwheel.sample() - 512) / 31;
+				velocity = 4;
+
+				//counts and rpm logic
+				counts = encoder.getCounts();
+				rpm = ((counts - previousCounts) * 600) / 128;
+				previousCounts = counts;
+				display.print(0, "RPM: " + rpm);
+
+
+				//governer logic
+				if (counter == 10)
+					power += (velocity - (rpm/16.25));
+
+				//limiter
+				if (power > 16) 
+					power = 16;
+				if (power < -16)
+					power = -16;
+				display.print(1, "Power: " + power);
+
+				//set power
+		    		motor.setPower(power);
+
+		    		time += 100;
 				Thread.sleep(time - System.currentTimeMillis());
-			} catch (Throwable e) { e.printStackTrace(); }
+				counter++;
+
+			}
 		}
-	}
-	
-	public void setDirection(int direction){
-		frontWheels.setPosition(direction);
-		backWheels.setPosition(100-direction);
-		fDirection = direction;
-		bDirection = direction;
-	}
-	
-	public void setFrontWheels(int direction) {
-		frontWheels.setPosition(direction);
-		fDirection = direction;
-	}
-	
-	public void setBackWheels(int direction) {
-		direction = 100 - direction;
-		backWheels.setPosition(direction);
-		bDirection = direction;
-	}
-	
-	public int getFrontDirection() { return fDirection; }
-	public int getBackDirection() { return bDirection; }
-	
-	public String[] toDebugString(String in[]) {
-		in[0] = "Steering Debug";
-		in[1] = "Fro:" + Integer.toString(fDirection) + " Bak:" + Integer.toString(bDirection);
-		return in;
-	}
+		catch (Throwable t) {
+			// Display a stack trace if an exception occurs.
+			t.printStackTrace();
+		}
+    }
 }
