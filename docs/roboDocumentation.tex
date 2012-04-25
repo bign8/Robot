@@ -32,7 +32,14 @@
 \setlength{\headheight}{15pt} \pagestyle{fancyplain}\lhead{\small{\textit{SENIOR PROJECT 2012}}}
 \rhead{\fancyplain{}{\small{\textit{\leftmark}}}}\cfoot{\small{\thepage}}
 \section{Introduction}
---Discuss here what the documentation is about and how to use it.
+After procuring robots from MSU's robotic department, we familiarized ourselves with the IntelliBrain2 Micro Controller from Ridgesoft:
+\begin{figure}[h]
+\centerline{\includegraphics[scale=.5]{img/smallBot}}
+\caption{IntelliBrain2 Micro Controller on the standard Ridgesoft base}
+\end{figure}
+
+
+This micro controler was mounted on a modified Axial RC-car base (Unsure which specific model). This base was modified to have separate front and rear wheel steering.
 
 \clearpage
 \section{Development Environment}
@@ -136,9 +143,13 @@ There are explicit instructions for setting up an eclipse external tool in the r
 This tool configuration differs from the suggested configuration with static references for convenience.  Note that the Working Directory references the bin directory, where Eclipse puts the compiled class files.  The name of the class with the function, $main$ in it is $Controller$.
 
 \subsection{Source Version Control}
-The importance of a steadfast source version control method should not be over looked; unfortunately, we did so for months until turning to git and github.com.  We recommend to spend the time in the beginning familiarizing yourself with the processes of branching, forking, and merging with the github interface.  An open source utility, EGit can be installed through the Eclipse market place so that you can integrate Eclipse with a github account.
+The importance of a steadfast source version control method should not be over looked; unfortunately, we did so for months until turning to git and github.com.  We recommend to spend the time in the beginning familiarizing yourself with the processes of branching, forking, and merging with the github interface.  
 
-\subsubsection*{SVC Anecdote}
+We found an open source utility, EGit installed through the Eclipse market place, that allowed us to integrate the Eclipse environment with github.  It should be known and user be warned that github integration with Eclipse is very powerful and will overwrite the local workspace, so one must be comfortable with the github commands and Egit interface before fetching or pushing from the remote repository.
+
+Originally, we used Dropbox, which worked as a great backup tool at the end of the day, but hard for real-time development.  This is because Dropbox is not true version control software.
+
+\subsubsection*{SVC Anecdote on Dropbox}
 While Dropbox is a simple, convenient, and magical application in today's computing, it is not a substitute for source version control.  We initially used Dropbox to sync files across all of our computers for team development.  The problem here is that changes propagate immediately.  Backups are kept in the depths of Dropbox's servers, but are tedious to scan through and recover.  However, the real kicker occurs when Dropbox meets DeepFreeze, the Enterprise software that Carroll uses to fight malicious intentions.  If Dropbox is installed on a user's profile, it will by default sync all files to a folder on the local hard drive.  When the computer restarts, changes to the $C$ drive are erased and Dropbox is fooled into believing the user deleted all files in their Dropbox directory.  This change is then propagated to the rest of the team, so come Monday morning, all code is erased across every team member's computer.  \textit{Thanks, Forrest}.
 
 \clearpage
