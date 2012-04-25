@@ -36,20 +36,20 @@
 
 \clearpage
 \section{Development Environment}
-The IntelliBrain2 can be programmed in Java.  A specific RoboJDE library is required at compile to interface with the board.  There are numerous options to turn Java code into running code on the robot, we will explain them here.
+The IntelliBrain2 can be programmed in Java.  A specific RoboJDE library is required at compile to interface with the board.  There are numerous options to turn Java code into running code on the robot that we will explain here.
 \subsection{Requirements}
 First, download the development software from the Ridgesoft Website:\\
 {\color{blue}\centerline{http://ridgesoft.com/robojde/robojde.htm}}\\
 The software, API, required libraries, and physical wiring diagrams can be found on this website.
 
-There is an included development application, \textit{RoboJDE}, that uses RoboJDE project files $(.rjp)$ to program the robot.  This editor is great for getting started.  The software comes with many example files and as long as the host computer has a Serial Port (We used an OptiPlex GX620), then there is no additional software required to get the first programs loaded to the robot.
+There is an included development application, \textit{RoboJDE}, that uses RoboJDE project files $(.rjp)$ to program the robot.  This editor is great for getting started, but is quickly outgrown.  The software comes with many example files and as long as the host computer has a Serial Port (We used an OptiPlex GX620), then there is no additional software required to get the first programs loaded to the robot.
 
-One will quickly outgrow this environment for programming because it is all plain text with no syntax coloring or error detection.  We found Eclipse to be the best editor because it can be configured to automatically compile to the robot using the rsload script.
+This environment, however, is all plain text with no syntax coloring or error detection.  Moreover, We found Eclipse to be the best editor because it can be configured to automatically compile to the robot using the rsload script.
 
 \subsection{RSLoad Script}
 Included in downloads for all platforms is a script called rsload.  rsload is a command line utility for loading code to the robot.  The best documentation on it can be found here:\\
 {\color{blue}\centerline{http://ridgesoft.com/robojde/2.0/docs/RoboJDEGuide.pdf}}
-Some important arguments to know are:
+Some important arguments to know for rsload are:
 \begin{description}
 
 \item[-port] Specifies the port the robot is connected to, typically COM1 on Windows or /dev/ttys0 on Linux, but if using a USB adapter, this could be /dev/tty.usbserial or COM5.  Understanding particular drivers and the OS is important here.
@@ -65,7 +65,7 @@ rsload -bank Flash -port /dev/tty.usbserial -run Controller
 This command will load the Controller class to the robot over the USB to Serial adapter.  When load is complete, it will run the program.  It should be noted that in this example, Controller.class is located in the same directory as rsload.
 
 \subsection{Individual Load Scripts}
-For greater compatability, we wrote a customizable load scirpt that would compile and then load a specific file, given the file path and the name of the file containing the function, $main$.
+For greater compatibility, we wrote a customizable load script that would compile and then load a specific file, given the file path and the name of the file containing the function, $main$.
 \small{\begin{verbatim}
 #Instructions:
 #Update both filePath and fileName variables to represent where the files are.
