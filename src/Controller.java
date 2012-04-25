@@ -6,20 +6,23 @@
  */
 
 public class Controller {
-	
+
 	public static void main(String args[]) {
-		
+		Speedometer.run(null);
+		/*
 		//Ignition
 		Engine engine = new Engine();
 		Thread engineThr = new Thread(engine);
 		engineThr.setPriority(Thread.MAX_PRIORITY-2);
 		engineThr.start();
+		//starter(new Thread( new Tester(engine) ), Thread.MAX_PRIORITY); // uncomment engine tester
 		
 		// Steering wheel
 		SteeringWheel wheel = new SteeringWheel();
 		Thread wheelThr = new Thread(wheel);
 		wheelThr.setPriority(Thread.MAX_PRIORITY-3);
 		wheelThr.start();
+		//starter(new Thread( new Tester(wheel) ), Thread.MAX_PRIORITY); // uncomment wheel tester
 		
 		// Headlights
 		Sonar headlight = new Sonar();
@@ -40,9 +43,15 @@ public class Controller {
 		brainThr.start();
 		
 		// Debugging - can comment out for production
-		Debugger debug = new Debugger(engine, wheel, headlight, brain, garmin);
+		Debugger debug = new Debugger(engine, wheel, headlight, brain, garmin, brainThr);
 		Thread debugThr = new Thread(debug);
 		debugThr.setPriority(Thread.MIN_PRIORITY);
 		debugThr.start();
+		//*/
+	}
+
+	public static void starter(Thread x, int priority) { // do not use for anything but the tester
+		x.setPriority(priority);
+		x.start();
 	}
 }
