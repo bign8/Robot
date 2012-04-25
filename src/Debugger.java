@@ -1,5 +1,6 @@
 import com.ridgesoft.intellibrain.IntelliBrain;
 import com.ridgesoft.io.Display;
+import com.ridgesoft.io.Speaker;
 import com.ridgesoft.robotics.AnalogInput;
 import com.ridgesoft.robotics.PushButton;
 
@@ -16,6 +17,7 @@ public class Debugger implements Runnable {
 	private AnalogInput thumbwheel;
 	private PushButton startButton;
 	private PushButton stopButton;
+	public Speaker buzzer;
 	
 	public Debugger(Engine e, SteeringWheel w, Sonar s, Intelligence i, GPS g) {
 		eng = e;
@@ -28,18 +30,22 @@ public class Debugger implements Runnable {
 		thumbwheel = IntelliBrain.getThumbWheel();
 		startButton = IntelliBrain.getStartButton();
 		stopButton = IntelliBrain.getStopButton();
+		buzzer = IntelliBrain.getBuzzer();
 	}
 
 	public void run() {
 		String[] data = null, nope = {"No Debug", "Nothing to show"};
 		boolean showingNothing = false;
-		int chosenOne = 0;
+		int chosenOne = 0, lastOne = 0;
 		
 		long time = System.currentTimeMillis();
 		while (true) {
 			try {
 				// main debug logic
 				chosenOne = (int) (thumbwheel.sample() / 102.4);
+				
+				if (chosenOne != lastOne) buzzer.play(500, 50);
+				
 				switch ( chosenOne ) {
 					case 0:  data = eng  .toDebugString(new String[2]); showingNothing = false; break;
 					case 1:  data = wheel.toDebugString(new String[2]); showingNothing = false; break;
@@ -65,12 +71,16 @@ public class Debugger implements Runnable {
 					switch ( chosenOne ) {
 						case 0: debugEngine();   break;
 						case 1: debugSteering(); break;
+						// ... 
+						case 4: debugGPS();      break;
 					}
 					
 					// Starting regular execution
 					setAll(true, "Debug Complete", "Resuming Operation");
 					IntelliBrain.setTerminateOnStop(true);
 				}
+				
+				lastOne = chosenOne;
 				
 				// Pause thread execution
 				time += 1000;
@@ -129,6 +139,25 @@ public class Debugger implements Runnable {
 			    
 			    data = wheel.toDebugString(new String[2]);
 			    data[0] = "Set:" + dir;
+				disp.print(0, data[0]);
+				disp.print(1, data[1]);
+			    
+			    if (stopButton.isPressed()) debug = false;
+				time += 500;
+				Thread.sleep(time - System.currentTimeMillis());
+			} catch (Throwable e) { e.printStackTrace(); }
+		}
+	}
+	
+	private void debugGPS() {
+		boolean debug = true;
+		String[] data;
+		
+		long time = System.currentTimeMillis();
+		while (debug) {
+			try {
+			    
+			    data = gps.toDebugString(new String[2]);
 				disp.print(0, data[0]);
 				disp.print(1, data[1]);
 			    
