@@ -1,4 +1,4 @@
-public class Intelligence implements Runnable{
+public class Intelligence implements Runnable, Debuggable {
 	
 	private boolean running;
 	
@@ -21,7 +21,7 @@ public class Intelligence implements Runnable{
 		eyes = s;
 	}
 	
-	public void stop() { running = false; }
+	public void setRunning( boolean run ) { running = run; }
 	
 	public void run() {
 		running = true;
@@ -37,7 +37,13 @@ public class Intelligence implements Runnable{
 		long time = System.currentTimeMillis();
 		
 		try {
-			while (running) {
+			while (true) {
+				
+				if (!running) {
+					time += 2000;
+					Thread.sleep(time - System.currentTimeMillis());
+					continue;
+				}
 				
 				sum0 = 0; sum1 = 0; sum2 = 0;
 				

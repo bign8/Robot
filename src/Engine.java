@@ -3,7 +3,9 @@ import com.ridgesoft.intellibrain.IntelliBrainShaftEncoder;
 import com.ridgesoft.robotics.ContinuousRotationServo;
 import com.ridgesoft.robotics.Motor;
 
-public class Engine implements Runnable{
+public class Engine implements Runnable, Debuggable {
+	private boolean running;
+	
 	// Port Reservations
 	private static int ServoOutputPort =  3;
 	private static int AnologueInput1  = 11;
@@ -34,14 +36,27 @@ public class Engine implements Runnable{
 		try { Thread.sleep(2000); } catch (Throwable t) { t.printStackTrace(); }
 	}
 	
+	public void setRunning(boolean run) {
+		running = run;
+		setSpeed(0);
+	}
+	
 	public void run(){
+		running = true;
 		int previousCounts = 0, counts = 0;
 		long time = System.currentTimeMillis();
 		
 		while (true) {
 			try {
+				if (!running) {
+					time += 2000;
+					Thread.sleep(time - System.currentTimeMillis());
+					continue;
+				}
+				
 				//600 count intervals are taken per minute.
 				//128 counts per revolution.
+				counts = encoder.getCounts();
 				rpm = ((counts - previousCounts) * 600) / 128;
 				previousCounts = counts;
 
@@ -57,9 +72,12 @@ public class Engine implements Runnable{
 				if (power < -16)
 				power = -16;
 				
+				// FOREST MAGIC GOES HERE
+				
 				//set power
-			    	motor.setPower(power);
-
+			    motor.setPower(velocity);
+			    
+			    // Pause thread execution
 				time += 100;
 				Thread.sleep(time - System.currentTimeMillis());
 				
@@ -68,7 +86,7 @@ public class Engine implements Runnable{
 		
 	}
 	
-	public void setSpeed(int velocity) { this.velocity = velocity; }
+	public void setSpeed(int velocity) { this.velocity = velocity; motor.setPower(velocity);}
 	public void appendSpeed(int velocity) { this.velocity += velocity; }
 	public int getRPM() { return rpm; }
 	public void brake() { motor.brake(); this.velocity = 0; } // something else should probably happen here
