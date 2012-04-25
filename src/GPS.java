@@ -48,7 +48,7 @@ public class GPS implements Runnable {
 				
 				int inputCount = com1.read(inputBuffer, 0, inputBuffer.length);
 				if (com1.available() > 1024) {
-					com1.skip(com1.available()-128); // nobody wants old data - have not seen executed
+					//com1.skip(com1.available()-128); // nobody wants old data - have not seen executed
 					System.out.println("Data Skipped!");
 				}
 				
