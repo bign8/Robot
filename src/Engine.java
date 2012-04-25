@@ -15,10 +15,12 @@ public class Engine implements Runnable, Debuggable {
 	private Motor motor;
 	private IntelliBrainShaftEncoder encoder;
 	
-	// Public variables
+	// Algorithum variables
 	private int rpm = 0;
 	private int velocity = 0;
 	private int power = 0;
+	private boolean newMove = true; // next two needed for stabolizing the changes
+	private int moveCounter = 0; 
 	
 	public Engine(){
 		
@@ -64,22 +66,23 @@ public class Engine implements Runnable, Debuggable {
 				rpm = ((counts - previousCounts) * 600) / 128;
 				previousCounts = counts;
 
-				
-				//Self adjusting power, covers a quantized 10rpm per 1 power map.
-				//Currently functions under the assumption that rpm goes from -160 to 160.
-				if (counter == 10)
-					power += velocity+ (rpm/32);
-
+				if (!newMove) {
+					//Self adjusting power, covers a quantized 10rpm per 1 power map.
+					//Currently functions under the assumption that rpm goes from -160 to 160.
+					if (counter == 10)
+						power += velocity+ (rpm/32);
+				} else {
+					moveCounter++;
+					if (moveCounter > 9) newMove = false; // one second at new speed
+				}
 				
 				//limiter
 				if (power > 16) 
-				power = 16;
+					power = 16;
 				if (power < -16)
-				power = -16;
+					power = -16;
 				
 				motor.setPower(power);
-				// FOREST MAGIC GOES HERE
-				
 			    
 			    // Pause thread execution
 				time += 100;
@@ -91,7 +94,12 @@ public class Engine implements Runnable, Debuggable {
 		
 	}
 	
-	public void setSpeed(int velocity) { this.velocity = velocity; motor.setPower(velocity);}
+	public void setSpeed(int velocity) { 
+		this.velocity = velocity; 
+		motor.setPower(velocity); 
+		newMove = true;
+		moveCounter = 0;
+	}
 	public void appendSpeed(int velocity) { this.velocity += velocity; }
 	public int getRPM() { return rpm; }
 	public void brake() { motor.brake(); this.velocity = 0; } // something else should probably happen here
