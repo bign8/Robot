@@ -2,6 +2,7 @@
 /*
  * This class is used to demonstrate the neural network for given inputs
  * TODO: Train robot to teach itself
+ * http://www4.rgu.ac.uk/files/chapter3%20-%20bp.pdf
  */
 public class Nural {
 	
@@ -62,22 +63,24 @@ public class Nural {
 		
 		double[][] outputs = new double[active.length][active[0].length]; // allows storage of past calcuations
 		
-		double[] sums = new double[weights[0][0].length];
-		double[] past = new double[weights[0][0].length];
-		
-		int i, j, k, x;
+		int i, j, k;
 		
 		// -------------------------------------------------------
 		// |                     BEGIN EPOCH                     |
 		// -------------------------------------------------------
 		
-		sums[0] = capper(trainingData[1][0] / 100.0, 1.0, 0.0);
-		sums[1] = capper(trainingData[1][1] / 100.0, 1.0, 0.0);
-		sums[2] = capper(trainingData[1][2] / 100.0, 1.0, 0.0);
-		sums[3] = capper(trainingData[1][3] / 100.0, 1.0, 0.0);
-		sums[4] = capper(trainingData[1][4] / 100.0, 1.0, 0.0); // for sensors
+		outputs[0][0] = capper(trainingData[1][0] / 100.0, 1.0, 0.0);
+		outputs[0][1] = capper(trainingData[1][1] / 100.0, 1.0, 0.0);
+		outputs[0][2] = capper(trainingData[1][2] / 100.0, 1.0, 0.0);
+		outputs[0][3] = capper(trainingData[1][3] / 100.0, 1.0, 0.0);
+		outputs[0][4] = capper(trainingData[1][4] / 100.0, 1.0, 0.0); // for sensors
+		outputs[0][5] = 1.0;
+		outputs[1][5] = 1.0;
+		outputs[2][5] = 1.0;
+		outputs[3][5] = 1.0;
+		outputs[4][5] = 1.0;
 		
-		printArr(sums, 99);
+		printArr(outputs[0], 99);
 		
 		// -------------------------------------------------------
 		// |                    QUERY NEURONS                    |
@@ -86,25 +89,20 @@ public class Nural {
 		// looping through the layers
 		for ( i = 0; i < weights.length; i++ ) {
 			
-			// Deep copy sums to past and clear sums
-			for ( x = 0; x < past.length-1; x++ ) past[x] = sums[x];
-			sums = new double[weights[0][0].length]; // should set to zeros
-			past[weights[0][0].length-1] =  1.0; // should always be 1
-			
 			// loop through rows of output
 			for ( j = 0; j < weights[0].length; j++ ) {
 				if ( active[i+1][j] ) {
-					for ( k = 0; k < weights[0][0].length; k++ ) if ( active[i][k] ) sums[j] += past[k] * weights[i][j][k]; // sum rows
+					for ( k = 0; k < weights[0][0].length; k++ ) if ( active[i][k] ) outputs[i+1][j] += outputs[i][k] * weights[i][j][k]; // sum rows
 					
-					if (i == 0 || i == 1)
-						sums[j] = sigmoid( sums[j] , ofset[i][j]); // perform threshold on sums
+					if (i == 0 || i == 1) // TODO: remove this line - its for making the demo work
+						outputs[i+1][j] = sigmoid( outputs[i+1][j] , ofset[i][j]); // perform threshold on sums
 				}
 			}
 			
-			printArr(sums, i); // debugging
+			printArr(outputs[i+1], i); // debugging
 		}
 		
-		// scaling outputs of network
+		// scaling outputs of network - for actual use of neural network
 		//sums[0] = capper( sums[0] * 6 - 3 , -3.0 , 3.0 ); // [-3,3]
 		//sums[1] = capper( sums[1] * 100 , 0.0 , 100.0 );  // [0:100]
 		//sums[2] = capper( sums[2] * 100 , 0.0 , 100.0 );  // [0:100]
@@ -119,14 +117,16 @@ public class Nural {
 		double[] error = new double[weights[0].length];
 		for ( j = 0; j < 3; j++ ) {
 			if ( active[i][j] )
-				error[j] = sums[j] * ( 1 - sums[j] ) * (trainingData[1][5+j] - sums[j]);
+				error[j] = outputs[i][j] * ( 1 - outputs[i][j] ) * (trainingData[1][5+j] - outputs[i][j]);
 		}
 		printArr(error, 99);
 		
-		
-		
-		// For actual neural network implementation
-		//System.out.println("Capped: | " + capper(sum0, 4., -2.) + " | " + capper(sum1, 100., 0.) + " | " + capper(sum2, 100, 0) + " |");
+		// new weights for output layer
+		for ( j = 0; j < weights[0].length; j++ ) {
+			for ( k = 0; k < weights[0][0].length; k++ ) {
+				
+			}
+		}
 	}
 	
 	public static double sigmondPrime( double x , double thresh) {
