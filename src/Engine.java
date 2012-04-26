@@ -19,9 +19,9 @@ public class Engine implements Runnable, Debuggable {
 	private int rpm = 0;
 	private int velocity = 0;
 	private int power = 0;
-	private boolean newMove = true; // next two needed for stabolizing the changes
-	private int moveCounter = 0; 
-	private int[] arrayOfSpeeds = {-190, -140, -90, 0, 50, 100, 150};
+	//private boolean newMove = true; // next two needed for stabolizing the changes
+	//private int moveCounter = 0; 
+	private int[] arrayOfSpeeds = {-120, -90, -60, 0, 30, 60, 90};
 	
 	public Engine(){
 		
@@ -58,7 +58,7 @@ public class Engine implements Runnable, Debuggable {
 					continue;
 				}
 				
-				if(counter > 3)
+				if(counter > 10)
 					counter = 0;
 				
 				//600 count intervals are taken per minute.
@@ -68,24 +68,25 @@ public class Engine implements Runnable, Debuggable {
 				previousCounts = counts;					
 
 
-				if (!newMove) {
+				//if (!newMove) {
 					//Self adjusting power, covers a quantized 10rpm per 1 power map.
 					//Currently functions under the assumption that rpm goes from -160 to 160.
-					if (counter == 3) {
+					if (counter == 10) {
 						if (velocity == 0) 
 							power = velocity;
-						else if (rpm > (arrayOfSpeeds[velocity + 3] + 40))
+						else if (rpm > (arrayOfSpeeds[velocity + 3] + 30))
 							power--;
 						else if (rpm < arrayOfSpeeds[velocity + 3])
 							power++;
 					}
-				} else {
-					moveCounter++;
-					if (moveCounter > 9) newMove = false; // one second at new speed
-				}
+				//} else {
+					//moveCounter++;
+					//if (moveCounter > 9) newMove = false; // one second at new speed
+				//}
 				
 				//limiter
 				if (power > 16) 
+					
 					power = 16;
 				if (power < -16)
 					power = -16;
