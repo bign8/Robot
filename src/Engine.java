@@ -110,7 +110,7 @@ public class Engine implements Runnable, Debuggable {
 		if (velocity < -3)
 			velocity = -3;
 		
-		this.velocity = velocity; 
+		this.velocity = -velocity; 
 		//motor.setPower(velocity); 
 		//newMove = true;
 		//moveCounter = 0;
