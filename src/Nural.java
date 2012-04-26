@@ -8,7 +8,8 @@ public class Nural {
 	public static void run() {
 		
 		double[][] trainingData = {
-			{},
+			//   W      L      C      R      E    V     F     B
+			{100.0, 100.0, 100.0, 100.0, 100.0, 3.0, 50.0, 50.0},
 			{},
 			{},
 			{},
@@ -68,7 +69,7 @@ public class Nural {
 		sums[1] = capper(10.0 / 100.0, 1.0, 0.0);
 		sums[2] = capper(10.0 / 100.0, 1.0, 0.0);
 		sums[3] = capper(10.0 / 100.0, 1.0, 0.0);
-		sums[4] = capper(10.0 / 100.0, 1.0, 0.0);
+		sums[4] = capper(10.0 / 100.0, 1.0, 0.0); // for sensors
 		
 		// looping through the layers
 		for ( i = 0; i < weights.length; i++ ) {
