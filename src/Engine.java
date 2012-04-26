@@ -103,9 +103,9 @@ public class Engine implements Runnable, Debuggable {
 	
 	public void setSpeed(int velocity) { 
 		this.velocity = velocity; 
-		motor.setPower(velocity); 
-		newMove = true;
-		moveCounter = 0;
+		//motor.setPower(velocity); 
+		//newMove = true;
+		//moveCounter = 0;
 	}
 	public void appendSpeed(int velocity) { this.velocity += velocity; }
 	public int getRPM() { return rpm; }
