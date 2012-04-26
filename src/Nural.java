@@ -7,9 +7,9 @@ public class Nural {
 	
 	private static double[][] weights = {
 		//   W     L     C     R     E     B
-		{  -50,  -60,  -60,  -60,  -50,    4},  // motor
-		{  500,  500,    0, -500, -500,   50},  // front steer
-		{    0,  500,    0, -500,    0,   50}   // back steer
+		{    0,    0,    0,    0,    0,   0},  // motor
+		{    0,    0,    0,    0,    0,   0},  // front steer
+		{    0,    0,    0,    0,    0,   0}   // back steer
 	};
 	
 	public static void run() {
@@ -26,20 +26,24 @@ public class Nural {
 
 		for (int i = 0; i < 6; i++) {
 			if ( toAdd[i] > 0 ) { // exclude poor input
-				
-				//if ( i == 2 )
-					//sum0 += toAdd[i] * weights[0][i];
-				//else
 				sum0 += 1./toAdd[i] * weights[0][i];
 				sum1 += 1./toAdd[i] * weights[1][i];
 				sum2 += 1./toAdd[i] * weights[2][i];
 			}
 		}
 		
+		System.out.println("Sums  : | " + sum0 + " | " + sum1 + " | " + sum2 + " |");
+		
+		sum0 = 1.0 / ( 1.0 + Math.exp(-sum0) ); // Sigmoid threshold function
+		sum1 = 1.0 / ( 1.0 + Math.exp(-sum1) );
+		sum2 = 1.0 / ( 1.0 + Math.exp(-sum2) );
+		
+		System.out.println("PreSca: | " + sum0 + " | " + sum1 + " | " + sum2 + " |");
+		
 		// For actual neural network implementation
-		//sum0 = sum0 * 32 - 16; // allow negative speeds
-		//sum1 *= 100; // adjust to turning distances
-		//sum2 *= 100;
+		sum0 = sum0 * 32 - 16; // allow negative speeds
+		sum1 *= 100; // adjust to turning distances
+		sum2 *= 100;
 		
 		// set down the smarts
 		System.out.println("Normal: | " + sum0 + " | " + sum1 + " | " + sum2 + " |");
