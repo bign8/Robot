@@ -71,7 +71,7 @@ public class Engine implements Runnable, Debuggable {
 					//Self adjusting power, covers a quantized 10rpm per 1 power map.
 					//Currently functions under the assumption that rpm goes from -160 to 160.
 					if (counter == 3) {
-						if (velcocity == 0) 
+						if (velocity == 0) 
 							power = velocity;
 						else if (rpm > (arrayOfSpeeds[velocity + 3] + 40)
 							power++;
