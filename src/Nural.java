@@ -1,4 +1,3 @@
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
 /*
  * This class is used to demonstrate the neural network for given inputs
@@ -8,7 +7,7 @@ public class Nural {
 	
 	public static void run() {
 		
-		double[][] trainingDate = {
+		double[][] trainingData = {
 			{},
 			{},
 			{},
@@ -97,6 +96,11 @@ public class Nural {
 		//sum1 *= 100; // adjust to turning distances
 		//sum2 *= 100;
 		//System.out.println("Capped: | " + capper(sum0, 4., -2.) + " | " + capper(sum1, 100., 0.) + " | " + capper(sum2, 100, 0) + " |");
+	}
+	
+	public static double sigmondPrime( double x , double thresh) {
+		double ans = sigmoid(x, thresh);
+		return ans * ( 1 - ans );
 	}
 	
 	public static double sigmoid( double x , double thresh ) {
