@@ -102,13 +102,15 @@ public class Engine implements Runnable, Debuggable {
 	}
 	
 	public void setSpeed(int velocity) { 
-		this.velocity = velocity; 
+		
 		
 		//for testing 
 		if (velocity > 3)
 			velocity = 3;
 		if (velocity < -3)
 			velocity = -3;
+		
+		this.velocity = velocity; 
 		//motor.setPower(velocity); 
 		//newMove = true;
 		//moveCounter = 0;
