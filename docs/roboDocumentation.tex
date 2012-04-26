@@ -14,7 +14,7 @@
 \renewcommand{\familydefault}{\sfdefault} 
 
 %Import Packages: 
-\usepackage{amsmath, amssymb, graphicx, fontenc,color,setspace, ulem} 
+\usepackage{amsmath, amssymb, graphicx, fontenc,color,setspace, ulem, subfig, textcomp} 
 
 %To insert PDFs (For Appendix):
 \usepackage[final]{pdfpages} 
@@ -38,13 +38,29 @@ After procuring robots from MSU's robotic department, we familiarized ourselves 
 \centerline{\includegraphics[scale=.5]{img/smallBot}}
 \caption{IntelliBrain2 Micro Controller on the standard Ridgesoft base}
 \end{figure}\\
-This small robot allowed us to learn the basics before moving onto a larger frame.  This robot ran off two independent continuous rotation servos (ran each wheel independently), a range finding sensor, and two light sensors pointed downwards to follow a line.  Next, we moved onto a larger, faster robot mounted on an Axial Remote Control Rock Crawling car base:
+This small robot allowed us to learn the basics before moving onto a larger frame.  This robot ran with two independent continuous rotation servos (controlling each wheel independently), a range finding sensor, and two light sensors pointed downwards to help it follow a line.  
+
+Next, we moved onto a larger, faster robot mounted on an Axial Remote Control Rock Crawling car base:
 \begin{figure}[h]
 \centerline{\includegraphics{img/bigBot1}}
 \caption{Axial RC car mounted with IntelliBrain2 Controller}
 \end{figure}
 
-We modified the base to include 4 wheel steering.  We mounted 5 
+We modified the base to include 4 wheel steering.  We then mounted a GPS, 5 range finding sensors and a single WheelWatcher Incremental Quadrature Encoder for navigation and speed control.
+
+\subsection{This Documentation}
+The purpose of this documentation is to explain the process and steps we took to learn, build, and program our self-navigating robot.  We will introduce the development environment, discuss the specific functions of the robot and describe the running process of the robot, as the end user would see.
+
+\subsection{Project Goals}
+\begin{enumerate}
+\item Grasp the concepts of introductory robotics.
+\item Learn to translate a theoretical environment to a running physical machine.
+\item Enhance our understanding of the Java Language.
+\item Learn about external Java libraries.
+\item Understand how Java can be compiled to a specific platform and handle physical sensor input.
+\item Learn advanced robotic algorithms - separate from theoretical Computer Science algorithms.
+\end{enumerate}
+
 \clearpage
 \section{Development Environment}
 The IntelliBrain2 can be programmed in Java.  A specific RoboJDE library is required at compile to interface with the board.  There are numerous options to turn Java code into running code on the robot that we will explain here.
@@ -157,12 +173,55 @@ Originally, we used Dropbox, which worked as a great backup tool at the end of t
 While Dropbox is a simple, convenient, and magical application in today's computing, it is not a substitute for source version control.  We initially used Dropbox to sync files across all of our computers for team development.  The problem here is that changes propagate immediately.  Backups are kept in the depths of Dropbox's servers, but are tedious to scan through and recover.  However, the real kicker occurs when Dropbox meets DeepFreeze, the Enterprise software that Carroll uses to fight malicious intentions.  If Dropbox is installed on a user's profile, it will by default sync all files to a folder on the local hard drive.  When the computer restarts, changes to the $C$ drive are erased and Dropbox is fooled into believing the user deleted all files in their Dropbox directory.  This change is then propagated to the rest of the team, so come Monday morning, all code is erased across every team member's computer.  \textit{Thanks, Forrest}.
 
 \clearpage
-\section{Robot}
+\section{Physical Robot Design}
+\begin{figure}[h]
+\centerline{\includegraphics[scale=.85]{img/bigBot2}}
+\caption{Final Robot Design}
+\end{figure}
+\subsection{Description}
+The Robot is about 18" long, 10" tall, and 11" wide.  It has 4 wheels of 5" diameter. and runs off a 3000 mAh Ni-MH battery.  The RC car body is designed by Axial Racing ({\color{blue} www.axialracing.com}).
 
-\section{Robot}
+Borrowing the parts from a second RC car, we gave our robot 4-wheel steering by substituting the rear axle with a second car's front steering axle.
+\begin{figure}[h]
+\centering
+\subfloat[Front Steering]{\includegraphics{img/steering1}}
+\hspace{5mm}
+\subfloat[Rear Steering]{\includegraphics{img/steering2}}
+\end{figure}
 
-\section{Logic}
+A central motor, controlled by an Axial AE-2 ESC drives all four wheels.  This is mounted in the center of the body and is directly linked to the WheelWatcher chip which records how fast the motor is spinning.
+\begin{figure}[h]
+\centerline{\includegraphics{img/wheelwatcher}}
+\caption{Nubotics' WheelWatcher Incremental Quadrature Encoder mounted next to motor}
+\end{figure}
+
+As the motor turns, the black and white disk spins over light sensors on the WheelWatcher chip.  With each change in color, a counter is incremented.  This counter can then be converted to rotations per minute, or $RPM$.
+
+On the top of the robot are 5 range finding sensors that operate by sonar:
+\begin{figure}[h]
+\centerline{\includegraphics[scale=.8]{img/rangeSensors}}
+\caption{Ping))) Sensors}
+\end{figure}
+
+These 5 sensors point directly ahead, 45\textdegree \hspace{1mm}left, right, and 90\textdegree \hspace{1mm}left, right.  They operate via sonar and require special attention to timing as the command tells it when to send a `ping' and when to read the ping.  If not a enough or too much time elapses between the send and read command, the data is corrupted.
+
+Ultimately, the main controlling board is the IntelliBrain2 by Ridgesoft: 
+\begin{figure}[h]
+\centerline{\includegraphics{img/intellibrain}}
+\caption{}
+\end{figure}
+
+
+\clearpage
+\section{Robot Logic}
+
+\section{Robot User Manual}
 
 \section{Conclusion}
+\subsection{Strengths}
+\subsection{Weaknesses}
+
+\section{Appendix}
+\subsection{Source Code}
 
 \end{document}
