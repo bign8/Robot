@@ -10,7 +10,7 @@ public class Nural {
 		double[][] trainingData = {
 			//   W      L      C      R      E    V     F     B
 			{100.0, 100.0, 100.0, 100.0, 100.0, 3.0, 50.0, 50.0},
-			{},
+			{35.0, 90.0, 0.0, 0.0, 0.0, 0.5, 0.5, 0.5},
 			{},
 			{},
 			{},
@@ -19,27 +19,27 @@ public class Nural {
 		
 		double[][][] weights = {
 			{   //  W    L    C    R    E    B	
-				{ 1.0, 0.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 1 // Layer 1
-				{ 0.0, 1.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 2
+				{ 0.1, 0.8, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 1 // Layer 1
+				{ 0.4, 0.6, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 2
 				{ 0.0, 0.0, 1.0, 0.0, 0.0, 0.0 },  // Hidden node 3
 				{ 0.0, 0.0, 0.0, 1.0, 0.0, 0.0 },  // Hidden node 4
 				{ 0.0, 0.0, 0.0, 0.0, 1.0, 0.0 }   // Hidden node 5
 			},{
-				{ 1.0, 0.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 1 // Layer 2
-				{ 0.0, 1.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 2
-				{ 0.0, 0.0, 1.0, 0.0, 0.0, 0.0 },  // Hidden node 3
-				{ 0.0, 0.0, 0.0, 1.0, 0.0, 0.0 },  // Hidden node 4
-				{ 0.0, 0.0, 0.0, 0.0, 1.0, 0.0 }   // Hidden node 5
+				{ 0.3, 0.9, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 1 // Layer 2
+				{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 2
+				{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 3
+				{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 4
+				{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 }   // Hidden node 5
 			},{
 				{ 1.0, 0.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 1 // Layer 3
-				{ 0.0, 1.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 2
-				{ 0.0, 0.0, 1.0, 0.0, 0.0, 0.0 },  // Hidden node 3
-				{ 0.0, 0.0, 0.0, 1.0, 0.0, 0.0 },  // Hidden node 4
-				{ 0.0, 0.0, 0.0, 0.0, 1.0, 0.0 }   // Hidden node 5
+				{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 2
+				{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 3
+				{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 4
+				{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 }   // Hidden node 5
 			},{
 				{ 1.0, 0.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 1 // Layer 4
-				{ 0.0, 1.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 2
-				{ 0.0, 0.0, 1.0, 0.0, 0.0, 0.0 },  // Hidden node 3
+				{ 1.0, 1.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 2
+				{ 1.0, 0.0, 1.0, 0.0, 0.0, 0.0 },  // Hidden node 3
 				{ 0.0, 0.0, 0.0, 1.0, 0.0, 0.0 },  // Hidden node 4
 				{ 0.0, 0.0, 0.0, 0.0, 1.0, 0.0 }   // Hidden node 5
 			}
@@ -47,9 +47,9 @@ public class Nural {
 		
 		double[][] ofset = {
 			{ 0.0, 0.0, 0.0, 0.0, 0.0 }, // sigmoid ofsets 1
-			{ 0.0, 0.0, 0.0, 0.0, 0.0 }, // sigmoid ofsets 1
-			{ 0.0, 0.0, 0.0, 0.0, 0.0 }, // sigmoid ofsets 1
-			{ 0.0, 0.0, 0.0, 0.0, 0.0 }  // sigmoid ofsets 1
+			{ 0.0, 0.0, 0.0, 0.0, 0.0 }, // sigmoid ofsets 2
+			{ 0.0, 0.0, 0.0, 0.0, 0.0 }, // sigmoid ofsets 3
+			{ 0.0, 0.0, 0.0, 0.0, 0.0 }  // sigmoid ofsets 4
 		};
 		
 		boolean[][] active = {
@@ -60,16 +60,28 @@ public class Nural {
 			{ true, true, true, false, false, true } // last one should only have three true
 		};
 		
+		double[][] outputs = new double[active.length][active[0].length]; // allows storage of past calcuations
+		
 		double[] sums = new double[weights[0][0].length];
 		double[] past = new double[weights[0][0].length];
 		
 		int i, j, k, x;
-
-		sums[0] = capper(10.0 / 100.0, 1.0, 0.0);
-		sums[1] = capper(10.0 / 100.0, 1.0, 0.0);
-		sums[2] = capper(10.0 / 100.0, 1.0, 0.0);
-		sums[3] = capper(10.0 / 100.0, 1.0, 0.0);
-		sums[4] = capper(10.0 / 100.0, 1.0, 0.0); // for sensors
+		
+		// -------------------------------------------------------
+		// |                     BEGIN EPOCH                     |
+		// -------------------------------------------------------
+		
+		sums[0] = capper(trainingData[1][0] / 100.0, 1.0, 0.0);
+		sums[1] = capper(trainingData[1][1] / 100.0, 1.0, 0.0);
+		sums[2] = capper(trainingData[1][2] / 100.0, 1.0, 0.0);
+		sums[3] = capper(trainingData[1][3] / 100.0, 1.0, 0.0);
+		sums[4] = capper(trainingData[1][4] / 100.0, 1.0, 0.0); // for sensors
+		
+		printArr(sums, 99);
+		
+		// -------------------------------------------------------
+		// |                    QUERY NEURONS                    |
+		// -------------------------------------------------------
 		
 		// looping through the layers
 		for ( i = 0; i < weights.length; i++ ) {
@@ -84,18 +96,36 @@ public class Nural {
 				if ( active[i+1][j] ) {
 					for ( k = 0; k < weights[0][0].length; k++ ) if ( active[i][k] ) sums[j] += past[k] * weights[i][j][k]; // sum rows
 					
-					sums[j] = sigmoid( sums[j] , ofset[i][j]); // perform threshold on sums
+					if (i == 0 || i == 1)
+						sums[j] = sigmoid( sums[j] , ofset[i][j]); // perform threshold on sums
 				}
 			}
 			
 			printArr(sums, i); // debugging
 		}
 		
+		// scaling outputs of network
+		//sums[0] = capper( sums[0] * 6 - 3 , -3.0 , 3.0 ); // [-3,3]
+		//sums[1] = capper( sums[1] * 100 , 0.0 , 100.0 );  // [0:100]
+		//sums[2] = capper( sums[2] * 100 , 0.0 , 100.0 );  // [0:100]
+		
+		// -------------------------------------------------------
+		// |                   BACKPROPAGATION                   |
+		// -------------------------------------------------------
+		
+		i = weights.length; // moving backward through layers
+		
+		// output error!
+		double[] error = new double[weights[0].length];
+		for ( j = 0; j < 3; j++ ) {
+			if ( active[i][j] )
+				error[j] = sums[j] * ( 1 - sums[j] ) * (trainingData[1][5+j] - sums[j]);
+		}
+		printArr(error, 99);
+		
+		
 		
 		// For actual neural network implementation
-		//sum0 = sum0 * 32 - 16; // allow negative speeds
-		//sum1 *= 100; // adjust to turning distances
-		//sum2 *= 100;
 		//System.out.println("Capped: | " + capper(sum0, 4., -2.) + " | " + capper(sum1, 100., 0.) + " | " + capper(sum2, 100, 0) + " |");
 	}
 	
