@@ -1,53 +1,112 @@
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
+
 /*
  * This class is used to demonstrate the neural network for given inputs
  * TODO: Train robot to teach itself
  */
 public class Nural {
-
-	
-	private static double[][] weights = {
-		//   W     L     C     R     E     B
-		{    0,    0,    0,    0,    0,   0},  // motor
-		{    0,    0,    0,    0,    0,   0},  // front steer
-		{    0,    0,    0,    0,    0,   0}   // back steer
-	};
 	
 	public static void run() {
-		double sum0 = 0, sum1 = 0, sum2 = 0;
-		double[] toAdd = new double[6];
-		toAdd[5] = 1;
-		sum0 = 0; sum1 = 0; sum2 = 0;
-
-		toAdd[0] = 00.0;
-		toAdd[1] = 00.0;
-		toAdd[2] = 40.0;
-		toAdd[3] = 00.0;
-		toAdd[4] = 00.0;
-
-		for (int i = 0; i < 6; i++) {
-			if ( toAdd[i] > 0 ) { // exclude poor input
-				sum0 += 1./toAdd[i] * weights[0][i];
-				sum1 += 1./toAdd[i] * weights[1][i];
-				sum2 += 1./toAdd[i] * weights[2][i];
+		
+		double[][] trainingDate = {
+			{},
+			{},
+			{},
+			{},
+			{},
+			{}
+		};
+		
+		double[][][] weights = {
+			{   //  W    L    C    R    E    B	
+				{ 1.0, 0.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 1 // Layer 1
+				{ 0.0, 1.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 2
+				{ 0.0, 0.0, 1.0, 0.0, 0.0, 0.0 },  // Hidden node 3
+				{ 0.0, 0.0, 0.0, 1.0, 0.0, 0.0 },  // Hidden node 4
+				{ 0.0, 0.0, 0.0, 0.0, 1.0, 0.0 }   // Hidden node 5
+			},{
+				{ 1.0, 0.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 1 // Layer 2
+				{ 0.0, 1.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 2
+				{ 0.0, 0.0, 1.0, 0.0, 0.0, 0.0 },  // Hidden node 3
+				{ 0.0, 0.0, 0.0, 1.0, 0.0, 0.0 },  // Hidden node 4
+				{ 0.0, 0.0, 0.0, 0.0, 1.0, 0.0 }   // Hidden node 5
+			},{
+				{ 1.0, 0.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 1 // Layer 3
+				{ 0.0, 1.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 2
+				{ 0.0, 0.0, 1.0, 0.0, 0.0, 0.0 },  // Hidden node 3
+				{ 0.0, 0.0, 0.0, 1.0, 0.0, 0.0 },  // Hidden node 4
+				{ 0.0, 0.0, 0.0, 0.0, 1.0, 0.0 }   // Hidden node 5
+			},{
+				{ 1.0, 0.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 1 // Layer 4
+				{ 0.0, 1.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 2
+				{ 0.0, 0.0, 1.0, 0.0, 0.0, 0.0 },  // Hidden node 3
+				{ 0.0, 0.0, 0.0, 1.0, 0.0, 0.0 },  // Hidden node 4
+				{ 0.0, 0.0, 0.0, 0.0, 1.0, 0.0 }   // Hidden node 5
 			}
+		};
+		
+		double[][] ofset = {
+			{ 0.0, 0.0, 0.0, 0.0, 0.0 }, // sigmoid ofsets 1
+			{ 0.0, 0.0, 0.0, 0.0, 0.0 }, // sigmoid ofsets 1
+			{ 0.0, 0.0, 0.0, 0.0, 0.0 }, // sigmoid ofsets 1
+			{ 0.0, 0.0, 0.0, 0.0, 0.0 }  // sigmoid ofsets 1
+		};
+		
+		boolean[][] active = {
+			{ true, true, true, true, true, true }, // first one should always be true
+			{ true, true, true, true, true, true },
+			{ true, true, true, true, true, true },
+			{ true, true, true, true, true, true },
+			{ true, true, true, false, false, true } // last one should only have three true
+		};
+		
+		double[] sums = new double[weights[0][0].length];
+		double[] past = new double[weights[0][0].length];
+		
+		int i, j, k, x;
+
+		sums[0] = capper(10.0 / 100.0, 1.0, 0.0);
+		sums[1] = capper(10.0 / 100.0, 1.0, 0.0);
+		sums[2] = capper(10.0 / 100.0, 1.0, 0.0);
+		sums[3] = capper(10.0 / 100.0, 1.0, 0.0);
+		sums[4] = capper(10.0 / 100.0, 1.0, 0.0);
+		
+		// looping through the layers
+		for ( i = 0; i < weights.length; i++ ) {
+			
+			// Deep copy sums to past and clear sums
+			for ( x = 0; x < past.length-1; x++ ) past[x] = sums[x];
+			sums = new double[weights[0][0].length]; // should set to zeros
+			past[weights[0][0].length-1] =  1.0; // should always be 1
+			
+			// loop through rows of output
+			for ( j = 0; j < weights[0].length; j++ ) {
+				if ( active[i+1][j] ) {
+					for ( k = 0; k < weights[0][0].length; k++ ) if ( active[i][k] ) sums[j] += past[k] * weights[i][j][k]; // sum rows
+					
+					sums[j] = sigmoid( sums[j] , ofset[i][j]); // perform threshold on sums
+				}
+			}
+			
+			printArr(sums, i); // debugging
 		}
 		
-		System.out.println("Sums  : | " + sum0 + " | " + sum1 + " | " + sum2 + " |");
-		
-		sum0 = 1.0 / ( 1.0 + Math.exp(-sum0) ); // Sigmoid threshold function
-		sum1 = 1.0 / ( 1.0 + Math.exp(-sum1) );
-		sum2 = 1.0 / ( 1.0 + Math.exp(-sum2) );
-		
-		System.out.println("PreSca: | " + sum0 + " | " + sum1 + " | " + sum2 + " |");
 		
 		// For actual neural network implementation
-		sum0 = sum0 * 32 - 16; // allow negative speeds
-		sum1 *= 100; // adjust to turning distances
-		sum2 *= 100;
-		
-		// set down the smarts
-		System.out.println("Normal: | " + sum0 + " | " + sum1 + " | " + sum2 + " |");
-		System.out.println("Capped: | " + capper(sum0, 4., -2.) + " | " + capper(sum1, 100., 0.) + " | " + capper(sum2, 100, 0) + " |");
+		//sum0 = sum0 * 32 - 16; // allow negative speeds
+		//sum1 *= 100; // adjust to turning distances
+		//sum2 *= 100;
+		//System.out.println("Capped: | " + capper(sum0, 4., -2.) + " | " + capper(sum1, 100., 0.) + " | " + capper(sum2, 100, 0) + " |");
+	}
+	
+	public static double sigmoid( double x , double thresh ) {
+		return 1.0 / ( 1.0 + Math.exp(thresh-x) );
+	}
+	
+	public static void printArr( double [] x, int row ) {
+		System.out.print("Row " + row + " | ");
+		for (int i = 0; i < x.length; i++) System.out.print(x[i] + " | ");
+		System.out.println();
 	}
 	
 	public static double capper(double value, double max, double min) {
