@@ -67,6 +67,7 @@ public class Engine implements Runnable, Debuggable {
 				rpm = ((counts - previousCounts) * 600) / 128;
 				previousCounts = counts;					
 
+
 				if (!newMove) {
 					//Self adjusting power, covers a quantized 10rpm per 1 power map.
 					//Currently functions under the assumption that rpm goes from -160 to 160.
@@ -77,7 +78,6 @@ public class Engine implements Runnable, Debuggable {
 							power++;
 						else if (rpm < arrayOfSpeeds[velocity + 3])
 							power--;
-						motor.setPower(power);
 					}
 				} else {
 					moveCounter++;
@@ -89,7 +89,7 @@ public class Engine implements Runnable, Debuggable {
 					power = 16;
 				if (power < -16)
 					power = -16;
-				
+				motor.setPower(power);
 			    
 			    // Pause thread execution
 				time += 100;
@@ -103,6 +103,12 @@ public class Engine implements Runnable, Debuggable {
 	
 	public void setSpeed(int velocity) { 
 		this.velocity = velocity; 
+		
+		//for testing 
+		if (velocity > 3)
+			velocity = 3;
+		if (velocity < -3)
+			velocity = -3;
 		//motor.setPower(velocity); 
 		//newMove = true;
 		//moveCounter = 0;
