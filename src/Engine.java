@@ -77,6 +77,7 @@ public class Engine implements Runnable, Debuggable {
 							power++;
 						else if (rpm < arrayOfSpeeds[velocity + 3])
 							power--;
+						motor.setPower(power);
 					}
 				} else {
 					moveCounter++;
@@ -89,7 +90,6 @@ public class Engine implements Runnable, Debuggable {
 				if (power < -16)
 					power = -16;
 				
-				motor.setPower(power);
 			    
 			    // Pause thread execution
 				time += 100;
