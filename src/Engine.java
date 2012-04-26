@@ -75,9 +75,9 @@ public class Engine implements Runnable, Debuggable {
 						if (velocity == 0) 
 							power = velocity;
 						else if (rpm > (arrayOfSpeeds[velocity + 3] + 40))
-							power++;
-						else if (rpm < arrayOfSpeeds[velocity + 3])
 							power--;
+						else if (rpm < arrayOfSpeeds[velocity + 3])
+							power++;
 					}
 				} else {
 					moveCounter++;
@@ -110,7 +110,7 @@ public class Engine implements Runnable, Debuggable {
 		if (velocity < -3)
 			velocity = -3;
 		
-		this.velocity = -velocity; 
+		this.velocity = velocity; 
 		//motor.setPower(velocity); 
 		//newMove = true;
 		//moveCounter = 0;
