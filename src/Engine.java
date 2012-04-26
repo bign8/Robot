@@ -73,7 +73,7 @@ public class Engine implements Runnable, Debuggable {
 					if (counter == 3) {
 						if (velocity == 0) 
 							power = velocity;
-						else if (rpm > (arrayOfSpeeds[velocity + 3] + 40)
+						else if (rpm > (arrayOfSpeeds[velocity + 3] + 40))
 							power++;
 						else if (rpm < arrayOfSpeeds[velocity + 3])
 							power--;
