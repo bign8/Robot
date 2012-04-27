@@ -174,8 +174,9 @@ While Dropbox is a simple, convenient, and magical application in today's comput
 
 \clearpage
 \section{Physical Robot Design}
+Here we describe the physical attributes of the robot, after introducing each part, the next section will cover the logic that governs each physical interface.
 \begin{figure}[h]
-\centerline{\includegraphics[scale=.85]{img/bigBot2}}
+\centerline{\includegraphics[scale=.75]{img/bigBot2}}
 \caption{Final Robot Design}
 \end{figure}
 \subsection{Description}
@@ -208,13 +209,21 @@ These 5 sensors point directly ahead, 45\textdegree \hspace{1mm}left, right, and
 Ultimately, the main controlling board is the IntelliBrain2 by Ridgesoft: 
 \begin{figure}[h]
 \centerline{\includegraphics{img/intellibrain}}
-\caption{}
+\caption{The 14.7 MHz IntelliBrain2 MicroController}
 \end{figure}
+
+This is a Java programmable board that calls a specific API to interface with the physical inputs.  It connects to a computer via a serial port.  In this figure, we have a USB adapter plugged into the serial port. 
 
 
 \clearpage
 \section{Robot Logic}
+The largest obstacle we overcame was understanding the difference between theoretical computer science and physical robotic computing.  On the white board and in the computer, issuing commands such as \textit{turnRight(35\textdegree)} then \textit{goForward(10 inches)} would move the robot 10 inches at 35\textdegree from the current location.
 
+In actuality, this is never the case, especially when working with a remote control vehicle.  Our logic must perform numerous checks to confirm that a command produced the desired result.
+
+Above all else, 
+
+\subsection{Threads}
 \section{Robot User Manual}
 
 \section{Conclusion}
