@@ -31,7 +31,7 @@ public class Nural {
 				{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 3
 				{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 4
 				{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 }   // Hidden node 5
-			},{
+			}/*,{
 				{ 1.0, 0.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 1 // Layer 3
 				{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 2
 				{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 3
@@ -43,22 +43,22 @@ public class Nural {
 				{ 1.0, 0.0, 1.0, 0.0, 0.0, 0.0 },  // Hidden node 3
 				{ 0.0, 0.0, 0.0, 1.0, 0.0, 0.0 },  // Hidden node 4
 				{ 0.0, 0.0, 0.0, 0.0, 1.0, 0.0 }   // Hidden node 5
-			}
+			}*/
 		};
 		
 		double[][] ofset = {
 			{ 0.0, 0.0, 0.0, 0.0, 0.0 }, // sigmoid ofsets 1
-			{ 0.0, 0.0, 0.0, 0.0, 0.0 }, // sigmoid ofsets 2
+			{ 0.0, 0.0, 0.0, 0.0, 0.0 }/*, // sigmoid ofsets 2
 			{ 0.0, 0.0, 0.0, 0.0, 0.0 }, // sigmoid ofsets 3
-			{ 0.0, 0.0, 0.0, 0.0, 0.0 }  // sigmoid ofsets 4
+			{ 0.0, 0.0, 0.0, 0.0, 0.0 }  // sigmoid ofsets 4*/
 		};
 		
 		boolean[][] active = {
-			{ true, true, true, true, true, true }, // first one should always be true
+			{ true, true, false, false, false, true }, // first one should always be true
+			{ true, true, false, false, false, false },/*TODO: change bias back to true on this line after devl
 			{ true, true, true, true, true, true },
-			{ true, true, true, true, true, true },
-			{ true, true, true, true, true, true },
-			{ true, true, true, false, false, true } // last one should only have three true
+			{ true, true, true, true, true, true },*/
+			{ true, false, false, false, false, false } // last one should only have three true
 		};
 		
 		double[][] outputs = new double[active.length][active[0].length]; // allows storage of past calcuations
@@ -77,8 +77,8 @@ public class Nural {
 		outputs[0][5] = 1.0;
 		outputs[1][5] = 1.0;
 		outputs[2][5] = 1.0;
-		outputs[3][5] = 1.0;
-		outputs[4][5] = 1.0;
+		//outputs[3][5] = 1.0;
+		//outputs[4][5] = 1.0;
 		
 		printArr(outputs[0], 99);
 		
@@ -94,8 +94,7 @@ public class Nural {
 				if ( active[i+1][j] ) {
 					for ( k = 0; k < weights[0][0].length; k++ ) if ( active[i][k] ) outputs[i+1][j] += outputs[i][k] * weights[i][j][k]; // sum rows
 					
-					if (i == 0 || i == 1) // TODO: remove this line - its for making the demo work
-						outputs[i+1][j] = sigmoid( outputs[i+1][j] , ofset[i][j]); // perform threshold on sums
+					outputs[i+1][j] = sigmoid( outputs[i+1][j] , ofset[i][j]); // perform threshold on sums
 				}
 			}
 			
@@ -123,15 +122,19 @@ public class Nural {
 		
 		// new weights for output layer
 		for ( j = 0; j < weights[0].length; j++ ) {
-			for ( k = 0; k < weights[0][0].length; k++ ) {
-				
+			if ( active[i][j] ) {
+				for ( k = 0; k < weights[0][0].length; k++ ) {
+					if (active[i-1][k]) {
+						weights[i-1][j][k] += outputs[i-1][k] * error[j];
+					}
+				}
+				printArr(weights[i-1][j], 98);
 			}
 		}
-	}
-	
-	public static double sigmondPrime( double x , double thresh) {
-		double ans = sigmoid(x, thresh);
-		return ans * ( 1 - ans );
+		
+		// errors for hidden layers
+		
+		
 	}
 	
 	public static double sigmoid( double x , double thresh ) {
