@@ -44,17 +44,11 @@ class RemoteControl{
 		//Averager port2 = new Averager();
 		//Maxer port1 = new Maxer();
 		//Maxer port2 = new Maxer();
-		int sum1,sum2;
+		//int sum1,sum2;
 		while(true){
-			sum1=0;
-			sum2=0;
-			for(int i=0;i<750;i++){
-				sum1+=input1.sample();
-				sum2+=input2.sample();
-				try{Thread.sleep(0);}catch(Exception e){}
-			}
+			display.print(0, "Port1: " + getRemote(input1));
+			//display.print(1, "Port2: " + getRemote(input2));	
 			
-			display.print(0,""+sum1/7500+ " "+sum2/7500);
 //			port1.addNum(input1.sample());
 //			port2.addNum(input2.sample());
 //			
@@ -63,11 +57,18 @@ class RemoteControl{
 //			display.print(0, "Port1:" + port1.getAvg() + " rdx:" + port1.radix);
 //			display.print(1, "Port2:" + port2.getAvg() + " idx:"  + port2.index);
 //
-//			try { Thread.sleep(100); } catch(Exception e) {};
-
+			try { Thread.sleep(100); } catch(Exception e) {};
 
 		}
-
+	}
+	
+	public int getRemote(AnalogInput input){
+		int count=0;
+		while( input.sample() == 0 );
+		while( input.sample() > 0 ){
+			count++;
+		}
+		return count;
 	}
 }
 
