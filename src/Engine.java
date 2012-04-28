@@ -85,11 +85,8 @@ public class Engine implements Runnable, Debuggable {
 				//}
 				
 				//limiter
-				if (power > 16) 
-					
-					power = 16;
-				if (power < -16)
-					power = -16;
+				if (power > 16) power = 16;
+				if (power < -16) power = -16;
 				motor.setPower(power);
 			    
 			    // Pause thread execution

@@ -37,24 +37,34 @@ public class Intelligence implements Runnable, Debuggable {
 		double[] toAdd = new double[6];
 		toAdd[5] = 1.0;
 		long time = System.currentTimeMillis();
+		Entertain mario = new Entertain();
+		Thread music = new Thread();
 
 		try {
 			while (true) {
 
 				//check Remote
 				if (remote.isOn()){
+					if ( music == null ) {
+						music = new Thread(mario);
+						music.setPriority(Thread.MIN_PRIORITY + 1);
+						music.start();
+					}
 					motor.setSpeed(remote.getPort1());
 					steer.setBackWheels(remote.getPort2()*15+50);
 					steer.setFrontWheels(remote.getPort2()*15+50);
-				}
-				else{
-
+				} else{
+					
 					if (!running) {
 						time += 2000;
 						Thread.sleep(time - System.currentTimeMillis());
 						continue;
 					}
 
+					if (music != null) {
+						music.stop();
+					}
+					
 					sum0 = 0; sum1 = 0; sum2 = 0;
 
 					toAdd[0] = eyes.getDist('w');

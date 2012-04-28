@@ -6,42 +6,46 @@ public class Remote implements Runnable, Debuggable {
 	private AnalogInput input1, input2;
 	private boolean remoteOn;
 	private int port1, port2;
+	private int sampleP1, sampleP2;
 
 	public Remote(){
 		input1 = IntelliBrain.getAnalogInput(2);
 		input2 = IntelliBrain.getAnalogInput(3);
-
 	}
 
 	public void run(){
+		long time = System.currentTimeMillis();
 		while(true){
-			port1 = input1.sample()/5 - 11;
-			port2 = input2.sample()/5 - 11;
-			if ((port1 < -5 )  || ( port2 < -5))
-				remoteOn = false;
-			else
-				remoteOn = true;
-			try { Thread.sleep(500); } catch(Exception e) {};
+			
+			sampleP1 = input1.sample();
+			sampleP2 = input2.sample();
+			
+			sampleP1 += input1.sample();
+			sampleP2 += input2.sample();
+			
+			sampleP1 += input1.sample();
+			sampleP2 += input2.sample();
+			
+			port1 = sampleP1/15 - 12; // origionally divided by 5
+			port2 = sampleP2/15 - 12;
+			
+			remoteOn = (port1 > -5 ) && ( port2 > -5);
+			
+			try {
+				time += 100;
+				Thread.sleep(time - System.currentTimeMillis());
+			} catch(Exception e) {};
 		}
-	}
-	public boolean isOn(){
-		return remoteOn;
-	}
-	public int getPort1(){
-		return port1;
-	}
-	public int getPort2(){
-		return port2;
 	}
 	
 	public String[] toDebugString(String in[]) {
 		in[0] = "Remote Debug";
-		String onOff = (isOn())? "On": "Off";
-		in[1] = onOff+ " "+getPort1() + " " + getPort2();
+		in[1] = ( isOn() ? "On" : "Off" ) + " " + port1 + " " + port2;
 		return in;
 	}
 
-	public void setRunning(boolean run) {
-		running = run;
-	}
+	public boolean isOn(){ return remoteOn; }
+	public int getPort1(){ return port1; }
+	public int getPort2(){ return port2; }
+	public void setRunning(boolean run) { running = run; }
 }
