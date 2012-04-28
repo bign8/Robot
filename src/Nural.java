@@ -27,7 +27,7 @@ public class Nural {
 				{ 0.0, 0.0, 0.0, 0.0, 1.0, 0.0 }   // Hidden node 5
 			},{
 				{ 0.3, 0.9, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 1 // Layer 2
-				{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 2
+				{ 0.3, 0.8, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 2
 				{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 3
 				{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 4
 				{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 }   // Hidden node 5
@@ -54,7 +54,7 @@ public class Nural {
 		};
 		
 		boolean[][] active = {
-			{ true, true, false, false, false, true }, // first one should always be true
+			{ true, true, false, false, false, false }, // first one should always be true
 			{ true, true, false, false, false, false },/*TODO: change bias back to true on this line after devl
 			{ true, true, true, true, true, true },
 			{ true, true, true, true, true, true },*/
@@ -63,7 +63,7 @@ public class Nural {
 		
 		double[][] outputs = new double[active.length][active[0].length]; // allows storage of past calcuations
 		
-		int i, j, k;
+		int i, j, k, l;
 		
 		// -------------------------------------------------------
 		// |                     BEGIN EPOCH                     |
@@ -80,7 +80,7 @@ public class Nural {
 		//outputs[3][5] = 1.0;
 		//outputs[4][5] = 1.0;
 		
-		printArr(outputs[0], 99);
+		printArr(outputs[0], 50);
 		
 		// -------------------------------------------------------
 		// |                    QUERY NEURONS                    |
@@ -106,6 +106,8 @@ public class Nural {
 		//sums[1] = capper( sums[1] * 100 , 0.0 , 100.0 );  // [0:100]
 		//sums[2] = capper( sums[2] * 100 , 0.0 , 100.0 );  // [0:100]
 		
+		System.out.println("[Backwards NOW]");
+		
 		// -------------------------------------------------------
 		// |                   BACKPROPAGATION                   |
 		// -------------------------------------------------------
@@ -113,28 +115,72 @@ public class Nural {
 		i = weights.length; // moving backward through layers
 		
 		// output error!
-		double[] error = new double[weights[0].length];
-		for ( j = 0; j < 3; j++ ) {
+		double[][] error = new double[weights.length][weights[0].length];
+		for ( j = 0; j < weights[0].length; j++ ) {
 			if ( active[i][j] )
-				error[j] = outputs[i][j] * ( 1 - outputs[i][j] ) * (trainingData[1][5+j] - outputs[i][j]);
+				error[i-1][j] = outputs[i][j] * ( 1 - outputs[i][j] ) * (trainingData[1][5+j] - outputs[i][j]);
 		}
-		printArr(error, 99);
+		printArr(error[i-1], 99);
 		
 		// new weights for output layer
 		for ( j = 0; j < weights[0].length; j++ ) {
 			if ( active[i][j] ) {
 				for ( k = 0; k < weights[0][0].length; k++ ) {
 					if (active[i-1][k]) {
-						weights[i-1][j][k] += outputs[i-1][k] * error[j];
+						weights[i-1][j][k] += outputs[i-1][k] * error[i-1][j];
 					}
 				}
 				printArr(weights[i-1][j], 98);
 			}
 		}
 		
-		// errors for hidden layers
+		// change weights for hidden layers
+		for (i--; i > 0 ; i--) {
+			
+			//calculate errors in hidden layers
+			for ( j = 0; j < weights[0].length; j++ ) {
+				if ( active[i][j] ) {
+					for ( k = 0; k < weights[0][0].length; k++ ) {
+						if (active[i+1][k]) {
+							error[i-1][j] += error[i][k] * weights[i][k][j];
+						}
+					}
+					error[i-1][j] *= ( 1 - outputs[i][j] ) * outputs[i][j];
+				}
+			}
+			printArr(error[i-1], 97);
+			
+			System.out.println("\n[Nate is working Here!]"); // TODO remove this line
+			
+			// calculate new layer weights
+			for ( j = 0; j < weights[0].length; j++ ) {
+				if ( active[i][j] ) {
+					for ( k = 0; k < weights[0][0].length; k++ ) {
+						if (active[i][k]) {
+							weights[i-1][j][k] += error[i-1][j] * outputs[i-1][k];
+						}
+					}
+				}
+			}
+		}
 		
+		// TODO Remove these debugging lines
+		System.out.println("\n[Weight Matrix]");
+		for (i = 0; i < weights.length; i++) {
+			for (j = 0; j < weights[0].length; j++) {
+				for (k = 0; k < weights[0][0].length; k++)
+					System.out.print(weights[i][j][k] + " ");
+				System.out.println();
+			}
+			System.out.println();
+		}
 		
+		System.out.println("[Errors Matrix]");
+		for (i = 0; i < error.length; i++) {
+			for (j = 0; j < error[0].length; j++)
+				System.out.print(error[i][j] + " ");
+			System.out.println();
+		}
 	}
 	
 	public static double sigmoid( double x , double thresh ) {
