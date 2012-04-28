@@ -30,7 +30,7 @@ public class Nural {
 				{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 3
 				{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 4
 				{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 }   // Hidden node 5
-			}/*,{
+			},{
 				{ 1.0, 0.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 1 // Layer 3
 				{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 2
 				{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 3
@@ -42,7 +42,7 @@ public class Nural {
 				{ 1.0, 0.0, 1.0, 0.0, 0.0, 0.0 },  // Hidden node 3
 				{ 0.0, 0.0, 0.0, 1.0, 0.0, 0.0 },  // Hidden node 4
 				{ 0.0, 0.0, 0.0, 0.0, 1.0, 0.0 }   // Hidden node 5
-			}*/
+			}
 		};
 		/*
 		double[][] ofset = {
@@ -52,18 +52,18 @@ public class Nural {
 			{ 0.0, 0.0, 0.0, 0.0, 0.0 }  // sigmoid ofsets 4
 		};//*/
 		
+		weights = randomInit(weights);
+		
 		boolean[][] active = {
 			{ true, true, false, false, false, false }, // first one should always be true
-			{ true, true, false, false, false, false },/*TODO: change bias back to true on this line after devl
+			{ true, true, false, false, false, false },//*TODO: change bias back to true on this line after devl
 			{ true, true, true, true, true, true },
-			{ true, true, true, true, true, true },*/
+			{ true, true, true, true, true, true },//*/
 			{ true, false, false, false, false, false } // last one should only have three true
 		};
 		
 		double[][] outputs = new double[active.length][active[0].length]; // allows storage of past calcuations
-		
 		double[][] error = new double[weights.length][weights[0].length];
-		
 		int i, j, k, epoch, numberOfCycles = 40;
 		double learningRate = 1.0, curError, tempDiff;
 		
@@ -140,7 +140,7 @@ public class Nural {
 				//calculate errors in hidden layers
 				for ( j = 0; j < weights[0].length; j++ ) {
 					if ( active[i][j] ) {
-						for ( k = 0; k < weights[0][0].length; k++ ) {
+						for ( k = 0; k < weights[0][0].length-1; k++ ) { // fix possible error with -1 might want to verify
 							if (active[i+1][k]) {
 								error[i-1][j] += error[i][k] * weights[i][k][j];
 							}
@@ -162,13 +162,26 @@ public class Nural {
 			}
 		}
 		
+		printWeights(weights);
+	}
+	
+	public static double sigmoid( double x , double thresh ) { return 1.0 / ( 1.0 + Math.exp(thresh-x) ); }
+	public static double capper(double value, double max, double min) {	return (value > max) ? max : (value < min) ? min : value ; }
+	public static double[][][] randomInit(double[][][] in) {
+		for (int i = 0; i < in.length; i++)
+			for (int j = 0; j < in[0].length; j++)
+				for (int k = 0; k < in[0][0].length; k++)
+					in[i][j][k] = Math.random();
+		return in;
+	}
+	public static void printWeights(double[][][] weights){
 		// Output new weights in a usable format - yes its formatted java
 		System.out.println("\n[Weight Matrix]\n\ndouble[][][] weights = {");
-		for (i = 0; i < weights.length; i++) {
+		for (int i = 0; i < weights.length; i++) {
 			System.out.print("\t{\n");
-			for (j = 0; j < weights[0].length; j++) {
+			for (int j = 0; j < weights[0].length; j++) {
 				System.out.print("\t\t{");
-				for (k = 0; k < weights[0][0].length; k++) {
+				for (int k = 0; k < weights[0][0].length; k++) {
 					System.out.print(weights[i][j][k] + "");
 					if (k != weights[0][0].length - 1) System.out.print(", ");
 				}
@@ -182,8 +195,5 @@ public class Nural {
 		}
 		System.out.println("};");
 	}
-	
-	public static double sigmoid( double x , double thresh ) { return 1.0 / ( 1.0 + Math.exp(thresh-x) ); }
-	public static double capper(double value, double max, double min) {	return (value > max) ? max : (value < min) ? min : value ; }
 	public static void main(String[] vars) { run(); }
 }
