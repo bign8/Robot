@@ -8,8 +8,6 @@
 public class Controller {
 
 	public static void main(String args[]) {
-		Speedometer.run(null);
-		/*
 		//Ignition
 		Engine engine = new Engine();
 		Thread engineThr = new Thread(engine);
@@ -49,11 +47,7 @@ public class Controller {
 		brainThr.start();
 		
 		// Debugging - can comment out for production
-<<<<<<< HEAD
-		Debugger debug = new Debugger(engine, wheel, headlight, brain, garmin, brainThr);
-=======
 		Debugger debug = new Debugger(engine, wheel, headlight, brain, garmin, remote);
->>>>>>> refs/heads/master
 		Thread debugThr = new Thread(debug);
 		debugThr.setPriority(Thread.MIN_PRIORITY);
 		debugThr.start();
