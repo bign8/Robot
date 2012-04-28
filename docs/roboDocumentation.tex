@@ -217,13 +217,32 @@ This is a Java programmable board that calls a specific API to interface with th
 
 \clearpage
 \section{Robot Logic}
-The largest obstacle we overcame was understanding the difference between theoretical computer science and physical robotic computing.  On the white board and in the computer, issuing commands such as \textit{turnRight(35\textdegree)} then \textit{goForward(10 inches)} would move the robot 10 inches at 35\textdegree from the current location.
+There are 2 main obstacles that we overcame in this project:
+\begin{enumerate}
+\item Difference between Theory and Application
+\item CPU Clock Speed
+\end{enumerate}
+The difference between theory and application deals with the inconsistencies in a physical environment.  On the white board and in the computer, issuing commands such as \textit{turnRight(35\textdegree)} then \textit{goForward(10 inches)} would move the robot 10 inches at 35\textdegree from the current location.  
 
-In actuality, this is never the case, especially when working with a remote control vehicle.  Our logic must perform numerous checks to confirm that a command produced the desired result.
+In a physical environment, this is never the case, especially when working with a remote control vehicle.  The driving surface may be inconsistent, making the wheels only turn 30\textdegree and the battery may be low, so the motor may not drive at the proper speed, making the car only go 9 inches.  A series of this mistakes and the robot will lose its heading completely.  
 
-Above all else, 
+Similarly, if a range finding sensor misfires and returns false data, decision making processes are misinformed.  On the white board, a command such as \textit{getDistance()} can be trusted, but in reality, these functions must be checked and double checked for errors before they can be trusted by the robot.
+\vspace{2mm}
+
+In previous Computer Science courses, we were never limited by the speed of the CPU.  Sure it may take time to compute \textit{factorial(16984)}, but the impact of this time has never had high consequences.
+
+For this robot, we have become very aware of exactly how long it takes the CPU to complete a cycle.  This has two ramifications:
+\begin{enumerate}
+\item How long will a set of commands tie up the CPU? \textit{If it takes too long to interpret sensor data, then the robot may hit the wall before it realizes the wall is there.}
+\item How fast is the CPU? \textit{If a particular sensor is running substantially faster than the CPU, can the robot even interpret that data?}\footnote{See the section on Remote Control}
+\end{enumerate}
+
+\vspace{2mm}
+We have to consistently work to overcome the difference between theory and application in robotics, but seem to have worked out a few tricks to function thus far.  In terms of physical CPU limitations, we separated sensors and logic into various threads with specific priorities.
 
 \subsection{Threads}
+The IntelliBrain2 MicroController has the ability to spawn multiple process threads.
+
 \section{Robot User Manual}
 
 \section{Conclusion}
