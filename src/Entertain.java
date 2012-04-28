@@ -45,758 +45,773 @@ public class Entertain implements Runnable {
 	public static final int C6 = 1024;
 	public static final int R = 0;
 
-	public Speaker buzzer;
+	private Speaker buzzer;
+	
+	private int [][] intro = {
+		{E5, QUARTER_NOTE},
+		{E5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{E5, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{C5, QUARTER_NOTE},
+		{E5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{G5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{G4, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE}
+	};
+	private int [][] song = {
+		{C5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{G4, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{E4, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{A4, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{B4, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{A4_SHARP, QUARTER_NOTE},
+		{A4, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{G4, TRIPLET},
+		{E5, TRIPLET},
+		{G5, TRIPLET},
+		
+		{A5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{F5, QUARTER_NOTE},
+		{G5, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{E5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{C5, QUARTER_NOTE},
+		
+		{D5, QUARTER_NOTE},
+		{B4, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		//END OF MEASURE 12
+		
+		{C5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{G4, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{E4, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{A4, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{B4, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{A4_SHARP, QUARTER_NOTE},
+		{A4, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{G4, TRIPLET},
+		{E5, TRIPLET},
+		{G5, TRIPLET},
+		
+		{A5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{F5, QUARTER_NOTE},
+		{G5, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{E5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{C5, QUARTER_NOTE},
+		
+		{D5, QUARTER_NOTE},
+		{B4, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{G5, QUARTER_NOTE},
+		{F5_SHARP, QUARTER_NOTE},
+		
+		{F5, QUARTER_NOTE},
+		{D5_SHARP, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{E5, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{G4_SHARP, QUARTER_NOTE},
+		{A4, QUARTER_NOTE},
+		{C5, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{A4, QUARTER_NOTE},
+		{C5, QUARTER_NOTE},
+		{D5, QUARTER_NOTE},
+		//END OF MEASURE 24
+		
+		
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{G5, QUARTER_NOTE},
+		{F5_SHARP, QUARTER_NOTE},
+		
+		{F5, QUARTER_NOTE},
+		{D5_SHARP, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{E5, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{C6, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{C6, QUARTER_NOTE},
+		
+		{C6, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{G5, QUARTER_NOTE},
+		{F5_SHARP, QUARTER_NOTE},
+		
+		{F5, QUARTER_NOTE},
+		{D5_SHARP, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{E5, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{G4_SHARP, QUARTER_NOTE},
+		{A4, QUARTER_NOTE},
+		{C5, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{A4, QUARTER_NOTE},
+		{C5, QUARTER_NOTE},
+		{D5, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{D5_SHARP, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{D5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{C5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		//END OF MEASURE 36
+		
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{G5, QUARTER_NOTE},
+		{F5_SHARP, QUARTER_NOTE},
+		
+		{F5, QUARTER_NOTE},
+		{D5_SHARP, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{E5, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{G4_SHARP, QUARTER_NOTE},
+		{A4, QUARTER_NOTE},
+		{C5, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{A4, QUARTER_NOTE},
+		{C5, QUARTER_NOTE},
+		{D5, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{G5, QUARTER_NOTE},
+		{F5_SHARP, QUARTER_NOTE},
+		
+		{F5, QUARTER_NOTE},
+		{D5_SHARP, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{E5, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{C6, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{C6, QUARTER_NOTE},
+		
+		{C6, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{G5, QUARTER_NOTE},
+		{F5_SHARP, QUARTER_NOTE},
+		
+		{F5, QUARTER_NOTE},
+		{D5_SHARP, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{E5, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{G4_SHARP, QUARTER_NOTE},
+		{A4, QUARTER_NOTE},
+		{C5, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{A4, QUARTER_NOTE},
+		{C5, QUARTER_NOTE},
+		{D5, QUARTER_NOTE},
+		//End of measure 48
+				
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{D5_SHARP, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{D5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{C5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{C5, QUARTER_NOTE},
+		{C5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{C5, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{C5, QUARTER_NOTE},
+		{D5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{E5, QUARTER_NOTE},
+		{C5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{A4, QUARTER_NOTE},
+		
+		{G4, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{C5, QUARTER_NOTE},
+		{C5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{C5, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{C5, QUARTER_NOTE},
+		{D5, QUARTER_NOTE},
+		{E5, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		//End of measure 60
+				
+		{C5, QUARTER_NOTE},
+		{C5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{C5, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{C5, QUARTER_NOTE},
+		{D5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{E5, QUARTER_NOTE},
+		{C5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{A4, QUARTER_NOTE},
+		
+		{G4, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{E5, QUARTER_NOTE},
+		{E5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{E5, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{C5, QUARTER_NOTE},
+		{E5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{G5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{G4, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{C5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{G4, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{E4, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{A4, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{B4, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{A4_SHARP, QUARTER_NOTE},
+		{A4, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		//End of measure 72
+				
+		{G4, TRIPLET},
+		{E5, TRIPLET},
+		{G5, TRIPLET},
+		
+		{A5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{F5, QUARTER_NOTE},
+		{G5, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{E5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{C5, QUARTER_NOTE},
+		
+		{D5, QUARTER_NOTE},
+		{B4, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{C5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{G4, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{E4, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{A4, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{B4, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{A4_SHARP, QUARTER_NOTE},
+		{A4, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{G4, TRIPLET},
+		{E5, TRIPLET},
+		{G5, TRIPLET},
+		
+		{A5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{F5, QUARTER_NOTE},
+		{G5, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{E5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{C5, QUARTER_NOTE},
+		
+		{D5, QUARTER_NOTE},
+		{B4, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		//End of measure 84
+				
+		{E5, QUARTER_NOTE},
+		{C5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{G4, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{F4_SHARP, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{A4, QUARTER_NOTE},
+		{F5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{F5, QUARTER_NOTE},
+		
+		{A4, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{B4, TRIPLET},
+		{A5, TRIPLET},
+		{A5, TRIPLET},
+		
+		{A5, TRIPLET},
+		{G5, TRIPLET},
+		{F5, TRIPLET},
+		
+		{E5, QUARTER_NOTE},
+		{C5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{A4, QUARTER_NOTE},
+		
+		{G4, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{E5, QUARTER_NOTE},
+		{C5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{G4, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{G4_SHARP, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{A4, QUARTER_NOTE},
+		{F5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{F5, QUARTER_NOTE},
+		
+		{A4, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		//End of measure 96
+				
+		{B4, QUARTER_NOTE},
+		{F5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{F5, QUARTER_NOTE},
+		
+		{F5, TRIPLET},
+		{E5, TRIPLET},
+		{D5, TRIPLET},
+		
+		{C5, QUARTER_NOTE},
+		{E4, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{E4, QUARTER_NOTE},
+		
+		{C4, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{E5, QUARTER_NOTE},
+		{C5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{G4, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{G4_SHARP, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{A4, QUARTER_NOTE},
+		{F5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{F5, QUARTER_NOTE},
+		
+		{A4, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+	
+		{B4, TRIPLET},
+		{A5, TRIPLET},
+		{A5, TRIPLET},
+		
+		{A5, TRIPLET},
+		{G5, TRIPLET},
+		{F5, TRIPLET},
+		
+		{E5, QUARTER_NOTE},
+		{C5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{A4, QUARTER_NOTE},
+		
+		{G4, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		//End of measure 108
+				
+		{E5, QUARTER_NOTE},
+		{C5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{G4, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{G4_SHARP, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{A4, QUARTER_NOTE},
+		{F5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{F5, QUARTER_NOTE},
+		
+		{A4, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{B4, QUARTER_NOTE},
+		{F5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{F5, QUARTER_NOTE},
+		
+		{F5, TRIPLET},
+		{E5, TRIPLET},
+		{D5, TRIPLET},
+		
+		{C5, QUARTER_NOTE},
+		{E4, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{E4, QUARTER_NOTE},
+		
+		{C4, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{C5, QUARTER_NOTE},
+		{C5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{C5, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{C5, QUARTER_NOTE},
+		{D5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{E5, QUARTER_NOTE},
+		{C5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{A4, QUARTER_NOTE},
+		
+		{G4, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		//End of measure 120
+				
+		{C5, QUARTER_NOTE},
+		{C5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{C5, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{C5, QUARTER_NOTE},
+		{D5, QUARTER_NOTE},
+		{E5, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{C5, QUARTER_NOTE},
+		{C5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{C5, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{C5, QUARTER_NOTE},
+		{D5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{E5, QUARTER_NOTE},
+		{C5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{A4, QUARTER_NOTE},
+		
+		{G4, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{E5, QUARTER_NOTE},
+		{E5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{E5, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{C5, QUARTER_NOTE},
+		{E5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{G5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{G4, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		//End of measure 132
+				
+		{E5, QUARTER_NOTE},
+		{C5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{G4, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{G4_SHARP, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{A4, QUARTER_NOTE},
+		{F5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{F5, QUARTER_NOTE},
+		
+		{A4, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{B4, TRIPLET},
+		{A5, TRIPLET},
+		{A5, TRIPLET},
+		
+		{A5, TRIPLET},
+		{G5, TRIPLET},
+		{F5, TRIPLET},
+		
+		{E5, QUARTER_NOTE},
+		{C5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{A4, QUARTER_NOTE},
+		
+		{G4, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{E5, QUARTER_NOTE},
+		{C5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{G4, QUARTER_NOTE},
+		
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{G4_SHARP, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		
+		{A4, QUARTER_NOTE},
+		{F5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{F5, QUARTER_NOTE},
+		
+		{A4, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		//End of measure 144
+		
+		{B4, QUARTER_NOTE},
+		{F5, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{F5, QUARTER_NOTE},
+		
+		{F5, TRIPLET},
+		{E5, TRIPLET},
+		{D5, TRIPLET},
+		
+		{C5, QUARTER_NOTE},
+		{E4, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{E4, QUARTER_NOTE},
+		
+		{C4, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE},
+		{R, QUARTER_NOTE}
+	};
+	
+	private boolean running = true;
 	
 	public Entertain() {
 		buzzer = IntelliBrain.getBuzzer();
 	}
 	
+	public void stop() { running = false; }
+	
     public void run() {
+    	running = true;
         try {
-            
-			//Mario Theme  Broken into measures
-			buzzer.play(E5, QUARTER_NOTE);
-			buzzer.play(E5, QUARTER_NOTE);
-			buzzer.play(R, QUARTER_NOTE);
-			buzzer.play(E5, QUARTER_NOTE);
-			
-			buzzer.play(R, QUARTER_NOTE);
-			buzzer.play(C5, QUARTER_NOTE);
-			buzzer.play(E5, QUARTER_NOTE);
-			buzzer.play(R, QUARTER_NOTE);
-			
-			buzzer.play(G5, QUARTER_NOTE);
-			buzzer.play(R, QUARTER_NOTE);
-			buzzer.play(R, QUARTER_NOTE);
-			buzzer.play(R, QUARTER_NOTE);
-			
-			buzzer.play(G4, QUARTER_NOTE);
-			buzzer.play(R, QUARTER_NOTE);
-			buzzer.play(R, QUARTER_NOTE);
-			buzzer.play(R, QUARTER_NOTE);
+
+        	for(int j = 0; j < intro.length; j++){
+				buzzer.play(intro[j][0], intro[j][1]);
+				if (!running) return;
+			}
 			
 			for(int i = 1; i < 3; i++) {
-			
-				buzzer.play(C5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(G4, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(E4, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(A4, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(B4, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(A4_SHARP, QUARTER_NOTE);
-				buzzer.play(A4, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				
-				buzzer.play(G4, TRIPLET);
-				buzzer.play(E5, TRIPLET);
-				buzzer.play(G5, TRIPLET);
-				
-				buzzer.play(A5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(F5, QUARTER_NOTE);
-				buzzer.play(G5, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(E5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(C5, QUARTER_NOTE);
-				
-				buzzer.play(D5, QUARTER_NOTE);
-				buzzer.play(B4, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				//END OF MEASURE 12
-				
-				buzzer.play(C5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(G4, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(E4, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(A4, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(B4, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(A4_SHARP, QUARTER_NOTE);
-				buzzer.play(A4, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				
-				buzzer.play(G4, TRIPLET);
-				buzzer.play(E5, TRIPLET);
-				buzzer.play(G5, TRIPLET);
-				
-				buzzer.play(A5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(F5, QUARTER_NOTE);
-				buzzer.play(G5, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(E5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(C5, QUARTER_NOTE);
-				
-				buzzer.play(D5, QUARTER_NOTE);
-				buzzer.play(B4, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(G5, QUARTER_NOTE);
-				buzzer.play(F5_SHARP, QUARTER_NOTE);
-				
-				buzzer.play(F5, QUARTER_NOTE);
-				buzzer.play(D5_SHARP, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(E5, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(G4_SHARP, QUARTER_NOTE);
-				buzzer.play(A4, QUARTER_NOTE);
-				buzzer.play(C5, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(A4, QUARTER_NOTE);
-				buzzer.play(C5, QUARTER_NOTE);
-				buzzer.play(D5, QUARTER_NOTE);
-				//END OF MEASURE 24
-				
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(G5, QUARTER_NOTE);
-				buzzer.play(F5_SHARP, QUARTER_NOTE);
-				
-				buzzer.play(F5, QUARTER_NOTE);
-				buzzer.play(D5_SHARP, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(E5, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(C6, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(C6, QUARTER_NOTE);
-				
-				buzzer.play(C6, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(G5, QUARTER_NOTE);
-				buzzer.play(F5_SHARP, QUARTER_NOTE);
-				
-				buzzer.play(F5, QUARTER_NOTE);
-				buzzer.play(D5_SHARP, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(E5, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(G4_SHARP, QUARTER_NOTE);
-				buzzer.play(A4, QUARTER_NOTE);
-				buzzer.play(C5, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(A4, QUARTER_NOTE);
-				buzzer.play(C5, QUARTER_NOTE);
-				buzzer.play(D5, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(D5_SHARP, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(D5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				
-				buzzer.play(C5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				//END OF MEASURE 36
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(G5, QUARTER_NOTE);
-				buzzer.play(F5_SHARP, QUARTER_NOTE);
-				
-				buzzer.play(F5, QUARTER_NOTE);
-				buzzer.play(D5_SHARP, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(E5, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(G4_SHARP, QUARTER_NOTE);
-				buzzer.play(A4, QUARTER_NOTE);
-				buzzer.play(C5, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(A4, QUARTER_NOTE);
-				buzzer.play(C5, QUARTER_NOTE);
-				buzzer.play(D5, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(G5, QUARTER_NOTE);
-				buzzer.play(F5_SHARP, QUARTER_NOTE);
-				
-				buzzer.play(F5, QUARTER_NOTE);
-				buzzer.play(D5_SHARP, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(E5, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(C6, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(C6, QUARTER_NOTE);
-				
-				buzzer.play(C6, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(G5, QUARTER_NOTE);
-				buzzer.play(F5_SHARP, QUARTER_NOTE);
-				
-				buzzer.play(F5, QUARTER_NOTE);
-				buzzer.play(D5_SHARP, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(E5, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(G4_SHARP, QUARTER_NOTE);
-				buzzer.play(A4, QUARTER_NOTE);
-				buzzer.play(C5, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(A4, QUARTER_NOTE);
-				buzzer.play(C5, QUARTER_NOTE);
-				buzzer.play(D5, QUARTER_NOTE);
-				//End of measure 48
-						
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(D5_SHARP, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(D5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				
-				buzzer.play(C5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				
-				buzzer.play(C5, QUARTER_NOTE);
-				buzzer.play(C5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(C5, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(C5, QUARTER_NOTE);
-				buzzer.play(D5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				
-				buzzer.play(E5, QUARTER_NOTE);
-				buzzer.play(C5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(A4, QUARTER_NOTE);
-				
-				buzzer.play(G4, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				
-				buzzer.play(C5, QUARTER_NOTE);
-				buzzer.play(C5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(C5, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(C5, QUARTER_NOTE);
-				buzzer.play(D5, QUARTER_NOTE);
-				buzzer.play(E5, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				//End of measure 60
-						
-				buzzer.play(C5, QUARTER_NOTE);
-				buzzer.play(C5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(C5, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(C5, QUARTER_NOTE);
-				buzzer.play(D5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				
-				buzzer.play(E5, QUARTER_NOTE);
-				buzzer.play(C5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(A4, QUARTER_NOTE);
-				
-				buzzer.play(G4, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				
-				buzzer.play(E5, QUARTER_NOTE);
-				buzzer.play(E5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(E5, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(C5, QUARTER_NOTE);
-				buzzer.play(E5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				
-				buzzer.play(G5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				
-				buzzer.play(G4, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				
-				buzzer.play(C5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(G4, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(E4, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(A4, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(B4, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(A4_SHARP, QUARTER_NOTE);
-				buzzer.play(A4, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				//End of measure 72
-						
-				buzzer.play(G4, TRIPLET);
-				buzzer.play(E5, TRIPLET);
-				buzzer.play(G5, TRIPLET);
-				
-				buzzer.play(A5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(F5, QUARTER_NOTE);
-				buzzer.play(G5, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(E5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(C5, QUARTER_NOTE);
-				
-				buzzer.play(D5, QUARTER_NOTE);
-				buzzer.play(B4, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				
-				buzzer.play(C5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(G4, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(E4, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(A4, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(B4, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(A4_SHARP, QUARTER_NOTE);
-				buzzer.play(A4, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				
-				buzzer.play(G4, TRIPLET);
-				buzzer.play(E5, TRIPLET);
-				buzzer.play(G5, TRIPLET);
-				
-				buzzer.play(A5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(F5, QUARTER_NOTE);
-				buzzer.play(G5, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(E5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(C5, QUARTER_NOTE);
-				
-				buzzer.play(D5, QUARTER_NOTE);
-				buzzer.play(B4, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				//End of measure 84
-						
-				buzzer.play(E5, QUARTER_NOTE);
-				buzzer.play(C5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(G4, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(F4_SHARP, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				
-				buzzer.play(A4, QUARTER_NOTE);
-				buzzer.play(F5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(F5, QUARTER_NOTE);
-				
-				buzzer.play(A4, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				
-				buzzer.play(B4, TRIPLET);
-				buzzer.play(A5, TRIPLET);
-				buzzer.play(A5, TRIPLET);
-				
-				buzzer.play(A5, TRIPLET);
-				buzzer.play(G5, TRIPLET);
-				buzzer.play(F5, TRIPLET);
-				
-				buzzer.play(E5, QUARTER_NOTE);
-				buzzer.play(C5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(A4, QUARTER_NOTE);
-				
-				buzzer.play(G4, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				
-				buzzer.play(E5, QUARTER_NOTE);
-				buzzer.play(C5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(G4, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(G4_SHARP, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				
-				buzzer.play(A4, QUARTER_NOTE);
-				buzzer.play(F5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(F5, QUARTER_NOTE);
-				
-				buzzer.play(A4, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				//End of measure 96
-						
-				buzzer.play(B4, QUARTER_NOTE);
-				buzzer.play(F5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(F5, QUARTER_NOTE);
-				
-				buzzer.play(F5, TRIPLET);
-				buzzer.play(E5, TRIPLET);
-				buzzer.play(D5, TRIPLET);
-				
-				buzzer.play(C5, QUARTER_NOTE);
-				buzzer.play(E4, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(E4, QUARTER_NOTE);
-				
-				buzzer.play(C4, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				
-				buzzer.play(E5, QUARTER_NOTE);
-				buzzer.play(C5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(G4, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(G4_SHARP, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				
-				buzzer.play(A4, QUARTER_NOTE);
-				buzzer.play(F5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(F5, QUARTER_NOTE);
-				
-				buzzer.play(A4, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-			
-				buzzer.play(B4, TRIPLET);
-				buzzer.play(A5, TRIPLET);
-				buzzer.play(A5, TRIPLET);
-				
-				buzzer.play(A5, TRIPLET);
-				buzzer.play(G5, TRIPLET);
-				buzzer.play(F5, TRIPLET);
-				
-				buzzer.play(E5, QUARTER_NOTE);
-				buzzer.play(C5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(A4, QUARTER_NOTE);
-				
-				buzzer.play(G4, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				//End of measure 108
-						
-				buzzer.play(E5, QUARTER_NOTE);
-				buzzer.play(C5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(G4, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(G4_SHARP, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				
-				buzzer.play(A4, QUARTER_NOTE);
-				buzzer.play(F5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(F5, QUARTER_NOTE);
-				
-				buzzer.play(A4, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				
-				buzzer.play(B4, QUARTER_NOTE);
-				buzzer.play(F5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(F5, QUARTER_NOTE);
-				
-				buzzer.play(F5, TRIPLET);
-				buzzer.play(E5, TRIPLET);
-				buzzer.play(D5, TRIPLET);
-				
-				buzzer.play(C5, QUARTER_NOTE);
-				buzzer.play(E4, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(E4, QUARTER_NOTE);
-				
-				buzzer.play(C4, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				
-				buzzer.play(C5, QUARTER_NOTE);
-				buzzer.play(C5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(C5, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(C5, QUARTER_NOTE);
-				buzzer.play(D5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				
-				buzzer.play(E5, QUARTER_NOTE);
-				buzzer.play(C5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(A4, QUARTER_NOTE);
-				
-				buzzer.play(G4, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				//End of measure 120
-						
-				buzzer.play(C5, QUARTER_NOTE);
-				buzzer.play(C5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(C5, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(C5, QUARTER_NOTE);
-				buzzer.play(D5, QUARTER_NOTE);
-				buzzer.play(E5, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				
-				buzzer.play(C5, QUARTER_NOTE);
-				buzzer.play(C5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(C5, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(C5, QUARTER_NOTE);
-				buzzer.play(D5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				
-				buzzer.play(E5, QUARTER_NOTE);
-				buzzer.play(C5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(A4, QUARTER_NOTE);
-				
-				buzzer.play(G4, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				
-				buzzer.play(E5, QUARTER_NOTE);
-				buzzer.play(E5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(E5, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(C5, QUARTER_NOTE);
-				buzzer.play(E5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				
-				buzzer.play(G5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				
-				buzzer.play(G4, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				//End of measure 132
-						
-				buzzer.play(E5, QUARTER_NOTE);
-				buzzer.play(C5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(G4, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(G4_SHARP, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				
-				buzzer.play(A4, QUARTER_NOTE);
-				buzzer.play(F5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(F5, QUARTER_NOTE);
-				
-				buzzer.play(A4, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				
-				buzzer.play(B4, TRIPLET);
-				buzzer.play(A5, TRIPLET);
-				buzzer.play(A5, TRIPLET);
-				
-				buzzer.play(A5, TRIPLET);
-				buzzer.play(G5, TRIPLET);
-				buzzer.play(F5, TRIPLET);
-				
-				buzzer.play(E5, QUARTER_NOTE);
-				buzzer.play(C5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(A4, QUARTER_NOTE);
-				
-				buzzer.play(G4, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				
-				buzzer.play(E5, QUARTER_NOTE);
-				buzzer.play(C5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(G4, QUARTER_NOTE);
-				
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(G4_SHARP, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				
-				buzzer.play(A4, QUARTER_NOTE);
-				buzzer.play(F5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(F5, QUARTER_NOTE);
-				
-				buzzer.play(A4, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				//End of measure 144
-				
-				buzzer.play(B4, QUARTER_NOTE);
-				buzzer.play(F5, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(F5, QUARTER_NOTE);
-				
-				buzzer.play(F5, TRIPLET);
-				buzzer.play(E5, TRIPLET);
-				buzzer.play(D5, TRIPLET);
-				
-				buzzer.play(C5, QUARTER_NOTE);
-				buzzer.play(E4, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(E4, QUARTER_NOTE);
-				
-				buzzer.play(C4, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-				buzzer.play(R, QUARTER_NOTE);
-			
+				for(int j = 0; j < song.length; j++){
+					buzzer.play(song[j][0], song[j][1]);
+					if (!running) return;
+				}
 			}
 
         } catch (Throwable t) { t.printStackTrace(); }

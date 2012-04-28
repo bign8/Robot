@@ -96,7 +96,7 @@ public class Debugger implements Runnable {
 		disp.print(0, msg1);
 		disp.print(1, msg2);
 		
-		if (item != 0) eng.setRunning(run); else eng.setSpeed(0);
+		if (item != 0) eng.setRunning(run); else eng.setSpeed(0 , true);
 		if (item != 1) wheel.setRunning(run); else wheel.setDirection(wheel.CENTERED);
 		if (item != 2) son.setRunning(run);
 		if (item != 3) intel.setRunning(run);
@@ -115,7 +115,7 @@ public class Debugger implements Runnable {
 			try {
 				
 				power = (thumbwheel.sample() - 512) / 31;
-				eng.setSpeed(power);
+				eng.setSpeed(power , true);
 				
 				data = eng.toDebugString(new String[2]);
 				data[0] = "Pos:" + power;

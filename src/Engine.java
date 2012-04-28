@@ -16,12 +16,9 @@ public class Engine implements Runnable, Debuggable {
 	private IntelliBrainShaftEncoder encoder;
 	
 	// Algorithum variables
-	private int rpm = 0;
-	private int velocity = 0;
-	private int power = 0;
-	//private boolean newMove = true; // next two needed for stabolizing the changes
-	//private int moveCounter = 0; 
+	private int rpm = 0, velocity = 0, power = 0, counter = 0;
 	private int[] arrayOfSpeeds = {-120, -90, -60, 0, 30, 60, 90};
+	private boolean imediate = false;
 	
 	public Engine(){
 		
@@ -41,12 +38,12 @@ public class Engine implements Runnable, Debuggable {
 	
 	public void setRunning(boolean run) {
 		running = run;
-		setSpeed(0);
+		setSpeed(0, true);
 	}
 	
 	public void run(){
 		running = true;
-		int previousCounts = 0, counts = 0, counter = 0;
+		int previousCounts = 0, counts = 0;
 		long time = System.currentTimeMillis();
 		
 		while (true) {
@@ -58,31 +55,24 @@ public class Engine implements Runnable, Debuggable {
 					continue;
 				}
 				
-				if(counter > 10)
-					counter = 0;
+				if(counter > 5) counter = 0;
 				
 				//600 count intervals are taken per minute.
 				//128 counts per revolution.
 				counts = encoder.getCounts();
 				rpm = ((counts - previousCounts) * 600) / 128;
-				previousCounts = counts;					
-
-
-				//if (!newMove) {
-					//Self adjusting power, covers a quantized 10rpm per 1 power map.
-					//Currently functions under the assumption that rpm goes from -160 to 160.
-					if (counter == 10) {
-						if (velocity == 0) 
-							power = velocity;
-						else if (rpm > (arrayOfSpeeds[velocity + 3] + 30))
-							power--;
-						else if (rpm < arrayOfSpeeds[velocity + 3])
-							power++;
-					}
-				//} else {
-					//moveCounter++;
-					//if (moveCounter > 9) newMove = false; // one second at new speed
-				//}
+				previousCounts = counts;
+				
+				//Self adjusting power, covers a quantized 10rpm per 1 power map.
+				//Currently functions under the assumption that rpm goes from -160 to 160.
+				if (counter == 0) {
+					if (velocity == 0) 
+						power = velocity;
+					else if (rpm > (arrayOfSpeeds[velocity + 3] + 30))
+						power--;
+					else if (rpm < arrayOfSpeeds[velocity + 3])
+						power++;
+				}
 				
 				//limiter
 				if (power > 16) power = 16;
@@ -99,19 +89,14 @@ public class Engine implements Runnable, Debuggable {
 		
 	}
 	
-	public void setSpeed(int velocity) { 
-		
+	public void setSpeed( int velocity, boolean isRemote ) { 
+		imediate = isRemote;
 		
 		//for testing 
-		if (velocity > 3)
-			velocity = 3;
-		if (velocity < -3)
-			velocity = -3;
+		if (velocity > 3) velocity = 3;
+		if (velocity < -3) velocity = -3;
 		
-		this.velocity = velocity; 
-		//motor.setPower(velocity); 
-		//newMove = true;
-		//moveCounter = 0;
+		this.velocity = velocity;
 	}
 	public void appendSpeed(int velocity) { this.velocity += velocity; }
 	public int getRPM() { return rpm; }
