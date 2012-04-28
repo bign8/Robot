@@ -36,14 +36,24 @@ public class Controller {
 		garminThr.setPriority(Thread.MAX_PRIORITY-4);
 		garminThr.start();
 		
+		//Remote
+		Remote remote = new Remote();
+		Thread remoteThr = new Thread(remote);
+		remoteThr.setPriority(Thread.MAX_PRIORITY);
+		remoteThr.start();
+		
 		// Brain
-		Intelligence brain = new Intelligence(engine, wheel, headlight);
+		Intelligence brain = new Intelligence(engine, wheel, headlight, remote);
 		Thread brainThr = new Thread(brain);
 		brainThr.setPriority(Thread.MAX_PRIORITY-1);
 		brainThr.start();
 		
 		// Debugging - can comment out for production
+<<<<<<< HEAD
 		Debugger debug = new Debugger(engine, wheel, headlight, brain, garmin, brainThr);
+=======
+		Debugger debug = new Debugger(engine, wheel, headlight, brain, garmin, remote);
+>>>>>>> refs/heads/master
 		Thread debugThr = new Thread(debug);
 		debugThr.setPriority(Thread.MIN_PRIORITY);
 		debugThr.start();

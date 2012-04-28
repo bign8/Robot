@@ -15,10 +15,13 @@ public class Engine implements Runnable, Debuggable {
 	private Motor motor;
 	private IntelliBrainShaftEncoder encoder;
 	
-	// Public variables
+	// Algorithum variables
 	private int rpm = 0;
 	private int velocity = 0;
 	private int power = 0;
+	//private boolean newMove = true; // next two needed for stabolizing the changes
+	//private int moveCounter = 0; 
+	private int[] arrayOfSpeeds = {-120, -90, -60, 0, 30, 60, 90};
 	
 	public Engine(){
 		
@@ -43,37 +46,76 @@ public class Engine implements Runnable, Debuggable {
 	
 	public void run(){
 		running = true;
-		int previousCounts = 0, counts = 0;
+		int previousCounts = 0, counts = 0, counter = 0;
 		long time = System.currentTimeMillis();
 		
 		while (true) {
 			try {
+
 				if (!running) {
-					Thread.sleep(2000);
+					time += 2000;
+					Thread.sleep(time - System.currentTimeMillis());
 					continue;
 				}
+				
+				if(counter > 10)
+					counter = 0;
 				
 				//600 count intervals are taken per minute.
 				//128 counts per revolution.
 				counts = encoder.getCounts();
 				rpm = ((counts - previousCounts) * 600) / 128;
-				previousCounts = counts;
+				previousCounts = counts;					
 
-				// FOREST MAGIC GOES HERE
+
+				//if (!newMove) {
+					//Self adjusting power, covers a quantized 10rpm per 1 power map.
+					//Currently functions under the assumption that rpm goes from -160 to 160.
+					if (counter == 10) {
+						if (velocity == 0) 
+							power = velocity;
+						else if (rpm > (arrayOfSpeeds[velocity + 3] + 30))
+							power--;
+						else if (rpm < arrayOfSpeeds[velocity + 3])
+							power++;
+					}
+				//} else {
+					//moveCounter++;
+					//if (moveCounter > 9) newMove = false; // one second at new speed
+				//}
 				
-				//set power
-			    motor.setPower(velocity);
+				//limiter
+				if (power > 16) 
+					
+					power = 16;
+				if (power < -16)
+					power = -16;
+				motor.setPower(power);
 			    
 			    // Pause thread execution
 				time += 100;
 				Thread.sleep(time - System.currentTimeMillis());
+				counter++;
 				
 			} catch (Throwable t) { t.printStackTrace(); }
 		}
 		
 	}
 	
-	public void setSpeed(int velocity) { this.velocity = velocity; motor.setPower(velocity);}
+	public void setSpeed(int velocity) { 
+		
+		
+		//for testing 
+		if (velocity > 3)
+			velocity = 3;
+		if (velocity < -3)
+			velocity = -3;
+		
+		this.velocity = velocity; 
+		//motor.setPower(velocity); 
+		//newMove = true;
+		//moveCounter = 0;
+	}
 	public void appendSpeed(int velocity) { this.velocity += velocity; }
 	public int getRPM() { return rpm; }
 	public void brake() { motor.brake(); this.velocity = 0; } // something else should probably happen here

@@ -27,6 +27,7 @@ import com.ridgesoft.io.Display;
 public class Speedometer {
     public static void run(String args[]) {
 		try {
+<<<<<<< HEAD
 			System.out.println("WheelWatcher WW-01");
 
 			// Get the user interface objects
@@ -88,6 +89,48 @@ public class Speedometer {
 		    		motor.setPower(power);
 
 		    		time += 100;
+=======
+			
+			frontWheels.setPosition(FULL_RIGHT);
+			backWheels.setPosition(FULL_RIGHT);
+			
+			Thread.sleep(500);
+			
+			frontWheels.setPosition(FULL_LEFT);
+			backWheels.setPosition(FULL_LEFT);
+			
+			Thread.sleep(500);
+			
+			frontWheels.setPosition(CENTERED);
+			backWheels.setPosition(CENTERED);
+			
+			Thread.sleep(500);
+			
+		} catch (Throwable t) { t.printStackTrace(); }
+	}
+	
+	public void setRunning(boolean run) {
+		running = run;
+		setDirection(50);
+	}
+	
+	public void run() {
+		long time = System.currentTimeMillis();
+		while (true) {
+			try {
+				if (!running) {
+					time += 2000;
+					Thread.sleep(time - System.currentTimeMillis());
+					continue;
+				}
+				
+				frontWheels.setPosition(fDirection);
+				backWheels.setPosition(bDirection);
+				
+				// TODO auto correct rear steering straight based on back sensor
+			
+				time += 500;
+>>>>>>> refs/heads/master
 				Thread.sleep(time - System.currentTimeMillis());
 				counter++;
 

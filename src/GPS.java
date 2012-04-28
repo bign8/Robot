@@ -4,6 +4,7 @@ import javax.comm.SerialPort;
 
 // special thanks to
 // http://tech.groups.yahoo.com/group/intellibrain/message/25
+// http://home.mira.net/~gnb/gps/nmea.html#gprmc
 
 public class GPS implements Runnable {
 	
@@ -48,12 +49,12 @@ public class GPS implements Runnable {
 				
 				int inputCount = com1.read(inputBuffer, 0, inputBuffer.length);
 				if (com1.available() > 1024) {
-					com1.skip(com1.available()-128); // nobody wants old data - have not seen executed
+					//com1.skip(com1.available()-128); // nobody wants old data - have not seen executed
 					System.out.println("Data Skipped!");
 				}
 				
 				// find start of desired sentance
-				for (int idx = 0; idx < inputCount - 5; idx++) {
+				for (int idx = 0; idx < inputCount - 6; idx++) {
 					if (!stillReading) {
 						jdx = 0;
 						if ((char) inputBuffer[idx    ] != 'G') continue;
@@ -61,7 +62,7 @@ public class GPS implements Runnable {
 						if ((char) inputBuffer[idx + 2] != 'R') continue;
 						if ((char) inputBuffer[idx + 3] != 'M') continue;
 						if ((char) inputBuffer[idx + 4] != 'C') continue;
-						// idx += 5; // clean identifiers?
+						idx += 6; // clean identifiers?
 					}
 					stillReading = true;
 					
@@ -78,25 +79,21 @@ public class GPS implements Runnable {
 
 					// Begin Parsing
 					if (!stillReading) { // parse buffer for da magic
-						System.out.println("Entry: " + new String(parseBuffer, 0, jdx));
-						
-						System.out.println((firstChar(parseBuffer, 2) == 'V')?"yep":"nop <- lol");
-						
-						//display.print(0, "Lon " + cvtFld(parseBuffer, 3, true));
-						//display.print(1, "Lat " + cvtFld(parseBuffer, 5, true));
-						
+						//System.out.println(new String(parseBuffer));
+						//String[] data = toDebugString( new String[2] );
+						//System.out.println(data[0] + "\n" + data[1]);
 						
 						try {
 							synchronized (latLon) {
 								latLon.valid  = (firstChar(parseBuffer, 2) == 'A');
 								//if (latLon.valid) {
-									latLon.curLat = cvtFld(parseBuffer, 5, true);
-									latLon.curLon = cvtFld(parseBuffer, 3, true);
-									latLon.curHdg = cvtFld(parseBuffer, 8, false);
-									latLon.curSpd = cvtFld(parseBuffer, 7, false);
+									latLon.curLat = cvtFld(parseBuffer, 4, true);
+									latLon.curLon = cvtFld(parseBuffer, 2, true);
+									latLon.curHdg = cvtFld(parseBuffer, 7, false);
+									latLon.curSpd = cvtFld(parseBuffer, 6, false);
 								//}
 							}
-						} catch (Error e) {e.printStackTrace();/* silent kill on the errors I produce */}
+						} catch (Error e) {/* silent kill on the errors I produce */} // data has no dot and thus errors out stuff
 					}
 					
 					break; // no more looping this round
@@ -139,7 +136,7 @@ public class GPS implements Runnable {
 			rtnVal += buf[cdx] - '0';
 		}
 		
-		if (degFlg)
+		if (degFlg) /* not exactly gps, but it works as far as getting coorninates */
 			rtnVal = ((rtnVal - rtnVal % 100) * 60) / 100 + (rtnVal % 100);
 		for (cdx++; buf[cdx] != ','; cdx++) {
 			if (cdx >= buf.length-1) throw new Error("No Last Comma");
