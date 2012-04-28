@@ -15,8 +15,8 @@ public class Remote implements Runnable, Debuggable {
 
 	public void run(){
 		while(true){
-			port1 = input1.sample()/5 - 11;
-			port2 = input2.sample()/5 - 11;
+			port1 = input1.sample()/5 - 12;
+			port2 = input2.sample()/5 - 12;
 			if ((port1 < -5 )  || ( port2 < -5))
 				remoteOn = false;
 			else
