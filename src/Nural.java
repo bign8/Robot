@@ -30,18 +30,6 @@ public class Nural {
 				{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 3
 				{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 4
 				{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 }   // Hidden node 5
-			},{
-				{ 1.0, 0.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 1 // Layer 3
-				{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 2
-				{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 3
-				{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 4
-				{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 }   // Hidden node 5
-			},{
-				{ 1.0, 0.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 1 // Layer 4
-				{ 1.0, 1.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 2
-				{ 1.0, 0.0, 1.0, 0.0, 0.0, 0.0 },  // Hidden node 3
-				{ 0.0, 0.0, 0.0, 1.0, 0.0, 0.0 },  // Hidden node 4
-				{ 0.0, 0.0, 0.0, 0.0, 1.0, 0.0 }   // Hidden node 5
 			}
 		};
 		/*
@@ -52,15 +40,16 @@ public class Nural {
 			{ 0.0, 0.0, 0.0, 0.0, 0.0 }  // sigmoid ofsets 4
 		};//*/
 		
-		weights = randomInit(weights);
 		
-		boolean[][] active = {
+		
+		boolean[][] active = { // last column is bias!
 			{ true, true, false, false, false, false }, // first one should always be true
 			{ true, true, false, false, false, false },//*TODO: change bias back to true on this line after devl
-			{ true, true, true, true, true, true },
-			{ true, true, true, true, true, true },//*/
 			{ true, false, false, false, false, false } // last one should only have three true
 		};
+		
+		//double[][][] weights = new double[active.length-1][active[0].length][active[0].length-1];
+		//weights = randomInit(weights);
 		
 		double[][] outputs = new double[active.length][active[0].length]; // allows storage of past calcuations
 		double[][] error = new double[weights.length][weights[0].length];
@@ -79,7 +68,7 @@ public class Nural {
 			outputs[0][3] = capper(trainingData[epoch % trainingData.length][3] / 100.0, 1.0, 0.0);
 			outputs[0][4] = capper(trainingData[epoch % trainingData.length][4] / 100.0, 1.0, 0.0); // for sensors
 
-			for (i = 0; i < active.length; i++) outputs[i][5] = 1.0; // setup biases
+			//for (i = 0; i < active.length; i++) outputs[i][5] = 1.0; // setup biases
 			
 			// -------------------------------------------------------
 			// |                    QUERY NEURONS                    |
@@ -121,7 +110,7 @@ public class Nural {
 			}
 			
 			// Display current calculated error
-			System.out.println("Epoch: " + (epoch+1) + "\tError: " + curError);
+			System.out.println("Epoch: " + (epoch+1) + "\tOutput Error: " + curError);
 			
 			// new weights for output layer
 			for ( j = 0; j < weights[0].length; j++ ) {
