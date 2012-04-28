@@ -1,0 +1,236 @@
+\documentclass[12pt]{article} 
+\setlength{\paperheight}{11in}
+
+%Margins: 
+\usepackage{geometry} 
+\geometry{top=1.0in, bottom=1.0in, left=1.25in, right=1.25in} 
+
+%Header 
+\usepackage{fancyhdr}
+\setlength{\headheight}{15pt} \pagestyle{fancyplain}\lhead{\small{Part \thepart}}
+\rhead{\fancyplain{}{\small{\textit{\leftmark}}}}\cfoot{\small{\thepage}}
+
+%Font {Options are sfdefault or rmdefault for roman orsans-serif} 
+\renewcommand{\familydefault}{\sfdefault} 
+
+%Import Packages: 
+\usepackage{amsmath, amssymb, graphicx, fontenc,color,setspace, ulem, subfig, textcomp} 
+
+%To insert PDFs (For Appendix):
+\usepackage[final]{pdfpages} 
+
+\begin{document} 
+%Include the Opening (Title, Abstract, etc)
+
+\input{Opening/opening}
+\onehalfspacing
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%% BEGIN CONTENT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\
+\setcounter{page}{1}
+\pagenumbering{arabic}
+%Header 
+\setlength{\headheight}{15pt} \pagestyle{fancyplain}\lhead{\small{\textit{SENIOR PROJECT 2012}}}
+\rhead{\fancyplain{}{\small{\textit{\leftmark}}}}\cfoot{\small{\thepage}}
+\section{Introduction}
+\subsection{Overview}
+After procuring robots from MSU's robotic department, we familiarized ourselves with the IntelliBrain2 Micro Controller from Ridgesoft mounted atop the Ridgesoft Deluxe Educational Robot:\\
+\begin{figure}[h]
+\centerline{\includegraphics[scale=.5]{img/smallBot}}
+\caption{IntelliBrain2 Micro Controller on the standard Ridgesoft base}
+\end{figure}\\
+This small robot allowed us to learn the basics before moving onto a larger frame.  This robot ran with two independent continuous rotation servos (controlling each wheel independently), a range finding sensor, and two light sensors pointed downwards to help it follow a line.  
+
+Next, we moved onto a larger, faster robot mounted on an Axial Remote Control Rock Crawling car base:
+\begin{figure}[h]
+\centerline{\includegraphics{img/bigBot1}}
+\caption{Axial RC car mounted with IntelliBrain2 Controller}
+\end{figure}
+
+We modified the base to include 4 wheel steering.  We then mounted a GPS, 5 range finding sensors and a single WheelWatcher Incremental Quadrature Encoder for navigation and speed control.
+
+\subsection{This Documentation}
+The purpose of this documentation is to explain the process and steps we took to learn, build, and program our self-navigating robot.  We will introduce the development environment, discuss the specific functions of the robot and describe the running process of the robot, as the end user would see.
+
+\subsection{Project Goals}
+\begin{enumerate}
+\item Grasp the concepts of introductory robotics.
+\item Learn to translate a theoretical environment to a running physical machine.
+\item Enhance our understanding of the Java Language.
+\item Learn about external Java libraries.
+\item Understand how Java can be compiled to a specific platform and handle physical sensor input.
+\item Learn advanced robotic algorithms - separate from theoretical Computer Science algorithms.
+\end{enumerate}
+
+\clearpage
+\section{Development Environment}
+The IntelliBrain2 can be programmed in Java.  A specific RoboJDE library is required at compile to interface with the board.  There are numerous options to turn Java code into running code on the robot that we will explain here.
+\subsection{Requirements}
+First, download the development software from the Ridgesoft Website:\\
+{\color{blue}\centerline{http://ridgesoft.com/robojde/robojde.htm}}\\
+The software, API, required libraries, and physical wiring diagrams can be found on this website.
+
+There is an included development application, \textit{RoboJDE}, that uses RoboJDE project files $(.rjp)$ to program the robot.  This editor is great for getting started, but is quickly outgrown.  The software comes with many example files and as long as the host computer has a Serial Port (We used an OptiPlex GX620), then there is no additional software required to get the first programs loaded to the robot.
+
+This environment, however, is all plain text with no syntax coloring or error detection.  Moreover, We found Eclipse to be the best editor because it can be configured to automatically compile to the robot using the rsload script.
+
+\subsection{RSLoad Script}
+Included in downloads for all platforms is a script called rsload.  rsload is a command line utility for loading code to the robot.  The best documentation on it can be found here:\\
+{\color{blue}\centerline{http://ridgesoft.com/robojde/2.0/docs/RoboJDEGuide.pdf}}
+Some important arguments to know for rsload are:
+\begin{description}
+
+\item[-port] Specifies the port the robot is connected to, typically COM1 on Windows or /dev/ttys0 on Linux, but if using a USB adapter, this could be /dev/tty.usbserial or COM5.  Understanding particular drivers and the OS is important here.
+\item[-run] If included, the robot will automatically run when load is complete.
+\item[-bank] Specify to load to either Flash or Ram; we always loaded to Flash and in some cases, it was required to use this argument.
+\item[-verbose] Good for debugging purposes.
+\end{description}
+
+The ultimate required argument is the name of the class that includes main.  An example call:
+\begin{verbatim}
+rsload -bank Flash -port /dev/tty.usbserial -run Controller
+\end{verbatim}
+This command will load the Controller class to the robot over the USB to Serial adapter.  When load is complete, it will run the program.  It should be noted that in this example, Controller.class is located in the same directory as rsload.
+
+\subsection{Individual Load Scripts}
+For greater compatibility, we wrote a customizable load script that would compile and then load a specific file, given the file path and the name of the file containing the function, $main$.
+\small{\begin{verbatim}
+#Instructions:
+#Update both filePath and fileName variables to represent where the files are.
+#These should all be relative to Dropbox.  (Note in eclipse cases, compiled files 
+#may be found in the /bin/ directory of the project.  However, these should be 
+#pointed to the java file for compiling.
+#Don't put a '/' on the end of the filePath:
+#The fileName is the main controlling class.
+#Warning! Every .java file in the path BETTER compile.
+#This is an example:
+#filePath=/home/robotics/Dropbox/Robo/Development/Forrest
+#fileName=MusicTest
+###############################################################
+####################### WHAT YOU SHOULD EDIT ####################
+filePath=/home/robotics/Dropbox/Robo/Development/Master/Robot/src 
+#Note, don't end with /
+fileName=Controller		#Note, no .java or .class! This has 'main function'
+######################## END WHAT YOU SHOULD EDIT ###############
+###############################################################
+clear
+echo "Welcome to the CS 430 Load Script"
+echo "This will fail if RoboJDE is running"
+echo ""
+echo "Copying to Temp Build Path to not upset Eclipse..."
+rm -f /home/robotics/Dropbox/Robo/Development/TempLoadNoTouchie/*
+cp $filePath/* /home/robotics/Dropbox/Robo/Development/TempLoadNoTouchie/
+echo "Files Copied To Temp Build Path:"
+cd /home/robotics/Dropbox/Robo/Development/TempLoadNoTouchie
+ls -al
+echo "Press Enter to Compile"
+read nothing
+#Let's compile it first:
+echo "Compiling..."
+javac -classpath "/home/robotics/RoboJDE/RoboJDE.jar" *.java
+echo "Compilation Complete"
+echo "Make sure Robot is in Bootstrap Mode, Turn ON then press STOP, 
+                                                   Then Press Enter"
+read nothing
+echo "Initiating Robot Loader:"
+sh /home/robotics/RoboJDE/rsload -port /dev/ttyS0 -bank flash $fileName
+echo ""
+echo "Press Enter to Quit"
+read nothing
+\end{verbatim}}
+
+This script was written for the robotics user account on an OptiPlex GX620 running Ubuntu 11.10 with the robot connected to the serial port.  It will copy the required files to a temporary directory, compile them and then load them to the robot.
+
+The main purpose of a script like this is to abstract the robot development to simple java files in a single directory.  The script takes care of including the necessary files for interfacing with the board, so the user can write simple Java code to feed this script.
+
+Next, we take this concept one step further by integrating with Eclipse.
+
+\subsection{Integrating with Eclipse}
+Eclipse is a robust open source development environment that allows for much customization.  The two requirements for this project are:
+\begin{enumerate}
+\item Include the RoboJDE.jar archive in the compile path
+\item Write an external build tool to automatically call the rsload script.
+\end{enumerate}
+
+Once a project is created in Eclipse, preferences can be set by right-clicking on the project root.  Ensure here that the Java Build Path includes the RoboJDE.jar file.  It is convenient to put a copy of this file in the workspace directory so that it can be referenced locally.
+
+There are explicit instructions for setting up an eclipse external tool in the read me, but I have included a screen shot here for further description:
+\clearpage
+\begin{figure}[h]
+\includegraphics[scale=.4]{img/externalTool}
+\caption{Eclipse External Tool Configuration}
+\end{figure}
+
+This tool configuration differs from the suggested configuration with static references for convenience.  Note that the Working Directory references the bin directory, where Eclipse puts the compiled class files.  The name of the class with the function, $main$ in it is $Controller$.
+
+\subsection{Source Version Control}
+The importance of a steadfast source version control method should not be over looked; unfortunately, we did so for months until turning to git and github.com.  We recommend to spend the time in the beginning familiarizing yourself with the processes of branching, forking, and merging with the github interface.  
+
+We found an open source utility, EGit installed through the Eclipse market place, that allowed us to integrate the Eclipse environment with github.  It should be known and user be warned that github integration with Eclipse is very powerful and will overwrite the local workspace, so one must be comfortable with the github commands and Egit interface before fetching or pushing from the remote repository.
+
+Originally, we used Dropbox, which worked as a great backup tool at the end of the day, but hard for real-time development.  This is because Dropbox is not true version control software.
+
+\subsubsection*{SVC Anecdote on Dropbox}
+While Dropbox is a simple, convenient, and magical application in today's computing, it is not a substitute for source version control.  We initially used Dropbox to sync files across all of our computers for team development.  The problem here is that changes propagate immediately.  Backups are kept in the depths of Dropbox's servers, but are tedious to scan through and recover.  However, the real kicker occurs when Dropbox meets DeepFreeze, the Enterprise software that Carroll uses to fight malicious intentions.  If Dropbox is installed on a user's profile, it will by default sync all files to a folder on the local hard drive.  When the computer restarts, changes to the $C$ drive are erased and Dropbox is fooled into believing the user deleted all files in their Dropbox directory.  This change is then propagated to the rest of the team, so come Monday morning, all code is erased across every team member's computer.  \textit{Thanks, Forrest}.
+
+\clearpage
+\section{Physical Robot Design}
+Here we describe the physical attributes of the robot, after introducing each part, the next section will cover the logic that governs each physical interface.
+\begin{figure}[h]
+\centerline{\includegraphics[scale=.75]{img/bigBot2}}
+\caption{Final Robot Design}
+\end{figure}
+\subsection{Description}
+The Robot is about 18" long, 10" tall, and 11" wide.  It has 4 wheels of 5" diameter. and runs off a 3000 mAh Ni-MH battery.  The RC car body is designed by Axial Racing ({\color{blue} www.axialracing.com}).
+
+Borrowing the parts from a second RC car, we gave our robot 4-wheel steering by substituting the rear axle with a second car's front steering axle.
+\begin{figure}[h]
+\centering
+\subfloat[Front Steering]{\includegraphics{img/steering1}}
+\hspace{5mm}
+\subfloat[Rear Steering]{\includegraphics{img/steering2}}
+\end{figure}
+
+A central motor, controlled by an Axial AE-2 ESC drives all four wheels.  This is mounted in the center of the body and is directly linked to the WheelWatcher chip which records how fast the motor is spinning.
+\begin{figure}[h]
+\centerline{\includegraphics{img/wheelwatcher}}
+\caption{Nubotics' WheelWatcher Incremental Quadrature Encoder mounted next to motor}
+\end{figure}
+
+As the motor turns, the black and white disk spins over light sensors on the WheelWatcher chip.  With each change in color, a counter is incremented.  This counter can then be converted to rotations per minute, or $RPM$.
+
+On the top of the robot are 5 range finding sensors that operate by sonar:
+\begin{figure}[h]
+\centerline{\includegraphics[scale=.8]{img/rangeSensors}}
+\caption{Ping))) Sensors}
+\end{figure}
+
+These 5 sensors point directly ahead, 45\textdegree \hspace{1mm}left, right, and 90\textdegree \hspace{1mm}left, right.  They operate via sonar and require special attention to timing as the command tells it when to send a `ping' and when to read the ping.  If not a enough or too much time elapses between the send and read command, the data is corrupted.
+
+Ultimately, the main controlling board is the IntelliBrain2 by Ridgesoft: 
+\begin{figure}[h]
+\centerline{\includegraphics{img/intellibrain}}
+\caption{The 14.7 MHz IntelliBrain2 MicroController}
+\end{figure}
+
+This is a Java programmable board that calls a specific API to interface with the physical inputs.  It connects to a computer via a serial port.  In this figure, we have a USB adapter plugged into the serial port. 
+
+
+\clearpage
+\section{Robot Logic}
+The largest obstacle we overcame was understanding the difference between theoretical computer science and physical robotic computing.  On the white board and in the computer, issuing commands such as \textit{turnRight(35\textdegree)} then \textit{goForward(10 inches)} would move the robot 10 inches at 35\textdegree from the current location.
+
+In actuality, this is never the case, especially when working with a remote control vehicle.  Our logic must perform numerous checks to confirm that a command produced the desired result.
+
+Above all else, 
+
+\subsection{Threads}
+\section{Robot User Manual}
+
+\section{Conclusion}
+\subsection{Strengths}
+\subsection{Weaknesses}
+
+\section{Appendix}
+\subsection{Source Code}
+
+\end{document}
