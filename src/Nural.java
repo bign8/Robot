@@ -1,7 +1,6 @@
-
 /*
  * This class is used to demonstrate the neural network for given inputs
- * TODO: Train robot to teach itself
+ * http://www.pirobot.org/blog/0007/
  * http://www4.rgu.ac.uk/files/chapter3%20-%20bp.pdf
  */
 public class Nural {
@@ -65,7 +64,7 @@ public class Nural {
 		
 		double[][] error = new double[weights.length][weights[0].length];
 		
-		int i, j, k, epoch, numberOfCycles = 10;
+		int i, j, k, epoch, numberOfCycles = 40;
 		double learningRate = 1.0, curError, tempDiff;
 		
 		// -------------------------------------------------------
@@ -79,11 +78,8 @@ public class Nural {
 			outputs[0][2] = capper(trainingData[epoch % trainingData.length][2] / 100.0, 1.0, 0.0);
 			outputs[0][3] = capper(trainingData[epoch % trainingData.length][3] / 100.0, 1.0, 0.0);
 			outputs[0][4] = capper(trainingData[epoch % trainingData.length][4] / 100.0, 1.0, 0.0); // for sensors
-			outputs[0][5] = 1.0;
-			outputs[1][5] = 1.0;
-			outputs[2][5] = 1.0;
-			//outputs[3][5] = 1.0;
-			//outputs[4][5] = 1.0;
+
+			for (i = 0; i < active.length; i++) outputs[i][5] = 1.0; // setup biases
 			
 			// -------------------------------------------------------
 			// |                    QUERY NEURONS                    |
@@ -125,14 +121,15 @@ public class Nural {
 			}
 			
 			// Display current calculated error
-			System.out.println("Epoch: " + (epoch+1) + " Error: " + curError);
+			System.out.println("Epoch: " + (epoch+1) + "\tError: " + curError);
 			
 			// new weights for output layer
 			for ( j = 0; j < weights[0].length; j++ ) {
 				if ( active[i][j] ) {
 					for ( k = 0; k < weights[0][0].length; k++ ) {
-						if (active[i-1][k])
+						if (active[i-1][k]) {
 							weights[i-1][j][k] += outputs[i-1][k] * error[i-1][j] * learningRate;
+						}
 					}
 				}
 			}
@@ -144,8 +141,9 @@ public class Nural {
 				for ( j = 0; j < weights[0].length; j++ ) {
 					if ( active[i][j] ) {
 						for ( k = 0; k < weights[0][0].length; k++ ) {
-							if (active[i+1][k])
+							if (active[i+1][k]) {
 								error[i-1][j] += error[i][k] * weights[i][k][j];
+							}
 						}
 						error[i-1][j] *= ( 1 - outputs[i][j] ) * outputs[i][j];
 					}
@@ -155,16 +153,17 @@ public class Nural {
 				for ( j = 0; j < weights[0].length; j++ ) {
 					if ( active[i][j] ) {
 						for ( k = 0; k < weights[0][0].length; k++ ) {
-							if (active[i][k])
+							if (active[i][k]) {
 								weights[i-1][j][k] += error[i-1][j] * outputs[i-1][k] * learningRate;
+							}
 						}
 					}
 				}
 			}
 		}
 		
-		// TODO Remove these debugging lines
-		System.out.println("\n[Weight Matrix]\ndouble[][][] weights = {");
+		// Output new weights in a usable format - yes its formatted java
+		System.out.println("\n[Weight Matrix]\n\ndouble[][][] weights = {");
 		for (i = 0; i < weights.length; i++) {
 			System.out.print("\t{\n");
 			for (j = 0; j < weights[0].length; j++) {
@@ -184,13 +183,7 @@ public class Nural {
 		System.out.println("};");
 	}
 	
-	public static double sigmoid( double x , double thresh ) {
-		return 1.0 / ( 1.0 + Math.exp(thresh-x) );
-	}
-	
-	public static double capper(double value, double max, double min) {
-		return (value > max) ? max : (value < min) ? min : value ;
-	}
-	
+	public static double sigmoid( double x , double thresh ) { return 1.0 / ( 1.0 + Math.exp(thresh-x) ); }
+	public static double capper(double value, double max, double min) {	return (value > max) ? max : (value < min) ? min : value ; }
 	public static void main(String[] vars) { run(); }
 }
