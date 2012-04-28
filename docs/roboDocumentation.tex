@@ -240,8 +240,38 @@ For this robot, we have become very aware of exactly how long it takes the CPU t
 \vspace{2mm}
 We have to consistently work to overcome the difference between theory and application in robotics, but seem to have worked out a few tricks to function thus far.  In terms of physical CPU limitations, we separated sensors and logic into various threads with specific priorities.
 
+\clearpage
 \subsection{Threads}
-The IntelliBrain2 MicroController has the ability to spawn multiple process threads.
+The IntelliBrain2 MicroController has the ability to spawn multiple process threads.  As such, we have separated our robots sensory inputs and logic into different threads to optimize driving abilities.  These threads (in order of priority) are:
+
+\begin{quote}
+\begin{description}
+\item[Remote] Handles checking for the remote to turn on (wireless kill switch)
+\item[Sonar] Controls the 5 range finding sensors on the front.
+\item[Brain] Governs all decision making
+\item[Engine] Controls the motor servo.
+\item[Steering] Controls the front and rear steering servos.
+\item[GPS] Controls the Global Positioning System chip that is mounted on the top of the robot.
+\item[Debugging] Handles debugging data if requested - has minimum priority.
+\end{description}
+\end{quote}
+
+This design is based off the general principle of ranking importance as: \textit{1) Sensory Input 2) Decision-Making 3) Motor Control}  (Note, the GPS is excluded in this because it is rarely used).
+
+\subsubsection{Challenges}
+
+\clearpage
+\subsection{Remote Control}
+In a last addition to the robot, we incorporated the original RC car remote to override the robot logic for motor control.  This was done to serve two purposes: 1) act as a kill switch and 2) provide the ability to manually drive the robot to train a Neural Network.  We played with this idea early on, but abandoned it due to difficulty in obtaining clean data from the remote.
+
+Upon revisiting the idea, we determined the original problem was a limitation in the physical clock speed of the Micro Controller.  The IntelliBrain2 has a clock speed of 14.7 MHz.  The frequency of the remote is 27 MHz.  Therefore, no matter how many consecutive clock cycles we gave the remote sensor, it was incapable of accurately sampling the change in signal.
+
+To remedy this issue, our team member pursuing a Physics degree created an RC circuit (a type of Low-Pass filter) for the remote sensor that cleaned up the signal and allows for meaningful sampling of the analog input.  We should note that the current circuit is an improvement on the first attempt which utilized much larger capacitors that \footnote{featured} a multiple second delay on steering and throttle input.
+
+\subsection{Remote Input}
+After averaging the sample data, we can obtain nearly real-time steering and throttle input.  Because we must wait for the capacitor to charge/discharge, there is significant lag in control.\footnote{After all this, we've succeeded in building a simple RC car (worse than the one we started with)}
+
+The impact of this feature is a physical kill switch: Turn the remote on and the running logic stops and the remote takes over\footnote{Also, the \textit{Mario} theme song plays}; turn off the remote, and the running logic resumes.
 
 \section{Robot User Manual}
 
