@@ -19,8 +19,9 @@ public class Engine implements Runnable, Debuggable {
 	private int rpm = 0;
 	private int velocity = 0;
 	private int power = 0;
-	private boolean newMove = true; // next two needed for stabolizing the changes
-	private int moveCounter = 0; 
+	//private boolean newMove = true; // next two needed for stabolizing the changes
+	//private int moveCounter = 0; 
+	private int[] arrayOfSpeeds = {-120, -90, -60, 0, 30, 60, 90};
 	
 	public Engine(){
 		
@@ -64,24 +65,31 @@ public class Engine implements Runnable, Debuggable {
 				//128 counts per revolution.
 				counts = encoder.getCounts();
 				rpm = ((counts - previousCounts) * 600) / 128;
-				previousCounts = counts;
+				previousCounts = counts;					
 
-				if (!newMove) {
+
+				//if (!newMove) {
 					//Self adjusting power, covers a quantized 10rpm per 1 power map.
 					//Currently functions under the assumption that rpm goes from -160 to 160.
-					if (counter == 10)
-						power += velocity+ (rpm/32);
-				} else {
-					moveCounter++;
-					if (moveCounter > 9) newMove = false; // one second at new speed
-				}
+					if (counter == 10) {
+						if (velocity == 0) 
+							power = velocity;
+						else if (rpm > (arrayOfSpeeds[velocity + 3] + 30))
+							power--;
+						else if (rpm < arrayOfSpeeds[velocity + 3])
+							power++;
+					}
+				//} else {
+					//moveCounter++;
+					//if (moveCounter > 9) newMove = false; // one second at new speed
+				//}
 				
 				//limiter
 				if (power > 16) 
+					
 					power = 16;
 				if (power < -16)
 					power = -16;
-				
 				motor.setPower(power);
 			    
 			    // Pause thread execution
@@ -95,10 +103,18 @@ public class Engine implements Runnable, Debuggable {
 	}
 	
 	public void setSpeed(int velocity) { 
+		
+		
+		//for testing 
+		if (velocity > 3)
+			velocity = 3;
+		if (velocity < -3)
+			velocity = -3;
+		
 		this.velocity = velocity; 
-		motor.setPower(velocity); 
-		newMove = true;
-		moveCounter = 0;
+		//motor.setPower(velocity); 
+		//newMove = true;
+		//moveCounter = 0;
 	}
 	public void appendSpeed(int velocity) { this.velocity += velocity; }
 	public int getRPM() { return rpm; }

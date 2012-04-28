@@ -11,6 +11,7 @@ public class Debugger implements Runnable {
 	private Sonar son;
 	private Intelligence intel;
 	private GPS gps;
+	private Remote rem;
 	
 	// locally used for things
 	private Display disp;
@@ -19,12 +20,13 @@ public class Debugger implements Runnable {
 	private PushButton stopButton;
 	public Speaker buzzer;
 	
-	public Debugger(Engine e, SteeringWheel w, Sonar s, Intelligence i, GPS g) {
+	public Debugger(Engine e, SteeringWheel w, Sonar s, Intelligence i, GPS g, Remote r) {
 		eng = e;
 		wheel = w;
 		son = s;
 		intel = i;
 		gps = g;
+		rem = r;
 		
 		disp = IntelliBrain.getLcdDisplay();
 		thumbwheel = IntelliBrain.getThumbWheel();
@@ -52,6 +54,7 @@ public class Debugger implements Runnable {
 					case 2:  data = son  .toDebugString(new String[2]); showingNothing = false; break;
 					case 3:  data = intel.toDebugString(new String[2]); showingNothing = false; break;
 					case 4:  data = gps  .toDebugString(new String[2]); showingNothing = false; break;
+					case 5:  data = rem  .toDebugString(new String[2]); showingNothing = false; break;
 					default: data = nope;
 				}
 				if (!showingNothing) { // only update screen when debugging
@@ -97,6 +100,7 @@ public class Debugger implements Runnable {
 		if (item != 1) wheel.setRunning(run); else wheel.setDirection(wheel.CENTERED);
 		if (item != 2) son.setRunning(run);
 		if (item != 3) intel.setRunning(run);
+		if (item != 5) rem.setRunning(run);
 		
 		Thread.sleep(2000);
 	}
