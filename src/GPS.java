@@ -4,6 +4,7 @@ import javax.comm.SerialPort;
 
 // special thanks to
 // http://tech.groups.yahoo.com/group/intellibrain/message/25
+// http://home.mira.net/~gnb/gps/nmea.html#gprmc
 
 public class GPS implements Runnable {
 	
