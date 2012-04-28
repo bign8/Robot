@@ -5,3 +5,5 @@ archive
 .classpath
 .project
 .gitignore
+/docs/Opening/*.aux
+/docs/Opening/*.log
