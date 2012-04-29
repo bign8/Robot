@@ -2,9 +2,15 @@ import com.ridgesoft.intellibrain.IntelliBrain;
 import com.ridgesoft.intellibrain.IntelliBrainShaftEncoder;
 import com.ridgesoft.robotics.ContinuousRotationServo;
 import com.ridgesoft.robotics.Motor;
+import com.ridgesoft.robotics.PIDController;
 
 public class Engine implements Runnable, Debuggable {
 	private boolean running;
+	
+	// PID Controller gain constants
+	float pGain = 0.011f;
+	float iGain = 0.001f;
+	float dGain = 0.04f;
 	
 	// Port Reservations
 	private static int ServoOutputPort =  3;
@@ -14,11 +20,11 @@ public class Engine implements Runnable, Debuggable {
 	// Stored devices
 	private Motor motor;
 	private IntelliBrainShaftEncoder encoder;
+	private PIDController controller = new PIDController(pGain, iGain, dGain, 6.0f, false);
 	
 	// Algorithum variables
-	private int rpm = 0, velocity = 0, power = 0, counter = 0;
+	private int rpm = 0, velocity = 0, power = 0;
 	private int[] arrayOfSpeeds = {-120, -90, -60, 0, 30, 60, 90};
-	private boolean imediate = false;
 	
 	public Engine(){
 		
@@ -38,12 +44,15 @@ public class Engine implements Runnable, Debuggable {
 	
 	public void setRunning(boolean run) {
 		running = run;
-		setSpeed(0, true);
+		setSpeed(0);
 	}
+	
+	// NATE LOOK AT PID
+	// http://www.ridgesoft.com/robojde/2.0/docs/apidoc/com/ridgesoft/robotics/PIDController.html
 	
 	public void run(){
 		running = true;
-		int previousCounts = 0, counts = 0;
+		int previousCounts = 0, counts = 0;//, counter = 0;
 		long time = System.currentTimeMillis();
 		
 		while (true) {
@@ -55,56 +64,33 @@ public class Engine implements Runnable, Debuggable {
 					continue;
 				}
 				
-				if(counter > 5) counter = 0;
-				
 				//600 count intervals are taken per minute.
 				//128 counts per revolution.
 				counts = encoder.getCounts();
 				rpm = ((counts - previousCounts) * 600) / 128;
 				previousCounts = counts;
 				
-				//Self adjusting power, covers a quantized 10rpm per 1 power map.
-				//Currently functions under the assumption that rpm goes from -160 to 160.
-				if (counter == 0) {
-					if (velocity == 0) 
-						power = velocity;
-					else if (rpm > (arrayOfSpeeds[velocity + 3] + 30))
-						power--;
-					else if (rpm < arrayOfSpeeds[velocity + 3])
-						power++;
-				}
+				power = (int)controller.control(velocity * 4 + 10, rpm);
 				
-				//limiter
-				if (power > 16) power = 16;
-				if (power < -16) power = -16;
 				motor.setPower(power);
 			    
 			    // Pause thread execution
 				time += 100;
 				Thread.sleep(time - System.currentTimeMillis());
-				counter++;
+				//counter++;
 				
 			} catch (Throwable t) { t.printStackTrace(); }
 		}
 		
 	}
 	
-	public void setSpeed( int velocity, boolean isRemote ) { 
-		imediate = isRemote;
-		
-		//for testing 
-		if (velocity > 3) velocity = 3;
-		if (velocity < -3) velocity = -3;
-		
-		this.velocity = velocity;
-	}
-	public void appendSpeed(int velocity) { this.velocity += velocity; }
-	public int getRPM() { return rpm; }
-	public void brake() { motor.brake(); this.velocity = 0; } // something else should probably happen here
+	public void setSpeed( int v ) { this.velocity = v; }
+	//public int getRPM() { return rpm; }
+	//public void brake() { motor.brake(); this.velocity = 0; } // something else should probably happen here
 	
 	public String[] toDebugString(String in[]) {
 		in[0] = "Engine Debug";
-		in[1] = "Pow:" + Integer.toString(power) + " RPM:" + Integer.toString(rpm);
+		in[1] = "Pow:" + power + " RPM:" + rpm;
 		return in;
 	}
 }

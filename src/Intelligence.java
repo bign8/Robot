@@ -51,7 +51,7 @@ public class Intelligence implements Runnable, Debuggable {
 						music.setPriority(Thread.MIN_PRIORITY + 1);
 						music.start();
 					}//*/
-					motor.setSpeed(remote.getPort1() , true );
+					motor.setSpeed(remote.getPort1());
 					steer.setBackWheels(remote.getPort2()*15+50);
 					steer.setFrontWheels(remote.getPort2()*15+50);
 				} else{
@@ -95,7 +95,7 @@ public class Intelligence implements Runnable, Debuggable {
 					fsum2 = (int) capper(sum2, 100, 0);
 
 					// set down the smarts
-					motor.setSpeed( fsum0 , false );
+					motor.setSpeed( fsum0 );
 					steer.setFrontWheels( fsum1 );
 					steer.setBackWheels( fsum2 );
 				}
@@ -105,7 +105,7 @@ public class Intelligence implements Runnable, Debuggable {
 		} catch (Throwable e) { e.printStackTrace(); }
 
 		// if driver dies we want to stop dead!
-		motor.setSpeed( 0 , true );
+		motor.setSpeed( 0 );
 		steer.setFrontWheels( 50 );
 		steer.setBackWheels( 50 );
 	}
