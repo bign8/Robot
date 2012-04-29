@@ -208,14 +208,14 @@ public class Debugger implements Runnable {
 							break;
 					}
 					eng.updatePID();
-					var = (var + 1) % 1;
+					var = (var + 1) % 4;
 				}
 				
 				value = (float) ((thumbwheel.sample() * 1.0 / 10000.0) - 0.05);
 				
 				data = eng.toDebugString(new String[2]);
 				disp.print(0, name);
-				disp.print(1, "to add: " + value);
+				disp.print(1, "add: " + value);
 				
 				if (stopButton.isPressed()) debug = false;
 				time += 500;

@@ -8,10 +8,10 @@ public class Engine implements Runnable, Debuggable {
 	private boolean running;
 	
 	// PID Controller gain constants
-	public float pGain = 0.045f; // 0.011
-	public float iGain = 0.000f; // 0.001
-	public float dGain = 0.000f;  // 0.04
-	public float iCapp = 0.0f;  // 16.0
+	public float pGain = 0.060f; // 0.053
+	public float iGain = 0.001f; // 0.001
+	public float dGain = 0.005f;  // 0.01
+	public float iCapp = 16.0f;  // 40.0
 	
 	// Port Reservations
 	private static int ServoOutputPort =  3;
