@@ -8,9 +8,10 @@ public class Engine implements Runnable, Debuggable {
 	private boolean running;
 	
 	// PID Controller gain constants
-	float pGain = 0.011f;
-	float iGain = 0.001f;
-	float dGain = 0.04f;
+	public float pGain = 0.045f; // 0.011
+	public float iGain = 0.000f; // 0.001
+	public float dGain = 0.000f;  // 0.04
+	public float iCapp = 0.0f;  // 16.0
 	
 	// Port Reservations
 	private static int ServoOutputPort =  3;
@@ -20,11 +21,11 @@ public class Engine implements Runnable, Debuggable {
 	// Stored devices
 	private Motor motor;
 	private IntelliBrainShaftEncoder encoder;
-	private PIDController controller = new PIDController(pGain, iGain, dGain, 6.0f, false);
+	private PIDController controller = new PIDController(pGain, iGain, dGain, iCapp, false);
 	
 	// Algorithum variables
-	private int rpm = 0, velocity = 0, power = 0;
-	private int[] arrayOfSpeeds = {-120, -90, -60, 0, 30, 60, 90};
+	private int rpm = 0, velocity = 0, power = 0, desired = 0;
+	//private int[] arrayOfSpeeds = {-120, -90, -60, 0, 30, 60, 90};
 	
 	public Engine(){
 		
@@ -47,8 +48,9 @@ public class Engine implements Runnable, Debuggable {
 		setSpeed(0);
 	}
 	
-	// NATE LOOK AT PID
-	// http://www.ridgesoft.com/robojde/2.0/docs/apidoc/com/ridgesoft/robotics/PIDController.html
+	public void updatePID() {
+		controller.setConstants(pGain, iGain, dGain, iCapp);
+	}
 	
 	public void run(){
 		running = true;
@@ -61,35 +63,40 @@ public class Engine implements Runnable, Debuggable {
 				if (!running) {
 					time += 2000;
 					Thread.sleep(time - System.currentTimeMillis());
-					continue;
+				} else {
+					
+					//600 count intervals are taken per minute.
+					//128 counts per revolution.
+					counts = encoder.getCounts();
+					rpm = ((counts - previousCounts) * 600) / 128;
+					previousCounts = counts;
+					
+					desired = velocity * 40;
+					power = (int)controller.control(desired, rpm);
+					
+					motor.setPower(power);
+				    
+				    // Pause thread execution
+					time += 100;
+					Thread.sleep(time - System.currentTimeMillis());
 				}
-				
-				//600 count intervals are taken per minute.
-				//128 counts per revolution.
-				counts = encoder.getCounts();
-				rpm = ((counts - previousCounts) * 600) / 128;
-				previousCounts = counts;
-				
-				power = (int)controller.control(velocity * 4 + 10, rpm);
-				
-				motor.setPower(power);
-			    
-			    // Pause thread execution
-				time += 100;
-				Thread.sleep(time - System.currentTimeMillis());
-				//counter++;
 				
 			} catch (Throwable t) { t.printStackTrace(); }
 		}
 		
 	}
 	
-	public void setSpeed( int v ) { this.velocity = v; }
+	public void setSpeed( int v ) { 
+		this.velocity = v;
+		if (v == 0) {
+			motor.brake();
+		}
+	}
 	//public int getRPM() { return rpm; }
 	//public void brake() { motor.brake(); this.velocity = 0; } // something else should probably happen here
 	
 	public String[] toDebugString(String in[]) {
-		in[0] = "Engine Debug";
+		in[0] = "Engine " + desired;
 		in[1] = "Pow:" + power + " RPM:" + rpm;
 		return in;
 	}

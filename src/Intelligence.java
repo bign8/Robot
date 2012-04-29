@@ -37,8 +37,8 @@ public class Intelligence implements Runnable, Debuggable {
 		double[] toAdd = new double[6];
 		toAdd[5] = 1.0;
 		long time = System.currentTimeMillis();
-		Entertain mario = new Entertain();
-		Thread music = null;
+		//Entertain mario = new Entertain();
+		//Thread music = null;
 
 		try {
 			while (true) {
@@ -61,12 +61,13 @@ public class Intelligence implements Runnable, Debuggable {
 						Thread.sleep(time - System.currentTimeMillis());
 						continue;
 					}
-
+					
+					/*
 					if (music != null) {
 						mario.stop();
 						music = null;
-					}
-					
+					}//*/
+					/*
 					sum0 = 0; sum1 = 0; sum2 = 0;
 
 					toAdd[0] = eyes.getDist('w');
@@ -98,6 +99,11 @@ public class Intelligence implements Runnable, Debuggable {
 					motor.setSpeed( fsum0 );
 					steer.setFrontWheels( fsum1 );
 					steer.setBackWheels( fsum2 );
+					//*/
+					
+					motor.setSpeed( 0 );
+					steer.setFrontWheels( steer.CENTERED );
+					steer.setBackWheels( steer.CENTERED );
 				}
 				time += 100;
 				Thread.sleep(time - System.currentTimeMillis());

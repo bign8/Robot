@@ -40,7 +40,7 @@ public class Remote implements Runnable, Debuggable {
 	
 	public String[] toDebugString(String in[]) {
 		in[0] = "Remote Debug";
-		in[1] = ( isOn() ? "On" : "Off" ) + " " + port1 + " " + port2;
+		in[1] = ( remoteOn ? "On" : "Off" ) + " " + port1 + " " + port2;
 		return in;
 	}
 

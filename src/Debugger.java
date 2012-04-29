@@ -55,6 +55,7 @@ public class Debugger implements Runnable {
 					case 3:  data = intel.toDebugString(new String[2]); showingNothing = false; break;
 					case 4:  data = gps  .toDebugString(new String[2]); showingNothing = false; break;
 					case 5:  data = rem  .toDebugString(new String[2]); showingNothing = false; break;
+					case 6:  data[0] = "Engine PID"; data[1] = "Settings"; showingNothing = false; break;
 					default: data = nope;
 				}
 				if (!showingNothing) { // only update screen when debugging
@@ -76,6 +77,10 @@ public class Debugger implements Runnable {
 						case 1: debugSteering(); break;
 						// ... 
 						case 4: debugGPS();      break;
+						// ...
+						case 6: debugPID();      break;
+						default:
+							//nope
 					}
 					
 					// Starting regular execution
@@ -96,7 +101,7 @@ public class Debugger implements Runnable {
 		disp.print(0, msg1);
 		disp.print(1, msg2);
 		
-		if (item != 0) eng.setRunning(run); else eng.setSpeed(0);
+		if (item != 0 && item != 6) eng.setRunning(run); else eng.setSpeed(0);
 		if (item != 1) wheel.setRunning(run); else wheel.setDirection(wheel.CENTERED);
 		if (item != 2) son.setRunning(run);
 		if (item != 3) intel.setRunning(run);
@@ -166,6 +171,53 @@ public class Debugger implements Runnable {
 				disp.print(1, data[1]);
 			    
 			    if (stopButton.isPressed()) debug = false;
+				time += 500;
+				Thread.sleep(time - System.currentTimeMillis());
+			} catch (Throwable e) { e.printStackTrace(); }
+		}
+	}
+	
+	private void debugPID() {
+		boolean debug = true;
+		String[] data;
+		int var = 0;
+		float value = 0.0f;
+		String name = "pGain " + eng.pGain;
+		
+		long time = System.currentTimeMillis();
+		while (debug) {
+			try {
+				if (startButton.isPressed()) {
+					buzzer.play(500, 50);
+					switch (var) {
+						case 0 :
+							eng.pGain += value;
+							name = "iGain " + eng.pGain;
+							break;
+						case 1 :
+							eng.iGain += value;
+							name = "dGain " + eng.dGain;
+							break;
+						case 2 :
+							eng.dGain += value;
+							name = "iCapp " + eng.iCapp;
+							break;
+						case 3 :
+							eng.iCapp += value;
+							name = "pGain " + eng.pGain;
+							break;
+					}
+					eng.updatePID();
+					var = (var + 1) % 1;
+				}
+				
+				value = (float) ((thumbwheel.sample() * 1.0 / 10000.0) - 0.05);
+				
+				data = eng.toDebugString(new String[2]);
+				disp.print(0, name);
+				disp.print(1, "to add: " + value);
+				
+				if (stopButton.isPressed()) debug = false;
 				time += 500;
 				Thread.sleep(time - System.currentTimeMillis());
 			} catch (Throwable e) { e.printStackTrace(); }
