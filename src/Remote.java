@@ -16,20 +16,21 @@ public class Remote implements Runnable, Debuggable {
 	public void run(){
 		long time = System.currentTimeMillis();
 		while(true){
-			
-			sampleP1 = input1.sample();
-			sampleP2 = input2.sample();
-			
-			sampleP1 += input1.sample();
-			sampleP2 += input2.sample();
-			
-			sampleP1 += input1.sample();
-			sampleP2 += input2.sample();
-			
-			port1 = sampleP1/15 - 12; // origionally divided by 5
-			port2 = sampleP2/15 - 12;
-			
-			remoteOn = (port1 > -5 ) && ( port2 > -5);
+			if (running) {
+				sampleP1 = input1.sample();
+				sampleP2 = input2.sample();
+				
+				sampleP1 += input1.sample();
+				sampleP2 += input2.sample();
+				
+				sampleP1 += input1.sample();
+				sampleP2 += input2.sample();
+				
+				port1 = sampleP1/15 - 12; // origionally divided by 5
+				port2 = sampleP2/15 - 12;
+				
+				remoteOn = (port1 > -5 ) && ( port2 > -5);
+			}
 			
 			try {
 				time += 100;

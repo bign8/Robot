@@ -87,13 +87,13 @@ public class Engine implements Runnable, Debuggable {
 	}
 	
 	public void setSpeed( int v ) { 
-		this.velocity = v;
-		if (v == 0) {
-			motor.brake();
-		}
+		velocity = v;
+		if (v == 0) motor.brake();
 	}
 	//public int getRPM() { return rpm; }
 	//public void brake() { motor.brake(); this.velocity = 0; } // something else should probably happen here
+	
+	public int getSpeed() { return velocity; }
 	
 	public String[] toDebugString(String in[]) {
 		in[0] = "Engine " + desired;

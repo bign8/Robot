@@ -9,12 +9,13 @@ public class Intelligence implements Runnable, Debuggable {
 
 	private int fsum0 = 0, fsum1 = 0, fsum2 = 0;
 
+	/*
 	private static double[][] weights = {
 		//   W     L     C     R     E     B
 		{  -50, -100,   .2, -100,  -50,    0},  // motor
 		{  500,  500, -500, -500, -500,   50},  // front steer
 		{    0,  500, -500, -500,    0,   50}   // back steer
-	};
+	};//*/
 
 	public Intelligence(Engine e, SteeringWheel w, Sonar s, Remote r) {
 		motor = e;
@@ -33,7 +34,7 @@ public class Intelligence implements Runnable, Debuggable {
 		// a set number of iterations - the robot could then reverse the past 
 		// operations - see white board
 
-		double sum0 = 0, sum1 = 0, sum2 = 0;
+		//double sum0 = 0, sum1 = 0, sum2 = 0;
 		double[] toAdd = new double[6];
 		toAdd[5] = 1.0;
 		long time = System.currentTimeMillis();

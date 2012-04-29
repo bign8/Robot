@@ -23,9 +23,9 @@ public class Controller {
 		
 		// Headlights
 		Sonar headlight = new Sonar();
-		//Thread headlightThr = new Thread(headlight);
-		//headlightThr.setPriority(Thread.MAX_PRIORITY-1);
-		//headlightThr.start();
+		Thread headlightThr = new Thread(headlight);
+		headlightThr.setPriority(Thread.MAX_PRIORITY-1);
+		headlightThr.start();
 		
 		// GPS
 		GPS garmin = new GPS();

@@ -56,6 +56,7 @@ public class Debugger implements Runnable {
 					case 4:  data = gps  .toDebugString(new String[2]); showingNothing = false; break;
 					case 5:  data = rem  .toDebugString(new String[2]); showingNothing = false; break;
 					case 6:  data[0] = "Engine PID"; data[1] = "Settings"; showingNothing = false; break;
+					case 7:  data[0] = "Listen to"; data[1] = "user Driving"; showingNothing = false; break;
 					default: data = nope;
 				}
 				if (!showingNothing) { // only update screen when debugging
@@ -66,7 +67,7 @@ public class Debugger implements Runnable {
 				
 				// User chooses to debug the class
 				if (startButton.isPressed()){
-					
+					buzzer.play(500, 50);
 					// stop executing threads
 					IntelliBrain.setTerminateOnStop(false);
 					setAll(false, "Begin Debug", "Waiting Death", chosenOne);
@@ -79,11 +80,13 @@ public class Debugger implements Runnable {
 						case 4: debugGPS();      break;
 						// ...
 						case 6: debugPID();      break;
+						case 7: listenDriving(); break;
 						default:
 							//nope
 					}
 					
 					// Starting regular execution
+					buzzer.play(500, 50);
 					setAll(true, "Debug Complete", "Resuming Operation", chosenOne);
 					IntelliBrain.setTerminateOnStop(true);
 				}
@@ -101,11 +104,11 @@ public class Debugger implements Runnable {
 		disp.print(0, msg1);
 		disp.print(1, msg2);
 		
-		if (item != 0 && item != 6) eng.setRunning(run); else eng.setSpeed(0);
-		if (item != 1) wheel.setRunning(run); else wheel.setDirection(wheel.CENTERED);
-		if (item != 2) son.setRunning(run);
+		if (item != 0 && item != 6 && item != 7) eng.setRunning(run); else eng.setSpeed(0);
+		if (item != 1 && item != 7) wheel.setRunning(run); else wheel.setDirection(wheel.CENTERED);
+		if (item != 2 && item != 7) son.setRunning(run);
 		if (item != 3) intel.setRunning(run);
-		if (item != 5) rem.setRunning(run);
+		if (item != 5 && item != 6 && item != 7) rem.setRunning(run);
 		
 		Thread.sleep(2000);
 	}
@@ -179,7 +182,7 @@ public class Debugger implements Runnable {
 	
 	private void debugPID() {
 		boolean debug = true;
-		String[] data;
+		//String[] data;
 		int var = 0;
 		float value = 0.0f;
 		String name = "pGain " + eng.pGain;
@@ -213,12 +216,62 @@ public class Debugger implements Runnable {
 				
 				value = (float) ((thumbwheel.sample() * 1.0 / 10000.0) - 0.05);
 				
-				data = eng.toDebugString(new String[2]);
+				//data = eng.toDebugString(new String[2]);
 				disp.print(0, name);
 				disp.print(1, "add: " + value);
 				
 				if (stopButton.isPressed()) debug = false;
 				time += 500;
+				Thread.sleep(time - System.currentTimeMillis());
+			} catch (Throwable e) { e.printStackTrace(); }
+		}
+	}
+
+	private void listenDriving() throws Throwable {
+		boolean debug = true, listening = true;
+		String data = "double[][] trainingData = {\n";
+		
+		disp.print(0, "Remote Driving");
+		disp.print(1, "Learning in progress");
+		
+		Thread.sleep(1000);
+		buzzer.play(500, 50);
+		
+		long time = System.currentTimeMillis();
+		while (debug) {
+			try {
+			    
+				if (listening) { // build array here
+					data += "\t{" +
+							son.getDist('w') + ", " + 
+							son.getDist('l') + ", " +
+							son.getDist('c') + ", " +
+							son.getDist('r') + ", " +
+							son.getDist('e') + ", " +
+							eng.getSpeed() + ", " +
+							wheel.getFrontDirection() + ", " +
+							wheel.getBackDirection() + ", " +
+							"}\n";
+					
+					if (startButton.isPressed()) {
+						buzzer.play(500, 50);
+						listening = false;
+						data += "\n};";
+					}
+				} else {
+					disp.print(0, "Data Transfer");
+					disp.print(1, "Take me home!");
+					
+					if (startButton.isPressed()) { //transfer data
+						buzzer.play(500, 50);
+						System.out.println(data);
+						disp.print(0, "Data Transfer");
+						disp.print(1, "Transfer Complete");
+					}
+				}
+				
+				if (stopButton.isPressed()) debug = false;
+				time += 200;
 				Thread.sleep(time - System.currentTimeMillis());
 			} catch (Throwable e) { e.printStackTrace(); }
 		}
