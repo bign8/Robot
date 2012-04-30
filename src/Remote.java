@@ -2,7 +2,7 @@ import com.ridgesoft.intellibrain.IntelliBrain;
 import com.ridgesoft.robotics.AnalogInput;
 
 public class Remote implements Runnable, Debuggable {
-	private boolean running;
+	private boolean running = true; // important
 	private AnalogInput input1, input2;
 	private boolean remoteOn;
 	private int port1, port2;

@@ -39,6 +39,8 @@ public class Debugger implements Runnable {
 		String[] data = null, nope = {"No Debug", "Nothing to show"};
 		boolean showingNothing = false;
 		int chosenOne = 0, lastOne = 0;
+		Entertain mario = new Entertain();
+		Thread music = null;
 		
 		long time = System.currentTimeMillis();
 		while (true) {
@@ -57,6 +59,7 @@ public class Debugger implements Runnable {
 					case 5:  data = rem  .toDebugString(new String[2]); showingNothing = false; break;
 					case 6:  data[0] = "Engine PID"; data[1] = "Settings"; showingNothing = false; break;
 					case 7:  data[0] = "Listen to"; data[1] = "user Driving"; showingNothing = false; break;
+					case 8:  data[0] = "Remote Started"; data[1] = "Entertainment"; showingNothing = false; break;
 					default: data = nope;
 				}
 				if (!showingNothing) { // only update screen when debugging
@@ -90,6 +93,23 @@ public class Debugger implements Runnable {
 					setAll(true, "Debug Complete", "Resuming Operation", chosenOne);
 					IntelliBrain.setTerminateOnStop(true);
 				}
+				
+				// Remote controlled entertainment!!!
+				if (chosenOne == 8) {
+					if  (music == null && !rem.isOn()) { // start condition
+						setAll(false, "Begin Debug", "Waiting Death", chosenOne);
+						music = new Thread(mario);
+						music.setPriority(Thread.MIN_PRIORITY + 1);
+						music.start();
+						
+					} 
+					if (music != null && rem.isOn()) { // opposite condition
+						mario.stop();
+						music = null;
+						setAll(true, "Debug Complete", "Resuming Operation", chosenOne);
+					}
+				}
+					
 				
 				lastOne = chosenOne;
 				
@@ -229,7 +249,8 @@ public class Debugger implements Runnable {
 
 	private void listenDriving() throws Throwable {
 		boolean debug = true, listening = true;
-		String data = "double[][] trainingData = {\n";
+		String[] learningData = {}, newData;
+		int i = 0;
 		
 		disp.print(0, "Remote Driving");
 		disp.print(1, "Learning in progress");
@@ -241,30 +262,42 @@ public class Debugger implements Runnable {
 		while (debug) {
 			try {
 			    
-				if (listening) { // build array here
-					data += "\t{" +
-							son.getDist('w') + ", " + 
+				// Building Array of training data!
+				if (listening) {
+					
+					newData = new String[learningData.length + 1];
+					for ( i = 0; i < learningData.length; i++ ) newData[i] = learningData[i];
+					newData[i] = "{" + son.getDist('w') + ", " + 
 							son.getDist('l') + ", " +
 							son.getDist('c') + ", " +
 							son.getDist('r') + ", " +
 							son.getDist('e') + ", " +
 							eng.getSpeed() + ", " +
 							wheel.getFrontDirection() + ", " +
-							wheel.getBackDirection() + ", " +
-							"}\n";
+							wheel.getBackDirection() + "}";
+					
+					learningData = newData;
 					
 					if (startButton.isPressed()) {
 						buzzer.play(500, 50);
 						listening = false;
-						data += "\n};";
 					}
+					
+				// Trasmitting array of training data!
 				} else {
 					disp.print(0, "Data Transfer");
 					disp.print(1, "Take me home!");
 					
 					if (startButton.isPressed()) { //transfer data
 						buzzer.play(500, 50);
-						System.out.println(data);
+						
+						System.out.println("double[][] trainingData = {");
+						for ( i = 0; i < learningData.length; i++ )
+							System.out.println("\t" + learningData[i] +
+									((i != learningData.length - 1) ? ",": "")
+							);
+						System.out.println("};");
+						
 						disp.print(0, "Data Transfer");
 						disp.print(1, "Transfer Complete");
 					}
