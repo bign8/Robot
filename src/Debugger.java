@@ -310,14 +310,14 @@ public class Debugger implements Runnable {
 				//mario.kill();
 				
 				if  (!first && music == null && !rem.isOn()) { // start condition
-					setAll(false, "Begin Debug", "Waiting Death", 99);
+					setAll(false, "Seranade time!", "Starting Mario", 99);
 					
 					music = new Thread(mario);
 					music.setPriority(Thread.MIN_PRIORITY);
 					music.start();
 					
 					// don't really want to run any other logic while mario is playing!
-					
+					running = true;
 					while (running) {
 						disp.print(0, "I LOVE YOU");
 						disp.print(1, "Mario 4 U!");
@@ -333,12 +333,13 @@ public class Debugger implements Runnable {
 					
 					mario.stop();
 					
-					//music = null;
+					music = null;
 					//mario = null;
-					setAll(true, "Debug Complete", "Resuming Operation", 99);
+					setAll(true, "Mario Killed", "Ending Mario", 99);
 				} 
 				if (first && rem.isOn()) first = false;
 				if (stopButton.isPressed()) debug = false;
+				
 			} catch (Throwable t) { t.printStackTrace(); }
 		}
 	}
