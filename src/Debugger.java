@@ -36,7 +36,7 @@ public class Debugger implements Runnable {
 	}
 
 	public void run() {
-		String[] data = null, nope = {"No Debug", "Nothing to show"};
+		String[] data = {"",""}, nope = {"No Debug", "Nothing to show"};
 		boolean showingNothing = false;
 		int chosenOne = 0, lastOne = 0;
 		Entertain mario = new Entertain();
@@ -99,15 +99,25 @@ public class Debugger implements Runnable {
 					if  (music == null && !rem.isOn()) { // start condition
 						setAll(false, "Begin Debug", "Waiting Death", chosenOne);
 						music = new Thread(mario);
-						music.setPriority(Thread.MIN_PRIORITY + 1);
+						music.setPriority(Thread.MIN_PRIORITY);
 						music.start();
 						
-					} 
-					if (music != null && rem.isOn()) { // opposite condition
+						// don't really want to run any other logic while mario is playing!
+						boolean running = true;
+						while (running) {
+							disp.print(0, "I LOVE YOU");
+							disp.print(1, "Mario 4 U!");
+							if (music != null && rem.isOn()) running = false;
+							
+							time += 1000;
+							Thread.sleep(time - System.currentTimeMillis());
+						}
+						
 						mario.stop();
 						music = null;
 						setAll(true, "Debug Complete", "Resuming Operation", chosenOne);
-					}
+					} 
+					
 				}
 					
 				
@@ -128,7 +138,7 @@ public class Debugger implements Runnable {
 		if (item != 1 && item != 7) wheel.setRunning(run); else wheel.setDirection(wheel.CENTERED);
 		if (item != 2 && item != 7) son.setRunning(run);
 		if (item != 3) intel.setRunning(run);
-		if (item != 5 && item != 6 && item != 7) rem.setRunning(run);
+		if (item != 5 && item != 6 && item != 7 && item != 8) rem.setRunning(run);
 		
 		Thread.sleep(2000);
 	}

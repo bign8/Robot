@@ -48,7 +48,7 @@ public class Controller {
 		// Debugging - can comment out for production
 		Debugger debug = new Debugger(engine, wheel, headlight, brain, garmin, remote);
 		Thread debugThr = new Thread(debug);
-		debugThr.setPriority(Thread.MIN_PRIORITY);
+		debugThr.setPriority(Thread.MAX_PRIORITY-5);
 		debugThr.start();
 	}
 }

@@ -804,12 +804,14 @@ public class Entertain implements Runnable {
 
         	for(int j = 0; j < intro.length; j++){
 				buzzer.play(intro[j][0], intro[j][1]);
+				Thread.yield();
 				if (!running) return;
 			}
 			
 			for(int i = 1; i < 3; i++) {
 				for(int j = 0; j < song.length; j++){
 					buzzer.play(song[j][0], song[j][1]);
+					Thread.yield();
 					if (!running) return;
 				}
 			}
