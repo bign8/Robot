@@ -17,6 +17,10 @@ public class Remote implements Runnable, Debuggable {
 		long time = System.currentTimeMillis();
 		while(true){
 			if (running) {
+				// TODO look into implementing smoother
+				// http://www.ridgesoft.com/robojde/2.0/docs/apidoc/com/ridgesoft/robotics/Smoother.html
+				// TODO look at getting wider data ranges
+				
 				sampleP1 = input1.sample();
 				sampleP2 = input2.sample();
 				
@@ -29,7 +33,7 @@ public class Remote implements Runnable, Debuggable {
 				port1 = sampleP1/15 - 12; // origionally divided by 5
 				port2 = sampleP2/15 - 12;
 				
-				remoteOn = (port1 > -5 ) && ( port2 > -5);
+				remoteOn = ( port1 > -5 ) && ( port2 > -5 ) && ( port1 < 5 ) && ( port2 < 5 ); // added cap - absolutely necessary!
 			}
 			
 			try {
