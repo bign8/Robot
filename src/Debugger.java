@@ -39,8 +39,6 @@ public class Debugger implements Runnable {
 		String[] data = {"",""}, nope = {"No Debug", "Nothing to show"};
 		boolean showingNothing = false;
 		int chosenOne = 0, lastOne = 0;
-		Entertain mario = new Entertain();
-		Thread music = null;
 		
 		long time = System.currentTimeMillis();
 		while (true) {
@@ -84,6 +82,7 @@ public class Debugger implements Runnable {
 						// ...
 						case 6: debugPID();      break;
 						case 7: listenDriving(); break;
+						case 8: roboBomb();      break;
 						default:
 							//nope
 					}
@@ -93,33 +92,6 @@ public class Debugger implements Runnable {
 					setAll(true, "Debug Complete", "Resuming Operation", chosenOne);
 					IntelliBrain.setTerminateOnStop(true);
 				}
-				
-				// Remote controlled entertainment!!!
-				if (chosenOne == 8) {
-					if  (music == null && !rem.isOn()) { // start condition
-						setAll(false, "Begin Debug", "Waiting Death", chosenOne);
-						music = new Thread(mario);
-						music.setPriority(Thread.MIN_PRIORITY);
-						music.start();
-						
-						// don't really want to run any other logic while mario is playing!
-						boolean running = true;
-						while (running) {
-							disp.print(0, "I LOVE YOU");
-							disp.print(1, "Mario 4 U!");
-							if (music != null && rem.isOn()) running = false;
-							
-							time += 1000;
-							Thread.sleep(time - System.currentTimeMillis());
-						}
-						
-						mario.stop();
-						music = null;
-						setAll(true, "Debug Complete", "Resuming Operation", chosenOne);
-					} 
-					
-				}
-					
 				
 				lastOne = chosenOne;
 				
@@ -134,11 +106,11 @@ public class Debugger implements Runnable {
 		disp.print(0, msg1);
 		disp.print(1, msg2);
 		
-		if (item != 0 && item != 6 && item != 7) eng.setRunning(run); else eng.setSpeed(0);
-		if (item != 1 && item != 7) wheel.setRunning(run); else wheel.setDirection(wheel.CENTERED);
-		if (item != 2 && item != 7) son.setRunning(run);
-		if (item != 3) intel.setRunning(run);
-		if (item != 5 && item != 6 && item != 7 && item != 8) rem.setRunning(run);
+		if (item != 0 && item != 6 && item != 7 && item != 8) eng.setRunning(run); else eng.setSpeed(0);
+		if (item != 1 && item != 7 && item != 8) wheel.setRunning(run); else wheel.setDirection(wheel.CENTERED);
+		if (item != 2 && item != 7 && item != 99) son.setRunning(run);
+		if (item != 3 && item != 8) intel.setRunning(run);
+		if (item != 5 && item != 6 && item != 7 && item != 8 && item != 99) rem.setRunning(run);
 		
 		Thread.sleep(2000);
 	}
@@ -304,7 +276,7 @@ public class Debugger implements Runnable {
 						System.out.println("double[][] trainingData = {");
 						for ( i = 0; i < learningData.length; i++ )
 							System.out.println("\t" + learningData[i] +
-									((i != learningData.length - 1) ? ",": "")
+								((i != learningData.length - 1) ? ",": "")
 							);
 						System.out.println("};");
 						
@@ -317,6 +289,57 @@ public class Debugger implements Runnable {
 				time += 200;
 				Thread.sleep(time - System.currentTimeMillis());
 			} catch (Throwable e) { e.printStackTrace(); }
+		}
+	}
+	
+	private void roboBomb() {
+		Entertain mario = new Entertain();
+		Thread music = null;
+		
+		boolean running = true, first = true, debug = true;
+		
+		disp.print(0, "Ready to Bomb!");
+		disp.print(1, "Drive to terrain for me");
+		
+		long time = System.currentTimeMillis();
+		while (debug) {
+			try {
+				time += 1000;
+				Thread.sleep(time - System.currentTimeMillis());
+				
+				//mario.kill();
+				
+				if  (!first && music == null && !rem.isOn()) { // start condition
+					setAll(false, "Begin Debug", "Waiting Death", 99);
+					
+					music = new Thread(mario);
+					music.setPriority(Thread.MIN_PRIORITY);
+					music.start();
+					
+					// don't really want to run any other logic while mario is playing!
+					
+					while (running) {
+						disp.print(0, "I LOVE YOU");
+						disp.print(1, "Mario 4 U!");
+						if (music != null && rem.isOn()) running = false;
+						if (stopButton.isPressed()) {
+							debug = false;
+							running = false;
+						}
+						
+						time += 1000;
+						Thread.sleep(time - System.currentTimeMillis());
+					}
+					
+					mario.stop();
+					
+					//music = null;
+					//mario = null;
+					setAll(true, "Debug Complete", "Resuming Operation", 99);
+				} 
+				if (first && rem.isOn()) first = false;
+				if (stopButton.isPressed()) debug = false;
+			} catch (Throwable t) { t.printStackTrace(); }
 		}
 	}
 }

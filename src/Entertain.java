@@ -14,36 +14,24 @@ import com.ridgesoft.intellibrain.IntelliBrain;
 import com.ridgesoft.io.Speaker;
 
 public class Entertain implements Runnable {
-    public static final int QUARTER_NOTE = 150;
-    public static final int HALF_NOTE = QUARTER_NOTE * 2;
-	public static final int TRIPLET = (QUARTER_NOTE * 4) / 3;
+    public static final int QUARTER_NOTE = 150, HALF_NOTE = QUARTER_NOTE * 2,  TRIPLET = (QUARTER_NOTE * 4) / 3;
 	
-    public static final int C4 = 262;
-    public static final int C4_SHARP = 277;
-    public static final int D4 = 294;
-    public static final int D4_SHARP = 311;
-    public static final int E4 = 330;
-    public static final int F4 = 349;
-    public static final int F4_SHARP = 370;
-    public static final int G4 = 392;
-    public static final int G4_SHARP = 415;
-    public static final int A4 = 440;
-    public static final int A4_SHARP = 466;
-    public static final int B4 = 494;
-	public static final int C5 = 523;
-	public static final int C5_SHARP = 554;
-	public static final int D5 = 587;
-	public static final int D5_SHARP = 622;
-	public static final int E5 = 659;
-	public static final int F5 = 698;
-	public static final int F5_SHARP = 740;
-	public static final int G5 = 784;
-	public static final int G5_SHARP = 831;
-	public static final int A5 = 880;
-	public static final int A5_SHARP = 932;
-	public static final int B5 = 988;
-	public static final int C6 = 1024;
-	public static final int R = 0;
+    public static final int C4 = 262, C4_SHARP = 277,
+    		D4 = 294, D4_SHARP = 311,
+    		E4 = 330,
+    		F4 = 349, F4_SHARP = 370,
+    		G4 = 392, G4_SHARP = 415,
+    		A4 = 440, A4_SHARP = 466,
+    		B4 = 494,
+    		C5 = 523, C5_SHARP = 554,
+    		D5 = 587, D5_SHARP = 622,
+    		E5 = 659,
+    		F5 = 698, F5_SHARP = 740,
+    		G5 = 784, G5_SHARP = 831,
+    		A5 = 880, A5_SHARP = 932,
+    		B5 = 988,
+    		C6 = 1024,
+    		R = 0;
 
 	private Speaker buzzer;
 	
@@ -796,26 +784,34 @@ public class Entertain implements Runnable {
 		buzzer = IntelliBrain.getBuzzer();
 	}
 	
-	public void stop() { running = false; }
+	public void stop() { 
+		running = false;
+		//Thread.dumpStack();
+		Thread.yield();
+	}
+	
+	public void kill() {
+		Thread.dumpStack();
+	}
 	
     public void run() {
     	running = true;
-        try {
+        //try {
 
         	for(int j = 0; j < intro.length; j++){
 				buzzer.play(intro[j][0], intro[j][1]);
-				Thread.yield();
+				//Thread.yield();
 				if (!running) return;
 			}
 			
 			for(int i = 1; i < 3; i++) {
 				for(int j = 0; j < song.length; j++){
 					buzzer.play(song[j][0], song[j][1]);
-					Thread.yield();
+					//Thread.yield();
 					if (!running) return;
 				}
 			}
 
-        } catch (Throwable t) { t.printStackTrace(); }
+        //} catch (Throwable t) { t.printStackTrace(); }
     }
 }
