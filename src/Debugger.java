@@ -296,6 +296,8 @@ public class Debugger implements Runnable {
 		Entertain mario = new Entertain();
 		Thread music = null;
 		
+		intel.setRemoteStatus(true);
+		
 		boolean running = true, first = true, debug = true;
 		
 		disp.print(0, "Ready to Bomb!");
@@ -342,5 +344,6 @@ public class Debugger implements Runnable {
 				
 			} catch (Throwable t) { t.printStackTrace(); }
 		}
+		intel.setRemoteStatus(false);
 	}
 }

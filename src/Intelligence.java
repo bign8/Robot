@@ -8,6 +8,7 @@ public class Intelligence implements Runnable, Debuggable {
 	private Remote remote;
 
 	private int fsum0 = 0, fsum1 = 0, fsum2 = 0;
+	private boolean forcedRemote = false;
 
 	/*
 	private static double[][] weights = {
@@ -34,16 +35,47 @@ public class Intelligence implements Runnable, Debuggable {
 		// a set number of iterations - the robot could then reverse the past 
 		// operations - see white board
 
+		// -------------------------------------------------------
+		// |               START VARIABLES FOR AI                |
+		// -------------------------------------------------------
+		double[][][] weights = {
+			{   //  W    L    C    R    E    B	
+				{ 0.1, 0.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 1 // Layer 1
+				{ 0.0, 1.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 2
+				{ 0.0, 0.0, 1.0, 0.0, 0.0, 0.0 },  // Hidden node 3
+				{ 0.0, 0.0, 0.0, 1.0, 0.0, 0.0 },  // Hidden node 4
+				{ 0.0, 0.0, 0.0, 0.0, 1.0, 0.0 }   // Hidden node 5
+			},{
+				{ 1.0, 0.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 1 // Layer 2
+				{ 0.0, 1.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 2
+				{ 0.0, 0.0, 1.0, 0.0, 0.0, 0.0 },  // Hidden node 3
+				{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 4
+				{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 }   // Hidden node 5
+			}
+		};
+		
+		boolean[][] active = { // last column is bias!
+			{ true, true, true, true, true, false }, // first one should always be true
+			{ true, true, true, true, true, false },//*TODO: change bias back to true on this line after devl
+			{ true, true, true, false, false, false } // last one should only have three true
+		};
+		
+		double[][] outputs = new double[active.length][active[0].length]; // allows storage of past calcuations
+		int i, j, k;
+		// -------------------------------------------------------
+		// |              ENDING VARIABLES FOR AI                |
+		// -------------------------------------------------------
+		
 		//double sum0 = 0, sum1 = 0, sum2 = 0;
-		double[] toAdd = new double[6];
-		toAdd[5] = 1.0;
+		//double[] toAdd = new double[6];
+		//toAdd[5] = 1.0;
 		long time = System.currentTimeMillis();
 
 		try {
 			while (true) {
 
 				//check Remote
-				if (remote.isOn()){
+				if (remote.isOn() || forcedRemote){
 					motor.setSpeed(remote.getPort1());
 					steer.setBackWheels(remote.getPort2()*15+50);
 					steer.setFrontWheels(remote.getPort2()*15+50);
@@ -55,45 +87,41 @@ public class Intelligence implements Runnable, Debuggable {
 						continue;
 					}
 					
-					/*
-					sum0 = 0; sum1 = 0; sum2 = 0;
+					outputs[0][0] = capper(eyes.getDist('w') / 100.0, 1.0, 0.0);
+					outputs[0][1] = capper(eyes.getDist('l') / 100.0, 1.0, 0.0);
+					outputs[0][2] = capper(eyes.getDist('c') / 100.0, 1.0, 0.0);
+					outputs[0][3] = capper(eyes.getDist('r') / 100.0, 1.0, 0.0);
+					outputs[0][4] = capper(eyes.getDist('e') / 100.0, 1.0, 0.0); // for sensors
 
-					toAdd[0] = eyes.getDist('w');
-					toAdd[1] = eyes.getDist('l');
-					toAdd[2] = eyes.getDist('c');
-					toAdd[3] = eyes.getDist('r');
-					toAdd[4] = eyes.getDist('e');
-
-					// NATE: WHY YOU SO DUMB
-
-					for (int i = 0; i < 6; i++) {
-						if ( toAdd[i] > 0 ) { // exclude poor input
-
-							if ( i == 2 )
-								sum0 += toAdd[i] * weights[0][i];
-							else
-								sum0 += 1./toAdd[i] * weights[0][i];
-
-							sum1 += 1./toAdd[i] * weights[1][i];
-							sum2 += 1./toAdd[i] * weights[2][i];
+					for (i = 0; i < weights.length; i++) outputs[i][5] = 1.0; // setup biases
+					
+					// -------------------------------------------------------
+					// |                    QUERY NEURONS                    |
+					// -------------------------------------------------------
+					
+					// looping through the layers
+					for ( i = 0; i < weights.length-1; i++ ) {
+						
+						// loop through rows of output
+						for ( j = 0; j < weights[0].length; j++ ) {
+							if ( active[i+1][j] ) {
+								for ( k = 0; k < weights[0][0].length; k++ ) if ( active[i][k] ) outputs[i+1][j] += outputs[i][k] * weights[i][j][k]; // sum rows
+								
+								outputs[i+1][j] = sigmoid( outputs[i+1][j] , 0 /*ofset[i][j]*/); // perform threshold on sums
+							}
 						}
 					}
-
-					fsum0 = (int) negativeMultiply(capper(sum0, 4., -2.), 2);
-					fsum1 = (int) capper(sum1, 100., 0.);
-					fsum2 = (int) capper(sum2, 100, 0);
-
-					// set down the smarts
+					
+					// scaling outputs of network - for actual use of neural network
+					fsum0 = (int) capper( outputs[i+1][0] * 6 - 3 , -3.0 , 3.0 ); // [-3,3]
+					fsum1 = (int) capper( outputs[i+1][1] * 100 , 0.0 , 100.0 );  // [0:100]
+					fsum2 = (int) capper( outputs[i+1][2] * 100 , 0.0 , 100.0 );  // [0:100]
+					
 					motor.setSpeed( fsum0 );
 					steer.setFrontWheels( fsum1 );
 					steer.setBackWheels( fsum2 );
-					//*/
-					
-					motor.setSpeed( 0 );
-					steer.setFrontWheels( steer.CENTERED );
-					steer.setBackWheels( steer.CENTERED );
 				}
-				time += 100;
+				time += 200;
 				Thread.sleep(time - System.currentTimeMillis());
 			}
 		} catch (Throwable e) { e.printStackTrace(); }
@@ -103,7 +131,11 @@ public class Intelligence implements Runnable, Debuggable {
 		steer.setFrontWheels( 50 );
 		steer.setBackWheels( 50 );
 	}
-
+	
+	public static double sigmoid( double x , double thresh ) { return 1.0 / ( 1.0 + Math.exp(thresh-x) ); }
+	
+	public void setRemoteStatus(boolean x) {forcedRemote = x;}
+	
 	public static double capper(double value, double max, double min) {
 		return (value > max) ? max : (value < min) ? min : value ;
 	}

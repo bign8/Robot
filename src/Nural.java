@@ -6,7 +6,7 @@
 public class Nural {
 	
 	public static void run() {
-		
+		/*
 		double[][] trainingData = {
 			//   W      L      C      R      E    V     F     B
 			//{100.0, 100.0, 100.0, 100.0, 100.0, 3.0, 50.0, 50.0},
@@ -15,60 +15,141 @@ public class Nural {
 			{35.0, 90.0, 0.0, 0.0, 0.0, 0.5, 0.5, 0.5},
 			{35.0, 90.0, 0.0, 0.0, 0.0, 0.5, 0.5, 0.5},
 			{35.0, 90.0, 0.0, 0.0, 0.0, 0.5, 0.5, 0.5}
-		};
+		};//*/
 		
+		double[][] trainingData = {
+				{79, 49, 42, 37, -1, 0, 50, 50},
+				{79, 49, 42, 37, -1, 0, 50, 50},
+				{-1, 49, 42, 37, -1, 0, 50, 50},
+				{79, 49, 38, 37, -1, 0, 50, 50},
+				{79, 49, 42, 37, -1, 0, 50, 50},
+				{79, 49, 42, 37, -1, 0, 50, 50},
+				{-1, 49, 38, 37, -1, 0, 50, 50},
+				{78, 49, 38, 37, -1, 0, 50, 50},
+				{78, 49, 42, 37, -1, 0, 50, 50},
+				{78, 49, 42, 37, -1, 0, 50, 50},
+				{-1, 49, 39, 37, -1, 0, 65, 35},
+				{79, 49, 42, 37, -1, 0, 95, 5},
+				{79, 49, 39, 37, -1, 0, 95, 5},
+				{79, 49, 42, 37, -1, 0, 95, 5},
+				{-1, 49, 42, 37, -1, 0, 95, 5},
+				{79, 49, 42, 37, -1, 0, 80, 20},
+				{79, 49, 42, 37, -1, 0, 35, 65},
+				{79, 49, 42, 37, -1, 0, 5, 95},
+				{-1, 49, 42, 37, -1, 0, 5, 95},
+				{79, 49, 42, 37, -1, 0, 5, 95},
+				{79, 49, 42, 37, -1, 0, 5, 95},
+				{79, 49, 42, 37, -1, 0, 50, 50},
+				{-1, 49, 42, 37, -1, 0, 95, 5},
+				{78, 49, 42, 37, -1, 0, 95, 5},
+				{78, 49, 42, 37, -1, 0, 95, 5},
+				{78, 49, 42, 37, -1, 0, 95, 5},
+				{-1, 49, 43, 37, -1, 0, 80, 20},
+				{79, 49, 39, 37, -1, 0, 35, 65},
+				{79, 49, 38, 37, -1, 0, 5, 95},
+				{79, 49, 42, 37, -1, 0, 5, 95},
+				{-1, 49, 39, 37, -1, 0, 5, 95},
+				{78, 49, 42, 37, -1, 0, 35, 65},
+				{78, 49, 42, 37, -1, 0, 80, 20},
+				{78, 49, 42, 37, -1, 0, 95, 5},
+				{-1, 49, 42, 37, -1, 0, 80, 20},
+				{79, 49, 42, 37, -1, 0, 65, 35},
+				{79, 49, 42, 37, -1, 0, 65, 35},
+				{79, 49, 42, 37, -1, 1, 50, 50},
+				{-1, 49, 42, 37, -1, 0, 50, 50},
+				{78, 49, 42, 37, -1, 1, 50, 50},
+				{78, 49, 42, 37, -1, -2, 50, 50},
+				{78, 49, 42, 37, -1, -3, 50, 50},
+				{-1, 49, 42, 37, -1, -3, 50, 50},
+				{79, 49, 42, 37, -1, -3, 50, 50},
+				{79, 49, 42, 37, -1, -1, 50, 50},
+				{79, 49, 42, 37, -1, -1, 50, 50},
+				{-1, 49, 42, 37, -1, -2, 50, 50},
+				{78, 49, 42, 37, -1, -3, 50, 50},
+				{78, 49, 42, 37, -1, -3, 50, 50},
+				{78, 49, 42, 37, -1, -3, 50, 50},
+				{-1, 49, 42, 37, -1, -3, 50, 50},
+				{79, 49, 42, 37, -1, -3, 50, 50},
+				{79, 49, 42, 37, -1, -3, 50, 50},
+				{79, 49, 42, 37, -1, -3, 50, 50},
+				{-1, 49, 38, 37, -1, -3, 50, 50},
+				{78, 49, 38, 37, -1, -3, 50, 50},
+				{78, 49, 38, 37, -1, -3, 50, 50},
+				{78, 49, 38, 37, -1, -3, 50, 50},
+				{-1, 49, 42, 37, -1, -3, 50, 50},
+				{79, 49, 42, 37, -1, -3, 50, 50},
+				{79, 49, 42, 37, -1, -1, 50, 50},
+				{79, 49, 42, 37, -1, -1, 50, 50},
+				{-1, 49, 42, 37, -1, 0, 50, 50},
+				{100, 49, 42, 37, -1, 0, 50, 50},
+				{100, 49, 38, 37, -1, 0, 50, 50},
+				{100, 49, 38, 37, -1, 0, 50, 50}
+			};
+		//*
 		double[][][] weights = {
 			{   //  W    L    C    R    E    B	
-				{ 0.1, 0.8, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 1 // Layer 1
-				{ 0.4, 0.6, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 2
+				{ 1.0, 0.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 1 // Layer 1
+				{ 0.0, 1.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 2
 				{ 0.0, 0.0, 1.0, 0.0, 0.0, 0.0 },  // Hidden node 3
 				{ 0.0, 0.0, 0.0, 1.0, 0.0, 0.0 },  // Hidden node 4
 				{ 0.0, 0.0, 0.0, 0.0, 1.0, 0.0 }   // Hidden node 5
 			},{
-				{ 0.3, 0.9, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 1 // Layer 2
-				{ 0.3, 0.8, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 2
-				{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 3
+				{ 1.0, 0.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 1 // Layer 2
+				{ 0.0, 1.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 2
+				{ 0.0, 0.0, 1.0, 0.0, 0.0, 0.0 },  // Hidden node 3
 				{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },  // Hidden node 4
 				{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 }   // Hidden node 5
 			}
-		};
-		/*
-		double[][] ofset = {
-			{ 0.0, 0.0, 0.0, 0.0, 0.0 }, // sigmoid ofsets 1
-			{ 0.0, 0.0, 0.0, 0.0, 0.0 }, // sigmoid ofsets 2
-			{ 0.0, 0.0, 0.0, 0.0, 0.0 }, // sigmoid ofsets 3
-			{ 0.0, 0.0, 0.0, 0.0, 0.0 }  // sigmoid ofsets 4
 		};//*/
 		
-		
-		
 		boolean[][] active = { // last column is bias!
-			{ true, true, false, false, false, false }, // first one should always be true
-			{ true, true, false, false, false, false },//*TODO: change bias back to true on this line after devl
-			{ true, false, false, false, false, false } // last one should only have three true
+			{ true, true, true, true, true, true }, // first one should always be true
+			{ true, true, true, true, false, true },//*TODO: change bias back to true on this line after devl
+			{ true, true, true, false, false, false } // last one should only have three true
 		};
 		
 		//double[][][] weights = new double[active.length-1][active[0].length][active[0].length-1];
-		//weights = randomInit(weights);
+		weights = randomInit(weights, active);
 		
 		double[][] outputs = new double[active.length][active[0].length]; // allows storage of past calcuations
 		double[][] error = new double[weights.length][weights[0].length];
-		int i, j, k, epoch, numberOfCycles = 40;
-		double learningRate = 1.0, curError, tempDiff;
+		int i, j, k, epoch, numberOfCycles = 100;
+		double learningRate = 0.05d, curError, tempDiff;
+		
+		
+		for (i = 0; i < trainingData.length; i++) {
+			trainingData[i][0] = capper( ( (trainingData[i][0] < 0) ? 100 : trainingData[i][0]) / 100.0, 1.0, 0.0 ) ;
+			trainingData[i][1] = capper( ( (trainingData[i][1] < 0) ? 100 : trainingData[i][1]) / 100.0, 1.0, 0.0 ) ;
+			trainingData[i][2] = capper( ( (trainingData[i][2] < 0) ? 100 : trainingData[i][2]) / 100.0, 1.0, 0.0 ) ;
+			trainingData[i][3] = capper( ( (trainingData[i][3] < 0) ? 100 : trainingData[i][3]) / 100.0, 1.0, 0.0 ) ;
+			trainingData[i][4] = capper( ( (trainingData[i][4] < 0) ? 100 : trainingData[i][4]) / 100.0, 1.0, 0.0 ) ;
+			trainingData[i][5] = capper( trainingData[i][5] * 6 - 3 , -3.0 , 3.0 ); // [-3,3]
+			trainingData[i][6] = capper( trainingData[i][6] * 100 , 0.0 , 100.0 );  // [0:100]
+			trainingData[i][7] = capper( trainingData[i][7] * 100 , 0.0 , 100.0 );  // [0:100]
+		}
 		
 		// -------------------------------------------------------
 		// |                     BEGIN EPOCH                     |
 		// -------------------------------------------------------
 		
 		for (epoch = 0; epoch < numberOfCycles; epoch++) {
-		
-			outputs[0][0] = capper(trainingData[epoch % trainingData.length][0] / 100.0, 1.0, 0.0);
-			outputs[0][1] = capper(trainingData[epoch % trainingData.length][1] / 100.0, 1.0, 0.0);
-			outputs[0][2] = capper(trainingData[epoch % trainingData.length][2] / 100.0, 1.0, 0.0);
-			outputs[0][3] = capper(trainingData[epoch % trainingData.length][3] / 100.0, 1.0, 0.0);
-			outputs[0][4] = capper(trainingData[epoch % trainingData.length][4] / 100.0, 1.0, 0.0); // for sensors
+			
+			/*
+			outputs[0][0] = (trainingData[epoch % trainingData.length][0] < 0) ? 100 : trainingData[epoch % trainingData.length][0] ;
+			outputs[0][1] = (trainingData[epoch % trainingData.length][1] < 0) ? 100 : trainingData[epoch % trainingData.length][1] ;
+			outputs[0][2] = (trainingData[epoch % trainingData.length][2] < 0) ? 100 : trainingData[epoch % trainingData.length][2] ;
+			outputs[0][3] = (trainingData[epoch % trainingData.length][3] < 0) ? 100 : trainingData[epoch % trainingData.length][3] ;
+			outputs[0][4] = (trainingData[epoch % trainingData.length][4] < 0) ? 100 : trainingData[epoch % trainingData.length][4] ;
+			
+			
+			outputs[0][0] = capper(outputs[0][0] / 100.0, 1.0, 0.0);
+			outputs[0][1] = capper(outputs[0][1] / 100.0, 1.0, 0.0);
+			outputs[0][2] = capper(outputs[0][2] / 100.0, 1.0, 0.0);
+			outputs[0][3] = capper(outputs[0][3] / 100.0, 1.0, 0.0);
+			outputs[0][4] = capper(outputs[0][4] / 100.0, 1.0, 0.0); // for sensors
+			//*/
 
-			//for (i = 0; i < active.length; i++) outputs[i][5] = 1.0; // setup biases
+			for (i = 0; i < outputs.length; i++) outputs[i][5] = 1.0; // setup biases
 			
 			// -------------------------------------------------------
 			// |                    QUERY NEURONS                    |
@@ -88,9 +169,9 @@ public class Nural {
 			}
 			
 			// scaling outputs of network - for actual use of neural network
-			//sums[0] = capper( sums[0] * 6 - 3 , -3.0 , 3.0 ); // [-3,3]
-			//sums[1] = capper( sums[1] * 100 , 0.0 , 100.0 );  // [0:100]
-			//sums[2] = capper( sums[2] * 100 , 0.0 , 100.0 );  // [0:100]
+			//outputs[i][0] = capper( outputs[i][0] * 6 - 3 , -3.0 , 3.0 ); // [-3,3]
+			//outputs[i][1] = capper( outputs[i][1] * 100 , 0.0 , 100.0 );  // [0:100]
+			//outputs[i][2] = capper( outputs[i][2] * 100 , 0.0 , 100.0 );  // [0:100]
 			
 			// -------------------------------------------------------
 			// |                   BACKPROPAGATION                   |
@@ -129,7 +210,7 @@ public class Nural {
 				//calculate errors in hidden layers
 				for ( j = 0; j < weights[0].length; j++ ) {
 					if ( active[i][j] ) {
-						for ( k = 0; k < weights[0][0].length-1; k++ ) { // fix possible error with -1 might want to verify
+						for ( k = 0; k < weights[0][0].length; k++ ) { // fix possible error with -1 might want to verify
 							if (active[i+1][k]) {
 								error[i-1][j] += error[i][k] * weights[i][k][j];
 							}
@@ -156,11 +237,14 @@ public class Nural {
 	
 	public static double sigmoid( double x , double thresh ) { return 1.0 / ( 1.0 + Math.exp(thresh-x) ); }
 	public static double capper(double value, double max, double min) {	return (value > max) ? max : (value < min) ? min : value ; }
-	public static double[][][] randomInit(double[][][] in) {
+	public static double[][][] randomInit(double[][][] in, boolean[][] act) {
 		for (int i = 0; i < in.length; i++)
-			for (int j = 0; j < in[0].length; j++)
+			for (int j = 0; j < in[0].length; j++) {
+				if (act[i+1][j])
 				for (int k = 0; k < in[0][0].length; k++)
-					in[i][j][k] = Math.random();
+					if (act[i][k])
+						in[i][j][k] = Math.random();
+			}
 		return in;
 	}
 	public static void printWeights(double[][][] weights){
