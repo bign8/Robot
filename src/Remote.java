@@ -1,37 +1,31 @@
 import com.ridgesoft.intellibrain.IntelliBrain;
 import com.ridgesoft.robotics.AnalogInput;
+import com.ridgesoft.robotics.Smoother;
 
 public class Remote implements Runnable, Debuggable {
 	private boolean running = true; // important
 	private AnalogInput input1, input2;
 	private boolean remoteOn;
 	private int port1, port2;
-	private int sampleP1, sampleP2;
+	
+	private Smoother sampleP1, sampleP2;
 
 	public Remote(){
 		input1 = IntelliBrain.getAnalogInput(2);
 		input2 = IntelliBrain.getAnalogInput(3);
+		
+		sampleP1 = new Smoother(0.2f, input1.sample());
+		sampleP2 = new Smoother(0.2f, input2.sample());
 	}
 
 	public void run(){
 		long time = System.currentTimeMillis();
 		while(true){
 			if (running) {
-				// TODO look into implementing smoother
-				// http://www.ridgesoft.com/robojde/2.0/docs/apidoc/com/ridgesoft/robotics/Smoother.html
 				// TODO look at getting wider data ranges
 				
-				sampleP1 = input1.sample();
-				sampleP2 = input2.sample();
-				
-				sampleP1 += input1.sample();
-				sampleP2 += input2.sample();
-				
-				sampleP1 += input1.sample();
-				sampleP2 += input2.sample();
-				
-				port1 = sampleP1/15 - 12; // origionally divided by 5
-				port2 = sampleP2/15 - 12;
+				port1 = (int) (sampleP1.smooth(input1.sample())/5 - 12);
+				port2 = (int) (sampleP2.smooth(input2.sample())/5 - 12);
 				
 				remoteOn = ( port1 > -5 ) && ( port2 > -5 ) && ( port1 < 5 ) && ( port2 < 5 ); // added cap - absolutely necessary!
 			}
