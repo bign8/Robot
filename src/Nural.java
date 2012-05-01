@@ -335,7 +335,7 @@ public class Nural {
 			{45, 49, -1, -1, 56, 2, 50, 50},
 			{45, 49, -1, -1, 56, 2, 65, 35},
 			{-1, 47, -1, -1, 56, 2, 65, 35},
-
+/*
 		// In corner with open right - backup and manuver right - straight down hallway
 			{-1, 6, 5, -1, -1, 0, 50, 50},
 			{5, 6, 5, -1, -1, 0, 50, 50},
@@ -633,38 +633,38 @@ public class Nural {
 			{46, 70, 115, 50, 43, 2, 50, 50},
 			{-1, 68, 109, 49, 43, 2, 50, 50},
 			{48, 67, 106, -1, 43, 2, 50, 50},
-			{48, 95, 103, 63, 49, 2, 50, 50},
+			{48, 95, 103, 63, 49, 2, 50, 50},*/
 			{48, 92, 100, 60, 49, 1, 50, 50}
 		};
 	
 	public static void run() {
 		
 		boolean[][] active = { // last column is bias!
-			{ true, true, true, true, true, true, false, false }, // first one should always be true
-			{ true, true, true, true, true, true, true, true },
-			{ true, true, true, true, true, true, true, true },
-			{ true, true, true, true, true, true, true, true },
-			{ true, true, true, false, false, false, false, false } // last one should only have three true
+			{ true, true, true, true, true, true }, // first one should always be true
+			//{ true, true, true, true, true, true },
+			{ true, true, true, false, false, false } // last one should only have three true
 		};
 		
-		double[][][] weights = new double[active.length-1][active[0].length][active[0].length-1];
+		double[][][] weights = new double[active.length-1][active[0].length][active[0].length];
 		weights = randomInit(weights, active);
+		
+		printWeights(weights);
 		
 		double[][] outputs = new double[active.length][active[0].length]; // allows storage of past calcuations
 		double[][] error = new double[weights.length][weights[0].length];
-		int i, j, k, epoch, numberOfCycles = trainingData.length * 100;
-		double learningRate = 0.5d, curError = 0.0, tempDiff;
+		int i, j, k, epoch, numberOfCycles = trainingData.length * 10;
+		double learningRate = 1d, curError = 0.0, tempDiff;
 		
-		
+		// clean input training data
 		for (i = 0; i < trainingData.length; i++) {
 			trainingData[i][0] = capper( ( (trainingData[i][0] < 0) ? 100 : trainingData[i][0]) / 100.0, 1.0, 0.0 ) ;
 			trainingData[i][1] = capper( ( (trainingData[i][1] < 0) ? 100 : trainingData[i][1]) / 100.0, 1.0, 0.0 ) ;
 			trainingData[i][2] = capper( ( (trainingData[i][2] < 0) ? 100 : trainingData[i][2]) / 100.0, 1.0, 0.0 ) ;
 			trainingData[i][3] = capper( ( (trainingData[i][3] < 0) ? 100 : trainingData[i][3]) / 100.0, 1.0, 0.0 ) ;
 			trainingData[i][4] = capper( ( (trainingData[i][4] < 0) ? 100 : trainingData[i][4]) / 100.0, 1.0, 0.0 ) ;
-			trainingData[i][5] = capper( (trainingData[i][5] + 3) * 6 , -3.0 , 3.0 ); // [-3,3]
-			trainingData[i][6] = capper( trainingData[i][6] / 100.0 , 0.0 , 100.0 );  // [0:100]
-			trainingData[i][7] = capper( trainingData[i][7] / 100.0 , 0.0 , 100.0 );  // [0:100]
+			trainingData[i][5] = capper( (trainingData[i][5] + 3) / 6.0 , 0.0 , 1.0 ); // [-3,3]
+			trainingData[i][6] = capper( trainingData[i][6] / 100.0 , 0.0 , 1.0 );  // [0:100]
+			trainingData[i][7] = capper( trainingData[i][7] / 100.0 , 0.0 , 1.0 );  // [0:100]
 		}
 		
 		// -------------------------------------------------------
@@ -679,7 +679,7 @@ public class Nural {
 			outputs[0][3] = trainingData[epoch % trainingData.length][3];
 			outputs[0][4] = trainingData[epoch % trainingData.length][4];
 			
-			for (i = 0; i < outputs.length; i++) outputs[i][outputs[0].length-1] = 1.0; // setup biases
+			//for (i = 0; i < outputs.length; i++) outputs[i][outputs[0].length-1] = 1.0; // setup biases
 			
 			// -------------------------------------------------------
 			// |                    QUERY NEURONS                    |
@@ -698,16 +698,11 @@ public class Nural {
 				}
 			}
 			
-			// scaling outputs of network - for actual use of neural network
-			//outputs[i][0] = capper( outputs[i][0] * 6 - 3 , -3.0 , 3.0 ); // [-3,3]
-			//outputs[i][1] = capper( outputs[i][1] * 100 , 0.0 , 100.0 );  // [0:100]
-			//outputs[i][2] = capper( outputs[i][2] * 100 , 0.0 , 100.0 );  // [0:100]
-			
 			// -------------------------------------------------------
 			// |                   BACKPROPAGATION                   |
 			// -------------------------------------------------------
 			
-			i = weights.length; // moving backward through layers
+			i = weights.length; // moving backward through layers // doesn't need to be set but ensures clarity
 			curError = 0.0;
 			
 			// output error!
@@ -715,6 +710,7 @@ public class Nural {
 			for ( j = 0; j < weights[0].length; j++ ) {
 				if ( active[i][j] ) {
 					tempDiff = (trainingData[epoch % trainingData.length][5+j] - outputs[i][j]);
+					//tempDiff = (outputs[i][j] - trainingData[epoch % trainingData.length][5+j]);
 					error[i-1][j] = outputs[i][j] * ( 1 - outputs[i][j] ) * tempDiff;
 					curError += Math.pow(tempDiff, 2);
 				}
@@ -738,7 +734,7 @@ public class Nural {
 			for (i--; i > 0 ; i--) {
 				
 				//calculate errors in hidden layers
-				for ( j = 0; j < weights[0].length-1; j++ ) {
+				for ( j = 0; j < weights[0].length; j++ ) {
 					if ( active[i][j] ) {
 						for ( k = 0; k < weights[0][0].length; k++ ) { // fix possible error with -1 might want to verify
 							if (active[i+1][k]) {
@@ -762,7 +758,7 @@ public class Nural {
 			}
 		}
 		
-		System.out.println("Epoch: " + (epoch+1) + "\tOutput Error: " + curError);
+		System.out.println("\nEpoch: " + (epoch+1) + "\tOutput Error: " + curError);
 		printWeights(weights);
 	}
 	
@@ -772,9 +768,9 @@ public class Nural {
 		for (int i = 0; i < in.length; i++)
 			for (int j = 0; j < in[0].length; j++) {
 				if (act[i+1][j])
-				for (int k = 0; k < in[0][0].length; k++)
-					if (act[i][k])
-						in[i][j][k] = Math.random();
+					for (int k = 0; k < in[0][0].length; k++)
+						if (act[i][k])
+							in[i][j][k] = Math.random() * 20.0 - 10;
 			}
 		return in;
 	}
