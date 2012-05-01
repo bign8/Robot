@@ -77,7 +77,9 @@ public class Engine implements Runnable, Debuggable {
 	}
 	
 	// Method to pause the execution of this thread
-	public void setRunning(boolean run) { running = run; }
+	public void setRunning(boolean run) { 
+		running = run;
+	}
 	
 	// Method to define speed of the motor
 	public void setSpeed( int v ) { 

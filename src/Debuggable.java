@@ -9,17 +9,28 @@ public interface Debuggable {
 	public String[] toDebugString(String in[]);
 }
 
+// NOT IMPLEMENTED, but Briliant!
+abstract class RobotThread extends Thread implements Debuggable, Runnable { // other classes would extend this!
+	
+	private boolean running = true;
+	private int delay = 100;
+	public void setRunning(boolean run) { running = run; }
+	public void setDelay(int del) { delay = del; }
 
-class RobotThread extends Thread implements Debuggable {
-
-	public void setRunning(boolean run) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public String[] toDebugString(String[] in) {
-		// TODO Auto-generated method stub
-		return null;
+	public void run() {
+		long time = System.currentTimeMillis();
+		while (true) {
+			
+			if (running) robotRun(); else robotStop();
+			
+			try {
+				time += delay;
+				Thread.sleep(time - System.currentTimeMillis());
+			} catch (Throwable t) { t.printStackTrace(); }
+		}
 	}
 	
+	abstract public void robotRun(); // single execution function when thread is running
+	abstract public void robotStop(); // single execution function when thread in stopped
+	abstract public String[] toDebugString(String[] in);
 }
