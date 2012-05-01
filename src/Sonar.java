@@ -19,7 +19,7 @@ public class Sonar implements Runnable, Debuggable {
 		
 		relay = IntelliBrain.getDigitalIO(7);
 		relay.setDirection(true); // configure as output
-		relay.set();
+		relay.clear();
 	}
 
 

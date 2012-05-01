@@ -790,10 +790,6 @@ public class Entertain implements Runnable {
 		Thread.yield();
 	}
 	
-	public void kill() {
-		Thread.dumpStack();
-	}
-	
     public void run() {
     	running = true;
         //try {

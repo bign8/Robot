@@ -230,9 +230,11 @@ public class Debugger implements Runnable {
 	}
 
 	private void listenDriving() throws Throwable {
-		boolean debug = true, listening = true;
+		boolean debug = true, listening = true, firstTransfer = true;
 		String[] learningData = {}, newData;
 		int i = 0;
+		
+		intel.setRemoteStatus(true);
 		
 		disp.print(0, "Remote Driving");
 		disp.print(1, "Learning in progress");
@@ -265,10 +267,16 @@ public class Debugger implements Runnable {
 						listening = false;
 					}
 					
+					
 				// Trasmitting array of training data!
 				} else {
 					disp.print(0, "Data Transfer");
 					disp.print(1, "Take me home!");
+					
+					if (firstTransfer) { // shutdown and stop everything
+						setAll(false, "Data Transfer", "Take me home!", 4);
+						firstTransfer = false;
+					}
 					
 					if (startButton.isPressed()) { //transfer data
 						buzzer.play(500, 50);
@@ -290,6 +298,8 @@ public class Debugger implements Runnable {
 				Thread.sleep(time - System.currentTimeMillis());
 			} catch (Throwable e) { e.printStackTrace(); }
 		}
+		
+		intel.setRemoteStatus(false);
 	}
 	
 	private void roboBomb() {
@@ -308,8 +318,6 @@ public class Debugger implements Runnable {
 			try {
 				time += 1000;
 				Thread.sleep(time - System.currentTimeMillis());
-				
-				//mario.kill();
 				
 				if  (!first && music == null && !rem.isOn()) { // start condition
 					setAll(false, "Seranade time!", "Starting Mario", 99);
