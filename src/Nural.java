@@ -652,8 +652,8 @@ public class Nural {
 		
 		double[][] outputs = new double[active.length][active[0].length]; // allows storage of past calcuations
 		double[][] error = new double[weights.length][weights[0].length];
-		int i, j, k, epoch, numberOfCycles = trainingData.length * 3;
-		double learningRate = 0.5d, curError, tempDiff;
+		int i, j, k, epoch, numberOfCycles = trainingData.length * 100;
+		double learningRate = 0.5d, curError = 0.0, tempDiff;
 		
 		
 		for (i = 0; i < trainingData.length; i++) {
@@ -662,9 +662,9 @@ public class Nural {
 			trainingData[i][2] = capper( ( (trainingData[i][2] < 0) ? 100 : trainingData[i][2]) / 100.0, 1.0, 0.0 ) ;
 			trainingData[i][3] = capper( ( (trainingData[i][3] < 0) ? 100 : trainingData[i][3]) / 100.0, 1.0, 0.0 ) ;
 			trainingData[i][4] = capper( ( (trainingData[i][4] < 0) ? 100 : trainingData[i][4]) / 100.0, 1.0, 0.0 ) ;
-			trainingData[i][5] = capper( trainingData[i][5] * 6 - 3 , -3.0 , 3.0 ); // [-3,3]
-			trainingData[i][6] = capper( trainingData[i][6] * 100 , 0.0 , 100.0 );  // [0:100]
-			trainingData[i][7] = capper( trainingData[i][7] * 100 , 0.0 , 100.0 );  // [0:100]
+			trainingData[i][5] = capper( (trainingData[i][5] + 3) * 6 , -3.0 , 3.0 ); // [-3,3]
+			trainingData[i][6] = capper( trainingData[i][6] / 100.0 , 0.0 , 100.0 );  // [0:100]
+			trainingData[i][7] = capper( trainingData[i][7] / 100.0 , 0.0 , 100.0 );  // [0:100]
 		}
 		
 		// -------------------------------------------------------
@@ -721,7 +721,7 @@ public class Nural {
 			}
 			
 			// Display current calculated error
-			System.out.println("Epoch: " + (epoch+1) + "\tOutput Error: " + curError);
+			if (epoch % (numberOfCycles / 10) == 0) System.out.println("Epoch: " + (epoch+1) + "\tOutput Error: " + curError);
 			
 			// new weights for output layer
 			for ( j = 0; j < weights[0].length; j++ ) {
@@ -762,6 +762,7 @@ public class Nural {
 			}
 		}
 		
+		System.out.println("Epoch: " + (epoch+1) + "\tOutput Error: " + curError);
 		printWeights(weights);
 	}
 	
