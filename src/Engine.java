@@ -5,7 +5,11 @@ import com.ridgesoft.robotics.Motor;
 import com.ridgesoft.robotics.PIDController;
 
 public class Engine implements Runnable, Debuggable {
-	private boolean running;
+	
+	// Port Reservations
+	private static final int ServoOutputPort =  3;
+	private static final int AnologueInput1  = 11;
+	private static final int AnologueInput2  = 10;
 	
 	// PID Controller gain constants
 	public float pGain = 0.060f; // 0.053
@@ -13,20 +17,16 @@ public class Engine implements Runnable, Debuggable {
 	public float dGain = 0.005f;  // 0.01
 	public float iCapp = 16.0f;  // 40.0
 	
-	// Port Reservations
-	private static int ServoOutputPort =  3;
-	private static int AnologueInput1  = 11;
-	private static int AnologueInput2  = 10;
-	
 	// Stored devices
+	private boolean running = true;
 	private Motor motor;
 	private IntelliBrainShaftEncoder encoder;
 	private PIDController controller = new PIDController(pGain, iGain, dGain, iCapp, false);
 	
 	// Algorithum variables
 	private int rpm = 0, velocity = 0, power = 0, desired = 0;
-	//private int[] arrayOfSpeeds = {-120, -90, -60, 0, 30, 60, 90};
 	
+	// Constructor - get all required variables and execute a quick startup on motor controler
 	public Engine(){
 		
 		// get what I need (or want)
@@ -43,57 +43,52 @@ public class Engine implements Runnable, Debuggable {
 		try { Thread.sleep(2000); } catch (Throwable t) { t.printStackTrace(); }
 	}
 	
-	public void setRunning(boolean run) {
-		running = run;
-		setSpeed(0);
-	}
-	
-	public void updatePID() {
-		controller.setConstants(pGain, iGain, dGain, iCapp);
-	}
-	
+	// Main running thread - calculate rpm and use PID controler to set power based on set velocity
 	public void run(){
-		running = true;
-		int previousCounts = 0, counts = 0;//, counter = 0;
+		int previousCounts = 0, counts = 0;
 		long time = System.currentTimeMillis();
 		
 		while (true) {
-			try {
 
-				if (!running) {
-					time += 2000;
-					Thread.sleep(time - System.currentTimeMillis());
-				} else {
-					
-					//600 count intervals are taken per minute.
-					//128 counts per revolution.
-					counts = encoder.getCounts();
-					rpm = ((counts - previousCounts) * 600) / 128;
-					previousCounts = counts;
-					
-					desired = velocity * 40;
-					power = (int)controller.control(desired, rpm);
-					
-					motor.setPower(power);
-				    
-				    // Pause thread execution
-					time += 100;
-					Thread.sleep(time - System.currentTimeMillis());
-				}
+			if (running) {
 				
+				//600 count intervals are taken per minute.
+				//128 counts per revolution.
+				counts = encoder.getCounts();
+				rpm = ((counts - previousCounts) * 600) / 128;
+				previousCounts = counts;
+				
+				desired = velocity * 30;
+				power = (int)controller.control(desired, rpm);
+				
+				motor.setPower(power);
+			    
+			} else {
+				motor.setPower(0);
+			}
+			
+			// Pause thread execution
+			try {
+				time += 100;
+				Thread.sleep(time - System.currentTimeMillis());
 			} catch (Throwable t) { t.printStackTrace(); }
 		}
 		
 	}
 	
+	// Method to pause the execution of this thread
+	public void setRunning(boolean run) { running = run; }
+	
+	// Method to define speed of the motor
 	public void setSpeed( int v ) { 
 		velocity = v;
 		if (v == 0) motor.brake();
 	}
-	//public int getRPM() { return rpm; }
-	//public void brake() { motor.brake(); this.velocity = 0; } // something else should probably happen here
 	
+	// Debug Methods (private accessorss)
 	public int getSpeed() { return velocity; }
+	//public int getRPM() { return rpm; }
+	public void updatePID() { controller.setConstants(pGain, iGain, dGain, iCapp); }
 	
 	public String[] toDebugString(String in[]) {
 		in[0] = "Engine " + desired;
