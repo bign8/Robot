@@ -352,6 +352,7 @@ public class Debugger implements Runnable {
 				
 			} catch (Throwable t) { t.printStackTrace(); }
 		}
+		
 		intel.setRemoteStatus(false);
 	}
 }

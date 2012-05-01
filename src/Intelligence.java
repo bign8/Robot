@@ -40,20 +40,22 @@ public class Intelligence implements Runnable, Debuggable {
 
 		try {
 			while (true) {
-
+				
+				if (!running) {
+					motor.setSpeed(0);
+					steer.setBackWheels(50);
+					steer.setFrontWheels(50);
+					time += 2000;
+					Thread.sleep(time - System.currentTimeMillis());
+					continue;
+				}
+				
 				//check Remote
 				if (remote.isOn() || forcedRemote){
 					motor.setSpeed(remote.getPort1());
 					steer.setBackWheels(remote.getPort2()*15+50);
 					steer.setFrontWheels(remote.getPort2()*15+50);
-				}
-				else{
-
-					if (!running) {
-						time += 2000;
-						Thread.sleep(time - System.currentTimeMillis());
-						continue;
-					}
+				} else {
 
 					sum0 = 0; sum1 = 0; sum2 = 0;
 
