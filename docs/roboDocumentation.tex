@@ -259,14 +259,18 @@ The IntelliBrain2 MicroController has the ability to spawn multiple process thre
 This design is based off the general principle of ranking importance as: \textit{1) Sensory Input 2) Decision-Making 3) Motor Control}  (Note, the GPS is excluded in this because it is rarely used).
 
 \subsubsection*{Challenges with Threads}
-First, we had to learn how to properly implement threads in Java and set priorities.  Understanding the difference between the running thread and the object instance was the next obstacle.  We ultimately 
+First, we had to learn how to properly implement threads in Java and set priorities.  Understanding the difference between the running thread and the object instance that comprised the thread was the next obstacle.  
+
+We ultimately followed this general protocol for declaring an object and then executing it as a thread (note that each class implements \textit{Runnable} so that it can be run as a thread.
 
 \begin{verbatim}
-      Intelligence brain = new Intelligence(engine, wheel, headlight, remote);
-      Thread brainThr = new Thread(brain);
-      brainThr.setPriority(Thread.MAX_PRIORITY-1);
-      brainThr.start();
+   1.  Intelligence brain = new Intelligence(engine, wheel, headlight, remote);
+   2.   Thread brainThr = new Thread(brain);
+   3.   brainThr.setPriority(Thread.MAX_PRIORITY-1);
+   4.   brainThr.start();
 \end{verbatim}
+
+In this example of the intelligence thread, we pass the instance of the motor (engine), Steering control (wheel), Sonar sensors (headlight), and remote to the Intelligence constructor.  Next we declare a new thread from the instance of Intelligence (brain), set the priority and finally, we start the thread.
 
 \clearpage
 \subsection{Sonar \& Range Finding}
