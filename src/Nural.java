@@ -673,13 +673,13 @@ public class Nural {
 		
 		for (epoch = 0; epoch < numberOfCycles; epoch++) {
 
-			outputs[0][0] = trainingData[epoch % trainingData.length][0];
-			outputs[0][1] = trainingData[epoch % trainingData.length][1];
+			outputs[0][0] = 1./trainingData[epoch % trainingData.length][0];
+			outputs[0][1] = 1./trainingData[epoch % trainingData.length][1];
 			outputs[0][2] = trainingData[epoch % trainingData.length][2];
-			outputs[0][3] = trainingData[epoch % trainingData.length][3];
-			outputs[0][4] = trainingData[epoch % trainingData.length][4];
+			outputs[0][3] = 1./trainingData[epoch % trainingData.length][3];
+			outputs[0][4] = 1./trainingData[epoch % trainingData.length][4];
 			
-			//for (i = 0; i < outputs.length; i++) outputs[i][outputs[0].length-1] = 1.0; // setup biases
+			for (i = 0; i < outputs.length; i++) outputs[i][outputs[0].length-1] = 1.0; // setup biases
 			
 			// -------------------------------------------------------
 			// |                    QUERY NEURONS                    |
