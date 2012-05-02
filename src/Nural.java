@@ -667,17 +667,21 @@ public class Nural {
 			trainingData[i][7] = capper( trainingData[i][7] / 100.0 , 0.0 , 1.0 );  // [0:100]
 		}
 		
+		int training_item = 0;
+		
 		// -------------------------------------------------------
 		// |                     BEGIN EPOCH                     |
 		// -------------------------------------------------------
 		
 		for (epoch = 0; epoch < numberOfCycles; epoch++) {
-
-			outputs[0][0] = trainingData[epoch % trainingData.length][0];
-			outputs[0][1] = trainingData[epoch % trainingData.length][1];
-			outputs[0][2] = trainingData[epoch % trainingData.length][2];
-			outputs[0][3] = trainingData[epoch % trainingData.length][3];
-			outputs[0][4] = trainingData[epoch % trainingData.length][4];
+			
+			training_item = (int) (Math.random() * trainingData.length);
+			
+			outputs[0][0] = trainingData[training_item][0];
+			outputs[0][1] = trainingData[training_item][1];
+			outputs[0][2] = trainingData[training_item][2];
+			outputs[0][3] = trainingData[training_item][3];
+			outputs[0][4] = trainingData[training_item][4];
 			
 			//for (i = 0; i < outputs.length; i++) outputs[i][outputs[0].length-1] = 1.0; // setup biases
 			
@@ -709,7 +713,7 @@ public class Nural {
 			error = new double[weights.length][weights[0].length]; // clear error to zeros
 			for ( j = 0; j < weights[0].length; j++ ) {
 				if ( active[i][j] ) {
-					tempDiff = (trainingData[epoch % trainingData.length][5+j] - outputs[i][j]);
+					tempDiff = (trainingData[training_item][5+j] - outputs[i][j]);
 					//tempDiff = (outputs[i][j] - trainingData[epoch % trainingData.length][5+j]);
 					error[i-1][j] = outputs[i][j] * ( 1 - outputs[i][j] ) * tempDiff;
 					curError += Math.pow(tempDiff, 2);
