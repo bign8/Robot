@@ -214,7 +214,20 @@ Ultimately, the main controlling board is the IntelliBrain2 by Ridgesoft:
 
 This is a Java programmable board that calls a specific API to interface with the physical inputs.  It connects to a computer via a serial port.  In this figure, we have a USB adapter plugged into the serial port. 
 
+\subsection{Running the Robot}
+The battery attaches via Velcro straps under the back of the robot.  It plugs into both the motor and the MicroController.  Once the battery is connected, the robot can be turned on by the on/off switch on the MicroController.
+\vspace{2mm}
 
+Just press the START button to start the robot.  A small calibration routine will automatically run as the robot shifts the wheels back and forth.
+
+\clearpage
+\subsection{Wiring Diagram}
+\begin{figure}[h]
+\centerline{\includegraphics[scale=.66, angle=90]{img/ckt_layout}}
+\caption{Wiring Diagram for the Robot}
+\end{figure}
+
+This figure shows how and where each sensor and servo connects to the IntelliBrain2 MicroController.  Blue lines represent multiple wires that connect in a straightforward manner to the board.
 \clearpage
 \section{Robot Logic}
 There are 2 main obstacles that we overcame in this project:
@@ -379,57 +392,159 @@ To remedy this issue, our team member pursuing a Physics degree created an RC ci
 We should note that this current circuit is an improvement on the first attempt which utilized much larger capacitors that \textit{featured} a multiple second delay on steering and throttle input.
 
 \subsubsection*{Remote Input}
-After averaging the 3 sample points (for consistency), we can obtain nearly real-time steering and throttle input.  Because we must wait for the capacitor to charge/discharge, there is some lag in control.\footnote{After all this, we've succeeded in building a simple RC car (worse than the one we started with)}
+Our first implementation was to average 3 consecutive sample points.  The final implementation uses a Smoother\footnote{from \textit{com.ridgesoft.robotics.Smoother}} to ensure accurate data.  We can obtain nearly real-time steering and throttle input.  Because we must wait for the capacitor to charge/discharge, there is some lag in control.\footnote{After all this, we've succeeded in building a simple RC car (worse than the one we started with)}
 
 The impact of this feature is a physical kill switch: Turn the remote on and the running logic stops and the remote takes over.\footnote{Also, the \textit{Mario} theme song plays}; turn off the remote, and the running logic resumes.
 
 
 \clearpage
-\subsection{Neural Network}
-{\color{red} Going to need Nate's help on this part...}
-
-\clearpage
 \subsection{Global Positioning System}
 The robot does include a GPS chip on the body that interfaces with the board.  This allows it to track is position via satellites.  Currently, we do not incorporate this data into our logic, but the interface and control exist.
 
-\clearpage
-\subsection{Debugging}
-The robot initializes a separate thread with minimum priority dedicated to debugging.  It takes input from the thumb wheel and STOP/START buttons to interface with the user and print running information to the LCD Display on the MicroController.
+\subsubsection*{Challenges}
+The GPS required extra circuit configuration to be read by the MicroController.  When we received the robot from MSU, an example circuit was provided.  We replicated the circuit as follows:\footnote{The blue box in the figure is a Max232 Integrated Circuit}
+\begin{figure}[h]
+\centerline{\includegraphics[scale=.6]{img/GPScurcuit}}
+\caption{Circuit Diagram for connecting the GPS to the MicroController}
+\end{figure}
 
-Options for debugging are as follows:
+\clearpage
+\subsection{Neural Network}
+For the intelligence and control of the robot, we implemented a Neural Network.\footnote{Or at least made an attempt... Nate made a valiant attempt.}  A Neural Network looks like this:\footnote{Image from : http://encefalus.com/wp-content/uploads/2010/07/neural\_network.png}
+\begin{figure}[h]
+\centerline{\includegraphics[scale=.5]{img/neural_network}}
+\caption{A Neural Network}
+\end{figure}
+
+A neural network is comprised by a system of neurons, resembling a brain.  Each neuron's purpose is to take multiple inputs, apply a weight to each input (depending on the source) and sum the result.
+
+The sum in each neuron is then put into a Sigmoid function:
+\begin{equation}
+P(t) = \frac{1}{1+e^{-t}}
+\end{equation}
+
+Which looks like this:
+\begin{figure}[h]
+\centerline{\includegraphics[scale=.6]{img/sigmoid}}
+\end{figure}
+
+Next, the data is pushed to the following layer of neurons.
+
+Neural networks have the ability to learn through backpropogation.  The basic idea is a gradient descent which is based off the derivative of the sigmoid function.  Through this derivative calculation, each node can effectively minimize its own error.\footnote{Explanation of Back Propagation: http://www4.rgu.ac.uk/files/chapter3\%20-\%20bp.pdf}
+
+
+Overall, the learning ability of an entire network is governed my a learning rate.
+
+\subsubsection*{Challenges in Implementation}
+At one point, plans called or a neural network that was capable of learning.  The `A' for effort goes to Nate who took on graduate level material to understand how neural networks operate.
+
+Unfortunately, the network did not learn as hoped, but we found a way to implement a `dumb' network that use the original principles, but without the ability to learn.
+
+To illustrate why this is a good idea, understand that the following code comprises all of the driving logic:
 \begin{quote}
-\begin{enumerate}
-\item Sonar Debug
-\item Steering Debug
-\item Engine Debug
-\item Remote Debug
-\end{enumerate}
+\begin{verbatim}
+for (int i = 0; i < 6; i++) {
+  //if ( toAdd[i] > 0 ) { // exclude poor input
+    if ( i == 2 )
+      sum0 += toAdd[i] * weights[0][i];
+    else
+      sum0 += 1./toAdd[i] * weights[0][i];
+
+    sum1 += 1./toAdd[i] * weights[1][i];
+    sum2 += 1./toAdd[i] * weights[2][i];
+  //}
+}
+fsum0 = (int) negativeMultiply(capper(sum0, 4., -2.), 3);
+fsum1 = (int) capper(sum1, 100., 0.);
+fsum2 = (int) capper(sum2, 100, 0);
+
+//Set Motor and Wheels:
+motor.setSpeed( fsum0 );
+steer.setFrontWheels( fsum1 );
+steer.setBackWheels( fsum2 );
+\end{verbatim}
 \end{quote}
 
+In this example, the \textit{toAdd[]} array is simply the current distance values from each sensor.  The \textit{weghts[][]} is a hard coded two-dimensional array to normalize data to a specific range.\footnote{This is equivalent to using a linear function instead of the sigmoid function discussed on the previous page.}  Should the weights[][] array be built with high quality training data, the robot would be capable of improved driving and navigation.
 
 
 
 
 \clearpage
-\section{Robot User Manual}
-\subsection{Starting Out}
-The battery attaches via Velcro straps under the back of the robot.  It plugs into both the motor and the MicroController.  Once the battery is connected, the robot can be turned on by the on/off switch on the MicroController.
-\vspace{2mm}
-Just press the START button to start the robot.  A small calibration routine will automatically run as the robot shifts the wheels back and forth.
+\section{Operation - Debug Mode}
+The robot initializes a separate thread with minimum priority dedicated to debugging.  It takes input from the thumb wheel and STOP/START buttons to interface with the user and prints running information to the LCD Display on the MicroController.
 
-\subsection{Interacting with the Robot}
+Options for debugging are as follows (as chosen with the thumbwheel):
+\begin{quote}
+\begin{description}
+\item[0.] Engine Debug
+\item[1.] Steering Debug
+\item[2.] Sonar Debug
+\item[3.] Intelligence Debug
+\item[4.] GPS Debug
+\item[5.] Remote Debug
+\item[6.] Engine PID
+\item[7.] Listen to User Driving
+\item[8.] Remote Started - Entertainment
+\end{description}
+\end{quote}
+
+If the user presses START on cases 0,1,4,6,7, or 8, then debug mode begins for that subject.  Press STOP to exit this deeper debug mode.
+
+\subsection*{0 - Engine Debug}
+The thumb wheel turns into a power selector and sets the motor to the power shown on the display.  Turning the thumb wheel in this mode will power the wheels, be sure to lift the robot off the ground or it will run away with no knowledge of how to stop!
+
+\subsection*{1 - Steering Debug}
+The thumb wheel turns into a position selector for the wheels.  Turning the thumb wheel in this mode turns the wheels to the position displayed on the LCD.
+
+\subsection*{4 - GPS Debug}
+The GPS status is displayed on the LCD.
+
+\subsection*{6 - Engine PID}
+Entering this debug mode allows you to view the variables associated with the engine PID Controller.  These are the iGain, dGain, iCapp and pGain.
+
+\subsection*{7 - Listen to User Driving}
+In this mode, the robot will record driving data for training the Neural Network.  It will store the data and then wait for you to plug it back into the computer to download the results.
+
+\subsection*{8 - Entertainment}
+Also known as `RoboBomb' this operation mode plays the Mario theme song while driving around.
+
 
 \clearpage
 \section{Conclusion}
-This project was quite the crash course in Robotics.  It seemed to incorporate aspects from every Computer Science course we've taken over the years: Finite States, Process Scheduling, Physics, Algorithm design, and more.
+This project was quite the crash course in Robotics.  It seemed to incorporate aspects from every Computer Science course we've taken over the years: Finite States, Process Scheduling, Physics, Algorithm design, and obviously knowledge of Java.
 
+The project goals outlined earlier were all met; some more than others, but we can safely say that we are walking away from the project with a deeper knowledge of Java, knowledge of robotics and robotic algorithms.
+
+Particular strengths and weaknesses of the project are:
 
 \subsection{Strengths}
+\begin{enumerate}
+\item Our development environment is efficient, professional, and incredibly powerful.  It took a long time to set up, but is realistic to what a professional team environment would look like with github and version control.
+\item As such, the code and project may live on past this course.
+\item The framework (sensor setup and robot architecture) we built is very powerful and incorporates robust, streamlined code that could be built upon in the future.
+\end{enumerate}
+
 \subsection{Weaknesses}
+\begin{enumerate}
+\item While the robot body may be a \$400 top of the line Remote Control vehicle, there are many aspects of it that make it difficult to control with the IntelliBrain2.
+\item According to some documentations, it appears that we made a very common beginner's mistake in the Neural Network training - this should be addressed further later, because the framework is in place to fix it and try again.
+\item As usual, we seem to be out of time and probably over budget at the end; there is more we would like to do, but ran out of time.  Only towards the very end did we streamline our development methods.
+\end{enumerate}
+
+Even though the robot would rather spin in circles on the floor, we still built a functioning machine!
 
 \clearpage
-\section{Appendix}
-The following pages include most of the source code for the robot.
-\subsection{Source Code}
+\section{Source Code}
+In the past, this is where we would include the 4500+ lines of code that were involved in this project.  Instead, we provide the link to the github repository where the code is still active and well organized on their servers.\\
+\centerline{{\color{blue}http://github.com/bign8/Robot}}
+\vspace{2mm}
+
+The \textit{master} branch contains all of the code involved in the project.  The \textit{src} directory includes active code while the \textit{archive} directory features code that we no longer implement.
+
+The code in the \textit{src} directory is all commented and there are some sections that are not implemented but should be or would be in future releases and are noted as such.
+\vspace{2mm}
+
+Future goals for this repository include cleaning up what is there and finishing the on line read-me and wiki for the project to promote Carroll's CS program among the github community and to provide potential future classes the ability to pick up where we left off.
 
 \end{document}
