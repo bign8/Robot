@@ -313,7 +313,23 @@ The PID is the most commonly used feedback controller.  It works to minimize err
 \caption{PID Controller Diagram}
 \end{figure}
 
-The PID controller is initiated in the Engine class and then power is set 
+The PID controller is initiated in the Engine class and then motor power is set based on feedback from the PID given the inputs: \textit{desired rpm, actual rpm}.  Using the PID controller helped cut down on 'juttiness' of the robots movements.
+
+\clearpage
+\subsection{Wheels \& Steering}
+The two steering servos (front and back) are attached to separate servo ports on the Micro Controller.  These are initiliazed as standard servos and as such can take the argument \textit{setPosition(int n)} where $n$ is an integer between 0 and 100, 50 being the midpoint.
+
+The rear servo is set to the value: 100-(value of front servo).
+
+\subsubsection*{Steering Servo Challenges}
+When the robot first turns on, the steering range must be reset.  We found that the best way to do this is to perform a small calibration by turning the wheels all the way one direction and then all the way to the other direction then back to the middle (50).  After this, the 0-100 range for the servo method, \textit{setPosition(int n)} gives full range of motion for the wheels.
+
+If this is not done properly, then the steering range is incomplete and inconsistent.  We attempted putting a sensor on the steering servo to check the wheels were at the appropriate spot, but found consistency after this calibration routine.
+\vspace{2mm}
+Additionally, the original steering mechanism was built to allow the wheels to slip dramatically - this was a feature of this particular Remote Control vehicle that was made for crawling over rocks.  This slip lead to major complications in robot control because the logic had no way to tell if the wheels were pointing the direction the servo said they were.\footnote{Provided the servo was in the position it claimed to be! (Before calibration)}
+
+To overcome this, we padded the slipping mechanism with paper towel to absorb the play.  This seems to fix all the complications.  However, now if the robot hits a wall or bumps the wheel too hard, the steering shaft and the steering motor take the brunt of the force, so one must be more careful in operating the robot.
+
 
 \clearpage
 \subsection{Remote Control}
@@ -334,13 +350,53 @@ After averaging the 3 sample points (for consistency), we can obtain nearly real
 
 The impact of this feature is a physical kill switch: Turn the remote on and the running logic stops and the remote takes over.\footnote{Also, the \textit{Mario} theme song plays}; turn off the remote, and the running logic resumes.
 
-\section{Robot User Manual}
 
+\clearpage
+\subsection{Neural Network}
+{\color{red} Going to need Nate's help on this part...}
+
+\clearpage
+\subsection{Global Positioning System}
+The robot does include a GPS chip on the body that interfaces with the board.  This allows it to track is position via satellites.  Currently, we do not incorporate this data into our logic, but the interface and control exist.
+
+\clearpage
+\subsection{Debugging}
+The robot initializes a separate thread with minimum priority dedicated to debugging.  It takes input from the thumb wheel and STOP/START buttons to interface with the user and print running information to the LCD Display on the MicroController.
+
+Options for debugging are as follows:
+\begin{quote}
+\begin{enumerate}
+\item Sonar Debug
+\item Steering Debug
+\item Engine Debug
+\item Remote Debug
+\end{enumerate}
+\end{quote}
+
+
+
+
+
+\clearpage
+\section{Robot User Manual}
+\subsection{Starting Out}
+The battery attaches via Velcro straps under the back of the robot.  It plugs into both the motor and the MicroController.  Once the battery is connected, the robot can be turned on by the on/off switch on the MicroController.
+\vspace{2mm}
+Just press the START button to start the robot.  A small calibration routine will automatically run as the robot shifts the wheels back and forth.
+
+\subsection{Interacting with the Robot}
+
+\clearpage
 \section{Conclusion}
+This project was quite the crash course in Robotics.  It seemed to incorporate aspects from every Computer Science course we've taken over the years: Finite States, Process Scheduling, Physics, Algorithm design, and more.
+
+
 \subsection{Strengths}
 \subsection{Weaknesses}
 
+\clearpage
 \section{Appendix}
+The following pages include most of the source code for the robot.
 \subsection{Source Code}
 
 \end{document}
