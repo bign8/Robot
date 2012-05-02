@@ -1,3 +1,5 @@
+import com.ridgesoft.intellibrain.IntelliBrain;
+
 public class Intelligence implements Runnable, Debuggable {
 
 	private boolean running = true, forcedRemote = false;
@@ -72,7 +74,7 @@ public class Intelligence implements Runnable, Debuggable {
 					toAdd[4] = (toAdd[4] < 0) ? 100 : toAdd[4];
 
 					for (int i = 0; i < 6; i++) {
-						if ( toAdd[i] > 0 ) { // exclude poor input
+						//if ( toAdd[i] > 0 ) { // exclude poor input
 
 							if ( i == 2 )
 								sum0 += toAdd[i] * weights[0][i];
@@ -81,13 +83,18 @@ public class Intelligence implements Runnable, Debuggable {
 
 							sum1 += 1./toAdd[i] * weights[1][i];
 							sum2 += 1./toAdd[i] * weights[2][i];
-						}
+						//}
 					}
 
-					fsum0 = (int) negativeMultiply(capper(sum0, 4., -2.), 2);
+					fsum0 = (int) negativeMultiply(capper(sum0, 4., -2.), 3);
 					fsum1 = (int) capper(sum1, 100., 0.);
 					fsum2 = (int) capper(sum2, 100, 0);
 
+					if (fsum0 == 0)
+						IntelliBrain.getLcdDisplay().print(0, "I'm zero");
+					else 
+						IntelliBrain.getLcdDisplay().print(0, "on da move");
+					
 					// set down the smarts
 					motor.setSpeed( fsum0 );
 					steer.setFrontWheels( fsum1 );
