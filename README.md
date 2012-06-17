@@ -3,7 +3,7 @@
 This Semester long project was finaly placed on git during the last two weeks for better version control and hopefully* more colaboration among the team members
 
 ##Team Members##
-* Jennings
+* [Jennings] [2]
 * Forrest
 * Shae
 * [Nate] [1]
@@ -36,3 +36,4 @@ public static void main(String[] args) {
 
 
 [1]: http://nathanjkwoods.com "Nathan's Personal Website"
+[2]: http://www.townsendjennings.com "Jennings' Personal Website"
