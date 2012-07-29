@@ -2,7 +2,7 @@
 
 This Semester long project was placed on git during the last two weeks for better version control and collaboration.
 
-A more complete documentation is available for download as a PDF under [docs/roboDocumentation.pdf](docs/roboDocumenation.pdf)
+A more complete documentation is available for download as a PDF under [docs/roboDocumentation.pdf](https://github.com/bign8/Robot/tree/master/docs/roboDocumenation.pdf)
 
 ##Team Members##
 * [Jennings] [2]
