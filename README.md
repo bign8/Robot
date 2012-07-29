@@ -1,6 +1,8 @@
 #CS-430 : Senior Project#
 
-This Semester long project was finaly placed on git during the last two weeks for better version control and hopefully* more colaboration among the team members
+This Semester long project was placed on git during the last two weeks for better version control and collaboration.
+
+A more complete documentation is available for download as a PDF.
 
 ##Team Members##
 * [Jennings] [2]
@@ -25,14 +27,6 @@ This micro controler was mounted on a modified [Axial](http://www.axialracing.co
 * 1 Rotation sensor (no link found). Was attached to the large driving output gear.
 * 1 Sensor for rear straight driving (yet to be implemented)
 
-
-###Regular Execution (_coding samples_)
-```java
-public static void main(String[] args) {
-  // Everything ends here!
-  Machine.destroy(everything, now);
-}
-```
 
 
 [1]: http://nathanjkwoods.com "Nathan's Personal Website"
