@@ -2,7 +2,7 @@
 
 This Semester long project was placed on git during the last two weeks for better version control and collaboration.
 
-A more complete documentation is available for download as a PDF under [docs/roboDocumentation.pdf](http://www.townsendjennings.com/portfolio/roboDocumentation.pdf)
+A more complete documentation is available for download as a PDF [here](http://www.townsendjennings.com/portfolio/roboDocumentation.pdf)
 ##Team Members##
 * [Jennings] [2]
 * Forrest
